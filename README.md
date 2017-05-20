@@ -45,17 +45,21 @@ Document Constructors
 ---------------------
 The Document can be created empty, or based on reading the content of specified file path. It is also possible to control which column and row index should be treated as labels. One can access the complete CSV file by setting pColumnNameIdx and pRowNameIdx to -1 (disabled).
 
+```cpp
     rapidcsv::Properties(const std::string& pPath = "", const int pColumnNameIdx = 0, const int pRowNameIdx = 0, const bool pHasCR = DEFAULT_HASCR);
     explicit rapidcsv::Document(const std::string& pPath = "");
     explicit rapidcsv::Document(const rapidcsv::Properties& pProperties);
     explicit rapidcsv::Document(const rapidcsv::Document& pDocument);
+```
 
 Document Load / Save
 --------------------
 The following methods allow loading and saving document in CSV format to specified path.
 
+```cpp
     void rapidcsv::Document::Load(const std::string& pPath);
     void rapidcsv::Document::Save(const std::string& pPath = "");
+```
 
 Get Data
 --------
