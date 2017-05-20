@@ -1,5 +1,5 @@
-Rapidcsv v1.0
-=============
+Rapidcsv
+========
 Rapidcsv is a simple C++ header-only library for CSV parsing. While the name admittedly was inspired
 by the rapidjson project, the objectives are not the same. The goal of rapidcsv is to be an easy-to-use
 CSV library enabling rapid development. For optimal performance (be it CPU or memory usage) a CSV
@@ -17,7 +17,7 @@ Simply copy src/rapidcsv.h to your project/include directory and include it.
 
 Example
 =======
-A simple example reading a CSV file and getting one column as a vector of floats.
+A simple example reading a CSV file and getting 'Close' column as a vector of floats, and getting a specific cell as well.
 
     #include <iostream>
     #include <vector>
@@ -44,7 +44,7 @@ Document Constructors
 The Document can be created empty, or based on reading the content of specified file path. It is also possible to control which column and row index should be treated as labels. One can access the complete CSV file by setting pColumnNameIdx and pRowNameIdx to -1 (disabled).
 
     rapidcsv::Properties(const std::string& pPath = "", const int pColumnNameIdx = 0, const int pRowNameIdx = 0, const bool pHasCR = DEFAULT_HASCR);
-    explicit rapidcsv::rapidcsv::Document(const std::string& pPath = "");
+    explicit rapidcsv::Document(const std::string& pPath = "");
     explicit rapidcsv::Document(const rapidcsv::Properties& pProperties);
     explicit rapidcsv::Document(const rapidcsv::Document& pDocument);
 
@@ -57,7 +57,7 @@ The following methods allow loading and saving document in CSV format to specifi
 
 Get Data
 --------
-Data can be accessed by column, row or cell, using the following Get methods. These methods produce a copy of the data in specified datatype. The requested position in the spreadsheet is either specified using their label(s), or the zero-base position index.
+Data can be accessed by column, row or cell, using the following Get methods. These methods produce a copy of the data in specified datatype. The requested position in the spreadsheet is either specified using their label(s), or the zero-based position index.
 
     template<typename T>
     std::vector<T> rapidcsv::Document::GetColumn(const size_t pColumnIdx);
@@ -110,7 +110,7 @@ These methods can be used for modifying document structure.
 
 Custom Data Conversion
 ----------------------
-The internal cell representation in the Document class is using std::string and when other types are requested, standard conversion routines are used. One may override conversion routines (or add new ones) by implementing ToVal() and ToStr(). Here is an example overriding int conversion, to instead provide two decimal fixed-point numbers. See tests/test035.cpp for a complete program example.
+The internal cell representation in the Document class is using std::string and when other types are requested, standard conversion routines are used. One may override conversion routines (or add new ones) by implementing ToVal() and ToStr(). Here is an example overriding int conversion, to instead provide two decimal fixed-point numbers. See [tests/test035.cpp](https://github.com/d99kris/rapidcsv/blob/master/tests/test035.cpp) for a complete program example.
 
     namespace rapidcsv
     {
@@ -131,7 +131,7 @@ The internal cell representation in the Document class is using std::string and 
 
 Technical Details
 =================
-Rapidcsv uses cmake for its tests. One can build and run the complete test suite like this:
+Rapidcsv uses cmake for its tests. Commands to execute the test suite:
 
     mkdir -p build && cd build && cmake .. && make && make test ; cd -
 
@@ -143,7 +143,7 @@ There are many CSV parsers for C++, here are two that seem popular:
 
 License
 =======
-Rapidcsv is distributed under the BSD 3-Clause license. See LICENSE file.
+Rapidcsv is distributed under the BSD 3-Clause license. See [LICENSE](https://github.com/d99kris/rapidcsv/blob/master/LICENSE) file.
 
 Keywords
 ========
