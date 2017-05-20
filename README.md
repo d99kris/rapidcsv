@@ -13,12 +13,13 @@ Rapidcsv is implemented using C++11 with the intention of being portable. It's b
 
 Usage
 =====
-Simply copy src/rapidcsv.h to your project/include directory and include it. 
+Simply copy (src/rapidcsv.h)[https://raw.githubusercontent.com/d99kris/rapidcsv/master/src/rapidcsv.h] to your project/include directory and include it. 
 
 Example
 =======
 A simple example reading a CSV file and getting 'Close' column as a vector of floats, and getting a specific cell as well.
 
+```cpp
     #include <iostream>
     #include <vector>
     #include <rapidcsv.h>
@@ -35,6 +36,7 @@ A simple example reading a CSV file and getting 'Close' column as a vector of fl
 
       // ...
     }
+```
 
 API Documentation
 =================
@@ -59,6 +61,7 @@ Get Data
 --------
 Data can be accessed by column, row or cell, using the following Get methods. These methods produce a copy of the data in specified datatype. The requested position in the spreadsheet is either specified using their label(s), or the zero-based position index.
 
+```cpp
     template<typename T>
     std::vector<T> rapidcsv::Document::GetColumn(const size_t pColumnIdx);
     template<typename T>
@@ -74,11 +77,13 @@ Data can be accessed by column, row or cell, using the following Get methods. Th
 
     template<typename T>
     T rapidcsv::Document::GetCell(const std::string& pColumnName, const std::string& pRowName);
+```
 
 Set Data
 --------
 Since the Get methods listed above creates a copy of the actual data in the Document class, one needs to use Set methods to modify the data.
 
+```cpp
     template<typename T>
     void rapidcsv::Document::SetColumn(const size_t pColumnIdx, const std::vector<T>& pColumn);
     
@@ -96,22 +101,26 @@ Since the Get methods listed above creates a copy of the actual data in the Docu
     
     template<typename T>
     void rapidcsv::Document::SetCell(const std::string& pColumnName, const std::string& pRowName, const T& pCell);
+```
 
 Modify Document Structure
 -------------------------
 These methods can be used for modifying document structure.
 
+```cpp
     void rapidcsv::Document::rapidcsv::Document::RemoveColumn(const size_t pColumnIdx);
     void rapidcsv::Document::rapidcsv::Document::RemoveColumn(const std::string& pColumnName);
     void rapidcsv::Document::rapidcsv::Document::RemoveRow(const size_t pRowIdx);
     void rapidcsv::Document::rapidcsv::Document::RemoveRow(const std::string& pRowName);
     void rapidcsv::Document::SetColumnLabel(size_t pColumnIdx, const std::string& pColumnName);
     void rapidcsv::Document::SetRowLabel(size_t pRowIdx, const std::string& pRowName);
+```
 
 Custom Data Conversion
 ----------------------
 The internal cell representation in the Document class is using std::string and when other types are requested, standard conversion routines are used. One may override conversion routines (or add new ones) by implementing ToVal() and ToStr(). Here is an example overriding int conversion, to instead provide two decimal fixed-point numbers. See [tests/test035.cpp](https://github.com/d99kris/rapidcsv/blob/master/tests/test035.cpp) for a complete program example.
 
+```cpp
     namespace rapidcsv
     {
       template<>
@@ -128,6 +137,7 @@ The internal cell representation in the Document class is using std::string and 
         pStr = out.str();
       }
     }
+```
 
 Technical Details
 =================
