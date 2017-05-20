@@ -38,6 +38,8 @@ A simple example reading a CSV file and getting 'Close' column as a vector of fl
     }
 ```
 
+The (tests)[https://github.com/d99kris/rapidcsv/tree/master/tests] directory contains many simple usage examples as well.
+
 API Documentation
 =================
 
