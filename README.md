@@ -10,6 +10,7 @@ Supported Platforms
 Rapidcsv is implemented using C++11 with the intention of being portable. It's been tested on:
 - OS X El Capitan 10.11
 - Ubuntu 16.04 LTS
+- Windows 7 / Visual Studio 2015
 
 Usage
 =====
