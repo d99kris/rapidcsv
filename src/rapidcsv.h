@@ -68,39 +68,39 @@ namespace rapidcsv
     {
       if (typeid(T) == typeid(int))
       {
-        pVal = std::stoi(pStr);
+        pVal = static_cast<T>(std::stoi(pStr));
       }
       else if (typeid(T) == typeid(long))
       {
-        pVal = std::stol(pStr);
+        pVal = static_cast<T>(std::stol(pStr));
       }
       else if (typeid(T) == typeid(long long))
       {
-        pVal = std::stoll(pStr);
+        pVal = static_cast<T>(std::stoll(pStr));
       }
       else if (typeid(T) == typeid(unsigned))
       {
-        pVal = static_cast<unsigned>(std::stoul(pStr));
+        pVal = static_cast<T>(std::stoul(pStr));
       }
       else if (typeid(T) == typeid(unsigned long))
       {
-        pVal = std::stoul(pStr);
+        pVal = static_cast<T>(std::stoul(pStr));
       }
       else if (typeid(T) == typeid(unsigned long long))
       {
-        pVal = std::stoull(pStr);
+        pVal = static_cast<T>(std::stoull(pStr));
       }
       else if (typeid(T) == typeid(float))
       {
-        pVal = std::stof(pStr);
+        pVal = static_cast<T>(std::stof(pStr));
       }
       else if (typeid(T) == typeid(double))
       {
-        pVal = std::stod(pStr);
+        pVal = static_cast<T>(std::stod(pStr));
       }
       else if (typeid(T) == typeid(long double))
       {
-        pVal = std::stold(pStr);
+        pVal = static_cast<T>(std::stold(pStr));
       }
       else
       {
@@ -479,7 +479,7 @@ namespace rapidcsv
 
       while (fileLength > 0)
       {
-        int readLength = std::min(fileLength, bufLength);
+        long long readLength = std::min(fileLength, bufLength);
         file.read(buffer.data(), readLength);
         for (int i = 0; i < readLength; ++i)
         {
