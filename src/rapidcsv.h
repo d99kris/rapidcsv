@@ -14,6 +14,7 @@
 #pragma once
 
 #include <assert.h>
+#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -21,7 +22,9 @@
 #include <string>
 #include <typeinfo>
 
-#if defined(_WIN32) || defined(_WIN64)
+#if defined(_MSC_VER)
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
 #define DEFAULT_HASCR true
 #else
 #define DEFAULT_HASCR false
