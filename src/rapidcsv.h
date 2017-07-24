@@ -526,6 +526,15 @@ namespace rapidcsv
         fileLength -= readLength;
       }
 
+      // Handle last line without linebreak
+      if (!cell.empty() || !row.empty())
+      {
+        row.push_back(cell);
+        cell.clear();
+        mData.push_back(row);
+        row.clear();
+      }
+
       // Assume CR/LF if at least half the linebreaks have CR
       mProperties.mHasCR = (cr > (lf / 2));
 
