@@ -5,20 +5,10 @@ by the rapidjson project, the objectives are not the same. The goal of rapidcsv 
 CSV library enabling rapid development. For optimal performance (be it CPU or memory usage) a CSV
 parser implemented for the specific use-case is likely to be more performant.
 
-Supported Platforms
-===================
-Rapidcsv is implemented using C++11 with the intention of being portable. It's been tested on:
-- OS X El Capitan 10.11
-- Ubuntu 16.04 LTS
-- Windows 7 / Visual Studio 2015
-
-Usage
-=====
-Simply copy [src/rapidcsv.h](https://raw.githubusercontent.com/d99kris/rapidcsv/master/src/rapidcsv.h) to your project/include directory and include it. 
-
-Example
-=======
-A simple example reading a CSV file and getting 'Close' column as a vector of floats, and getting a specific cell as well.
+Example Usage
+=============
+A simple example reading a CSV file and getting 'Close' column as a vector of floats, and getting a
+specific cell as well.
 
 ```cpp
     #include <iostream>
@@ -39,7 +29,19 @@ A simple example reading a CSV file and getting 'Close' column as a vector of fl
     }
 ```
 
-The [tests](https://github.com/d99kris/rapidcsv/tree/master/tests) directory contains many simple usage examples as well.
+The [tests](https://github.com/d99kris/rapidcsv/tree/master/tests) directory contains many simple usage
+examples as well.
+
+Supported Platforms
+===================
+Rapidcsv is implemented using C++11 with the intention of being portable. It's been tested on:
+- OS X El Capitan 10.11
+- Ubuntu 16.04 LTS
+- Windows 7 / Visual Studio 2015
+
+Installation
+============
+Simply copy [src/rapidcsv.h](https://raw.githubusercontent.com/d99kris/rapidcsv/master/src/rapidcsv.h) to your project/include directory and include it. 
 
 API Documentation
 =================
