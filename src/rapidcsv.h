@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  1.0
+ * Version:  1.1
  *
  * Copyright (C) 2017 Kristofer Berggren
  * All rights reserved.
