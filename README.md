@@ -156,7 +156,7 @@ Rapidcsv uses cmake for its tests. Commands to execute the test suite:
 
 Alternatives
 ============
-There are many CSV parsers for C++, here are two that seem popular:
+There are many CSV parsers for C++, for example:
 - [C/C++ CSV Parser](https://sourceforge.net/projects/cccsvparser/)
 - [Fast C++ CSV Parser](https://github.com/ben-strasser/fast-cpp-csv-parser)
 
