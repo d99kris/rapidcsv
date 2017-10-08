@@ -2,6 +2,8 @@
 
 #ifndef _MSC_VER
 #include <unistd.h>
+#else
+#include <io.h>
 #endif
 
 #include <fstream>
@@ -24,8 +26,12 @@ namespace unittest
   {
     int fd = -1;
     char name[] = "rapidcsvtest.XXXXXX";
+#ifndef _MSC_VER
     fd = mkstemp(name);
     close(fd);
+#else
+    _mktemp(name);    
+#endif
     return std::string(name);
   }
   
