@@ -24,27 +24,28 @@ namespace unittest
 
   inline std::string TempPath()
   {
-    int fd = -1;
     char name[] = "rapidcsvtest.XXXXXX";
 #ifndef _MSC_VER
-    fd = mkstemp(name);
+    int fd = mkstemp(name);
     close(fd);
 #else
-    _mktemp(name);    
+    _mktemp_s(name, strlen(name) + 1);
 #endif
     return std::string(name);
   }
   
   inline void WriteFile(const std::string& pPath, const std::string& pData)
   {
-    std::ofstream outfile(pPath);
+    std::ofstream outfile;
+    outfile.open(pPath, std::ifstream::out | std::ifstream::binary);
     outfile << pData;
     outfile.close();
   }
   
   inline std::string ReadFile(const std::string& pPath)
   {
-    std::ifstream infile(pPath);
+    std::ifstream infile;
+    infile.open(pPath, std::ifstream::in | std::ifstream::binary);
     std::string data((std::istreambuf_iterator<char>(infile)), std::istreambuf_iterator<char>());
     infile.close();
     return data;
