@@ -1,7 +1,7 @@
 Rapidcsv
 ========
 
-Linux / Mac: [![Build status](https://travis-ci.org/d99kris/rapidcsv.svg?branch=master)](https://travis-ci.org/d99kris/rapidcsv)
+**Linux / Mac:** [![Build status](https://travis-ci.org/d99kris/rapidcsv.svg?branch=master)](https://travis-ci.org/d99kris/rapidcsv)
 
 Rapidcsv is a simple C++ header-only library for CSV parsing. While the name admittedly was inspired
 by the rapidjson project, the objectives are not the same. The goal of rapidcsv is to be an easy-to-use
