@@ -44,7 +44,7 @@ int main()
     unittest::ExpectEqual(std::string, strs.at(1), "16");
 
     ints = doc.GetColumn<int>("C");
-    unittest::ExpectEqual(int, ints.size(), 2);
+    unittest::ExpectEqual(size_t, ints.size(), 2);
     unittest::ExpectEqual(int, ints.at(0), 81);
     unittest::ExpectEqual(int, ints.at(1), 256);
     
