@@ -25,20 +25,6 @@ init:
 # clone directory
 clone_folder: C:\projects\rapidcsv
 
-# branches to build
-#branches:
-  # whitelist
-  # only: 
-  #   - master
-  # blacklist
-  #except:
-  #  - gh-pages
-
-# scripts that run after cloning repository
-#install:
-#  - ps: cd C:\projects\rapidcsv\ci
-#  - ps: .\appveyor_install.ps1
-
 # scripts to run before build
 before_build:
   - cmd: cd C:\projects\rapidcsv
@@ -47,7 +33,6 @@ before_build:
   - cmd: if "%platform%"=="Win32" set CMAKE_GENERATOR_NAME=Visual Studio 14 2015
   - cmd: if "%platform%"=="x64"   set CMAKE_GENERATOR_NAME=Visual Studio 14 2015 Win64
   - cmd: cmake -G "%CMAKE_GENERATOR_NAME%" -DCMAKE_BUILD_TYPE=%configuration% ..
-#-Durdfdom_DIR="%urdfdom_DIR%" -Durdfdom_headers_DIR="%urdfdom_headers_DIR%"
 
 build:
   project: C:\projects\rapidcsv\build\rapidcsv.sln  # path to Visual Studio solution or project
@@ -57,11 +42,4 @@ build:
 test_script:
   - cmd: cd C:\projects\rapidcsv\build
   - cmd: ctest --build-config %configuration% --parallel 4
-
-#ps: cd _builds
-#  - ctest -VV -C "%CONFIG%"
-
-#test:    # off
-#  test_script:
-#    - cmd: ctest --build-config %configuration% --parallel 4 --output-on-failure
 
