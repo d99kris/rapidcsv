@@ -15,7 +15,7 @@ environment:
 # build configuration, i.e. Debug, Release, etc.
 configuration:
   - Debug
-#XXX  - Release
+  - Release
 
 # scripts that are called at very beginning, before repo cloning
 init:
@@ -37,9 +37,9 @@ before_build:
 build:
   project: C:\projects\rapidcsv\build\rapidcsv.sln  # path to Visual Studio solution or project
   parallel: true                                    # enable MSBuild parallel builds
-  verbosity: normal                                 # MSBuild verb level (quiet|minimal|normal|detailed)
+  verbosity: quiet                                  # MSBuild verb level (quiet|minimal|normal|detailed)
 
 test_script:
   - cmd: cd C:\projects\rapidcsv\build
-  - cmd: ctest --build-config %configuration% --parallel 4 --output-on-failure
+  - cmd: ctest --build-config %configuration% --output-on-failure
 
