@@ -11,7 +11,7 @@ namespace rapidcsv
   template<>
   void Converter<int>::ToVal(int& pVal, const std::string& pStr)
   {
-    pVal = roundf(100.0 * stof(pStr));
+    pVal = static_cast<int>(roundf(100.0 * std::stof(pStr)));
   }
 
   template<>

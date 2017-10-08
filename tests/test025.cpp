@@ -23,17 +23,17 @@ int main()
     std::vector<std::string> strs;
 
     ints = doc.GetColumn<int>(0);
-    unittest::ExpectEqual(int, ints.size(), 2);
+    unittest::ExpectEqual(size_t, ints.size(), 2);
     unittest::ExpectEqual(int, ints.at(0), 3);
     unittest::ExpectEqual(int, ints.at(1), 4);
 
     ints = doc.GetColumn<int>(1);
-    unittest::ExpectEqual(int, ints.size(), 2);
+    unittest::ExpectEqual(size_t, ints.size(), 2);
     unittest::ExpectEqual(int, ints.at(0), 9);
     unittest::ExpectEqual(int, ints.at(1), 16);
     
     strs = doc.GetColumn<std::string>(2);
-    unittest::ExpectEqual(int, strs.size(), 2);
+    unittest::ExpectEqual(size_t, strs.size(), 2);
     unittest::ExpectEqual(std::string, strs.at(0), "81");
     unittest::ExpectEqual(std::string, strs.at(1), "256");
   }
