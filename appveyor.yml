@@ -54,7 +54,14 @@ build:
   parallel: true                                    # enable MSBuild parallel builds
   verbosity: normal                                 # MSBuild verb level (quiet|minimal|normal|detailed)
 
-test:    # off
-  test_script:
-    - cmd: ctest --build-config %configuration% --parallel 4 --output-on-failure
+test_script:
+  - cmd: cd C:\projects\rapidcsv\build
+  - cmd: ctest --build-config %configuration% --parallel 4
+
+#ps: cd _builds
+#  - ctest -VV -C "%CONFIG%"
+
+#test:    # off
+#  test_script:
+#    - cmd: ctest --build-config %configuration% --parallel 4 --output-on-failure
 
