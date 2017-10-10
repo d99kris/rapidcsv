@@ -1,8 +1,6 @@
 Rapidcsv
 ========
 
------------------
-
 | **Linux + Mac** | **Windows** |
 |-----------------|-------------|
 | [![Build status](https://travis-ci.org/d99kris/rapidcsv.svg?branch=master)](https://travis-ci.org/d99kris/rapidcsv) | [![Build status](https://ci.appveyor.com/api/projects/status/yyc65as5ln6m6i8l/branch/master?svg=true)](https://ci.appveyor.com/project/d99kris/rapidcsv/branch/master) |
