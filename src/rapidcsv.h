@@ -54,7 +54,8 @@ namespace rapidcsv
           typeid(T) == typeid(unsigned long long) ||
           typeid(T) == typeid(float) ||
           typeid(T) == typeid(double) ||
-          typeid(T) == typeid(long double))
+          typeid(T) == typeid(long double) ||
+          typeid(T) == typeid(char))
       {
         pStr = std::to_string(pVal);
       }
@@ -101,6 +102,10 @@ namespace rapidcsv
       else if (typeid(T) == typeid(long double))
       {
         pVal = static_cast<T>(std::stold(pStr));
+      }
+      else if (typeid(T) == typeid(char))
+      {
+        pVal = static_cast<T>(pStr[0]);
       }
       else
       {
