@@ -466,6 +466,16 @@ namespace rapidcsv
       }
     }
 
+    size_t GetRowCount()
+    {
+      return mData.size();
+    }
+
+    size_t GetColumnCount()
+    {
+      return (mData.size() > 0) ? mData.at(0).size() : 0;
+    }
+
   private:
     void ReadCsv()
     {
@@ -608,16 +618,6 @@ namespace rapidcsv
         }
       }
       return -1;
-    }
-
-    size_t GetRowCount()
-    {
-      return mData.size();
-    }
-
-    size_t GetColumnCount()
-    {
-      return (mData.size() > 0) ? mData.at(0).size() : 0;
     }
 
   private:
