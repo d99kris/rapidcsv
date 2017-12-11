@@ -71,6 +71,15 @@ The following methods allow loading and saving document in CSV format to specifi
     void rapidcsv::Document::Save(const std::string& pPath = "");
 ```
 
+Get Data Size
+-------------
+The following methods provide getting number of columns and rows of the data.
+
+```cpp
+    size_t GetColumnCount();
+    size_t GetRowCount();
+```
+
 Get Data
 --------
 Data can be accessed by column, row or cell, using the following Get methods. These methods produce a copy of the data in specified datatype. The requested position in the spreadsheet is either specified using their label(s), or the zero-based position index.
@@ -157,7 +166,7 @@ Technical Details
 =================
 Rapidcsv uses cmake for its tests. Commands to execute the test suite:
 
-    mkdir -p build && cd build && cmake .. && make && make test ; cd -
+    mkdir -p build && cd build && cmake .. && make && ctest --output-on-failure ; cd -
 
 Alternatives
 ============

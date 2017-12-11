@@ -143,6 +143,9 @@ add_test(test040 "${PROJECT_BINARY_DIR}/test040")
 add_executable(test041 tests/test041.cpp)
 add_test(test041 "${PROJECT_BINARY_DIR}/test041")
 
+add_executable(test042 tests/test042.cpp)
+add_test(test042 "${PROJECT_BINARY_DIR}/test042")
+
 # Examples
 add_executable(example001 examples/example001.cpp)
 

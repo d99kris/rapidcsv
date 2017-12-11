@@ -222,14 +222,14 @@ namespace rapidcsv
     {
       const size_t columnIdx = pColumnIdx + (mProperties.mRowNameIdx + 1);
         
-      while (pColumn.size() + (mProperties.mColumnNameIdx + 1) > GetRowCount())
+      while (pColumn.size() + (mProperties.mColumnNameIdx + 1) > GetDataRowCount())
       {
         std::vector<std::string> row;
-        row.resize(GetColumnCount());
+        row.resize(GetDataColumnCount());
         mData.push_back(row);
       }
 
-      if ((columnIdx + 1) > GetColumnCount())
+      if ((columnIdx + 1) > GetDataColumnCount())
       {
         for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
         {
@@ -277,6 +277,11 @@ namespace rapidcsv
       RemoveColumn(columnIdx);
     }
 
+    size_t GetColumnCount()
+    {
+      return (mData.size() > 0) ? (mData.at(0).size() - (mProperties.mRowNameIdx + 1)) : 0;
+    }
+
     // Row Methods --------------------------------------------------------
     template<typename T>
     std::vector<T> GetRow(const size_t pRowIdx)
@@ -312,14 +317,14 @@ namespace rapidcsv
     {
       const size_t rowIdx = pRowIdx + (mProperties.mColumnNameIdx + 1);
 
-      while ((rowIdx + 1) > GetRowCount())
+      while ((rowIdx + 1) > GetDataRowCount())
       {
         std::vector<std::string> row;
-        row.resize(GetColumnCount());
+        row.resize(GetDataColumnCount());
         mData.push_back(row);
       }
 
-      if (pRow.size() > GetColumnCount())
+      if (pRow.size() > GetDataColumnCount())
       {
         for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
         {
@@ -364,6 +369,11 @@ namespace rapidcsv
       RemoveRow(rowIdx);
     }
 
+    size_t GetRowCount()
+    {
+      return mData.size() - (mProperties.mColumnNameIdx + 1);
+    }
+
     // Cell Methods -------------------------------------------------------
     template<typename T>
     T GetCell(const size_t pColumnIdx, const size_t pRowIdx)
@@ -401,14 +411,14 @@ namespace rapidcsv
       const size_t columnIdx = pColumnIdx + (mProperties.mRowNameIdx + 1);
       const size_t rowIdx = pRowIdx + (mProperties.mColumnNameIdx + 1);
 
-      while ((rowIdx + 1) > GetRowCount())
+      while ((rowIdx + 1) > GetDataRowCount())
       {
         std::vector<std::string> row;
-        row.resize(GetColumnCount());
+        row.resize(GetDataColumnCount());
         mData.push_back(row);
       }
 
-      if ((columnIdx + 1) > GetColumnCount())
+      if ((columnIdx + 1) > GetDataColumnCount())
       {
         for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
         {
@@ -605,12 +615,12 @@ namespace rapidcsv
       return -1;
     }
 
-    size_t GetRowCount()
+    size_t GetDataRowCount()
     {
       return mData.size();
     }
 
-    size_t GetColumnCount()
+    size_t GetDataColumnCount()
     {
       return (mData.size() > 0) ? mData.at(0).size() : 0;
     }
