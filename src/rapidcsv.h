@@ -19,6 +19,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <sstream>
 #include <string>
 #include <typeinfo>
 
@@ -57,6 +58,12 @@ namespace rapidcsv
           typeid(T) == typeid(long double))
       {
         pStr = std::to_string(pVal);
+      }
+      else if (typeid(T) == typeid(char))
+      {
+        std::ostringstream out;
+        out << pVal;
+        pStr = out.str();
       }
       else
       {
@@ -101,6 +108,10 @@ namespace rapidcsv
       else if (typeid(T) == typeid(long double))
       {
         pVal = static_cast<T>(std::stold(pStr));
+      }
+      else if (typeid(T) == typeid(char))
+      {
+        pVal = static_cast<T>(pStr[0]);
       }
       else
       {
