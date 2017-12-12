@@ -13,15 +13,15 @@
 
 #pragma once
 
-#include <assert.h>
 #include <algorithm>
+#include <cassert>
 #include <fstream>
 #include <iostream>
 #include <map>
-#include <vector>
 #include <sstream>
 #include <string>
 #include <typeinfo>
+#include <vector>
 
 #if defined(_MSC_VER)
 #include <BaseTsd.h>
