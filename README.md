@@ -76,8 +76,8 @@ Get Data Size
 The following methods provide getting number of columns and rows of the data.
 
 ```cpp
-    size_t GetColumnCount();
-    size_t GetRowCount();
+    size_t GetColumnCount() const;
+    size_t GetRowCount() const;
 ```
 
 Get Data
@@ -86,20 +86,20 @@ Data can be accessed by column, row or cell, using the following Get methods. Th
 
 ```cpp
     template<typename T>
-    std::vector<T> rapidcsv::Document::GetColumn(const size_t pColumnIdx);
+    std::vector<T> rapidcsv::Document::GetColumn(const size_t pColumnIdx) const;
     template<typename T>
-    std::vector<T> rapidcsv::Document::GetColumn(const std::string& pColumnName);
+    std::vector<T> rapidcsv::Document::GetColumn(const std::string& pColumnName) const;
     
     template<typename T>
-    std::vector<T> rapidcsv::Document::GetRow(const size_t pRowIdx);
+    std::vector<T> rapidcsv::Document::GetRow(const size_t pRowIdx) const;
     template<typename T>
-    std::vector<T> rapidcsv::Document::GetRow(const std::string& pRowName);
+    std::vector<T> rapidcsv::Document::GetRow(const std::string& pRowName) const;
     
     template<typename T>
-    T rapidcsv::Document::Document::GetCell(const size_t pColumnIdx, const size_t pRowIdx);
+    T rapidcsv::Document::Document::GetCell(const size_t pColumnIdx, const size_t pRowIdx) const;
 
     template<typename T>
-    T rapidcsv::Document::GetCell(const std::string& pColumnName, const std::string& pRowName);
+    T rapidcsv::Document::GetCell(const std::string& pColumnName, const std::string& pRowName) const;
 ```
 
 Set Data

@@ -200,7 +200,7 @@ namespace rapidcsv
 
     // Column Methods -----------------------------------------------------
     template<typename T>
-    std::vector<T> GetColumn(const size_t pColumnIdx)
+    std::vector<T> GetColumn(const size_t pColumnIdx) const
     {
       const ssize_t columnIdx = pColumnIdx + (mProperties.mRowNameIdx + 1);
       std::vector<T> column;
@@ -218,7 +218,7 @@ namespace rapidcsv
     }
 
     template<typename T>
-    std::vector<T> GetColumn(const std::string& pColumnName)
+    std::vector<T> GetColumn(const std::string& pColumnName) const
     {
       const ssize_t columnIdx = GetColumnIdx(pColumnName);
       if (columnIdx < 0)
@@ -288,14 +288,14 @@ namespace rapidcsv
       RemoveColumn(columnIdx);
     }
 
-    size_t GetColumnCount()
+    size_t GetColumnCount() const
     {
       return (mData.size() > 0) ? (mData.at(0).size() - (mProperties.mRowNameIdx + 1)) : 0;
     }
 
     // Row Methods --------------------------------------------------------
     template<typename T>
-    std::vector<T> GetRow(const size_t pRowIdx)
+    std::vector<T> GetRow(const size_t pRowIdx) const
     {
       const ssize_t rowIdx = pRowIdx + (mProperties.mColumnNameIdx + 1);
       std::vector<T> row;
@@ -313,7 +313,7 @@ namespace rapidcsv
     }
 
     template<typename T>
-    std::vector<T> GetRow(const std::string& pRowName)
+    std::vector<T> GetRow(const std::string& pRowName) const
     {
       ssize_t rowIdx = GetRowIdx(pRowName);
       if (rowIdx < 0)
@@ -380,14 +380,14 @@ namespace rapidcsv
       RemoveRow(rowIdx);
     }
 
-    size_t GetRowCount()
+    size_t GetRowCount() const
     {
       return mData.size() - (mProperties.mColumnNameIdx + 1);
     }
 
     // Cell Methods -------------------------------------------------------
     template<typename T>
-    T GetCell(const size_t pColumnIdx, const size_t pRowIdx)
+    T GetCell(const size_t pColumnIdx, const size_t pRowIdx) const
     {
       const ssize_t columnIdx = pColumnIdx + (mProperties.mRowNameIdx + 1);
       const ssize_t rowIdx = pRowIdx + (mProperties.mColumnNameIdx + 1);
@@ -399,7 +399,7 @@ namespace rapidcsv
     }
 
     template<typename T>
-    T GetCell(const std::string& pColumnName, const std::string& pRowName)
+    T GetCell(const std::string& pColumnName, const std::string& pRowName) const
     {
       const ssize_t columnIdx = GetColumnIdx(pColumnName);
       if (columnIdx < 0)
@@ -583,7 +583,7 @@ namespace rapidcsv
       }
     }
 
-    void WriteCsv()
+    void WriteCsv() const
     {
       std::ofstream file;
       file.exceptions(std::ofstream::failbit | std::ofstream::badbit);
@@ -602,36 +602,36 @@ namespace rapidcsv
       }
     }
 
-    ssize_t GetColumnIdx(const std::string& pColumnName)
+    ssize_t GetColumnIdx(const std::string& pColumnName) const
     {
       if (mProperties.mColumnNameIdx >= 0)
       {
         if (mColumnNames.find(pColumnName) != mColumnNames.end())
         {
-          return mColumnNames[pColumnName] - (mProperties.mRowNameIdx + 1);
+          return mColumnNames.at(pColumnName) - (mProperties.mRowNameIdx + 1);
         }
       }
       return -1;
     }
 
-    ssize_t GetRowIdx(const std::string& pRowName)
+    ssize_t GetRowIdx(const std::string& pRowName) const
     {
       if (mProperties.mRowNameIdx >= 0)
       {
         if (mRowNames.find(pRowName) != mRowNames.end())
         {
-          return mRowNames[pRowName] - (mProperties.mColumnNameIdx + 1);
+          return mRowNames.at(pRowName) - (mProperties.mColumnNameIdx + 1);
         }
       }
       return -1;
     }
 
-    size_t GetDataRowCount()
+    size_t GetDataRowCount() const
     {
       return mData.size();
     }
 
-    size_t GetDataColumnCount()
+    size_t GetDataColumnCount() const
     {
       return (mData.size() > 0) ? mData.at(0).size() : 0;
     }
