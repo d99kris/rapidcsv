@@ -134,7 +134,7 @@ namespace rapidcsv
 
   struct Properties
   {
-    Properties(const std::string& pPath = "", const int pColumnNameIdx = 0, const int pRowNameIdx = 0, const bool pHasCR = DEFAULT_HASCR)
+    Properties(const std::string& pPath = std::string(), const int pColumnNameIdx = 0, const int pRowNameIdx = 0, const bool pHasCR = DEFAULT_HASCR)
       : mPath(pPath)
       , mColumnNameIdx(pColumnNameIdx)
       , mRowNameIdx(pRowNameIdx)
@@ -151,7 +151,7 @@ namespace rapidcsv
   {
   public:
     // Contructors --------------------------------------------------------
-    explicit Document(const std::string& pPath = "")
+    explicit Document(const std::string& pPath = std::string())
     {
       mProperties.mPath = pPath;
       if (!mProperties.mPath.empty())
@@ -189,7 +189,7 @@ namespace rapidcsv
       ReadCsv();
     }
 
-    void Save(const std::string& pPath = "")
+    void Save(const std::string& pPath = std::string())
     {
       if (!pPath.empty())
       {
