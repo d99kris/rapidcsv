@@ -45,7 +45,7 @@ namespace rapidcsv
   class Converter
   {
   public:
-    void ToStr(std::string& pStr, const T& pVal)
+    void ToStr(std::string& pStr, const T& pVal) const
     {
       if (typeid(T) == typeid(int) ||
           typeid(T) == typeid(long) ||
@@ -71,7 +71,7 @@ namespace rapidcsv
       }
     }
 
-    void ToVal(T& pVal, const std::string& pStr)
+    void ToVal(T& pVal, const std::string& pStr) const
     {
       if (typeid(T) == typeid(int))
       {
@@ -121,13 +121,13 @@ namespace rapidcsv
   };
 
   template<>
-  inline void Converter<std::string>::ToStr(std::string& pStr, const std::string& pVal)
+  inline void Converter<std::string>::ToStr(std::string& pStr, const std::string& pVal) const
   {
     pStr = pVal;
   }
 
   template<>
-  inline void Converter<std::string>::ToVal(std::string& pVal, const std::string& pStr)
+  inline void Converter<std::string>::ToVal(std::string& pVal, const std::string& pStr) const
   {
     pVal = pStr;
   }
