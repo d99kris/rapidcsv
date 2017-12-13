@@ -134,7 +134,7 @@ namespace rapidcsv
 
   struct Properties
   {
-    Properties(const std::string& pPath = std::string(), const int pColumnNameIdx = 0, const int pRowNameIdx = 0, const bool pHasCR = DEFAULT_HASCR)
+    explicit Properties(const std::string& pPath = std::string(), const int pColumnNameIdx = 0, const int pRowNameIdx = 0, const bool pHasCR = DEFAULT_HASCR)
       : mPath(pPath)
       , mColumnNameIdx(pColumnNameIdx)
       , mRowNameIdx(pRowNameIdx)
