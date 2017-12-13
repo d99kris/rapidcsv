@@ -45,7 +45,7 @@ namespace rapidcsv
   class Converter
   {
   public:
-    void ToStr(std::string& pStr, const T& pVal) const
+    void ToStr(const T& pVal, std::string& pStr) const
     {
       if (typeid(T) == typeid(int) ||
           typeid(T) == typeid(long) ||
@@ -71,7 +71,7 @@ namespace rapidcsv
       }
     }
 
-    void ToVal(T& pVal, const std::string& pStr) const
+    void ToVal(const std::string& pStr, T& pVal) const
     {
       if (typeid(T) == typeid(int))
       {
@@ -121,13 +121,13 @@ namespace rapidcsv
   };
 
   template<>
-  inline void Converter<std::string>::ToStr(std::string& pStr, const std::string& pVal) const
+  inline void Converter<std::string>::ToStr(const std::string& pVal, std::string& pStr) const
   {
     pStr = pVal;
   }
 
   template<>
-  inline void Converter<std::string>::ToVal(std::string& pVal, const std::string& pStr) const
+  inline void Converter<std::string>::ToVal(const std::string& pStr, std::string& pVal) const
   {
     pVal = pStr;
   }
@@ -210,7 +210,7 @@ namespace rapidcsv
         if (std::distance(mData.begin(), itRow) > mProperties.mColumnNameIdx)
         {
           T val;
-          converter.ToVal(val, itRow->at(columnIdx));
+          converter.ToVal(itRow->at(columnIdx), val);
           column.push_back(val);
         }
       }
@@ -252,7 +252,7 @@ namespace rapidcsv
       for (auto itRow = pColumn.begin(); itRow != pColumn.end(); ++itRow)
       {
         std::string str;
-        converter.ToStr(str, *itRow);
+        converter.ToStr(*itRow, str);
         mData.at(std::distance(pColumn.begin(), itRow) + (mProperties.mColumnNameIdx + 1)).at(columnIdx) = str;
       }
     }
@@ -305,7 +305,7 @@ namespace rapidcsv
         if (std::distance(mData.at(rowIdx).begin(), itCol) > mProperties.mRowNameIdx)
         {
           T val;
-          converter.ToVal(val, *itCol);
+          converter.ToVal(*itCol, val);
           row.push_back(val);
         }
       }
@@ -347,7 +347,7 @@ namespace rapidcsv
       for (auto itCol = pRow.begin(); itCol != pRow.end(); ++itCol)
       {
         std::string str;
-        converter.ToStr(str, *itCol);
+        converter.ToStr(*itCol, str);
         mData.at(rowIdx).at(std::distance(pRow.begin(), itCol) + (mProperties.mRowNameIdx + 1)) = str;
       }
     }
@@ -394,7 +394,7 @@ namespace rapidcsv
         
       T val;
       Converter<T> converter;
-      converter.ToVal(val, mData.at(rowIdx).at(columnIdx));
+      converter.ToVal(mData.at(rowIdx).at(columnIdx), val);
       return val;
     }
 
@@ -439,7 +439,7 @@ namespace rapidcsv
 
       std::string str;
       Converter<T> converter;
-      converter.ToStr(str, pCell);
+      converter.ToStr(pCell, str);
       mData.at(rowIdx).at(columnIdx) = str;
     }
 

@@ -9,13 +9,13 @@
 namespace rapidcsv
 {
   template<>
-  void Converter<int>::ToVal(int& pVal, const std::string& pStr) const
+  void Converter<int>::ToVal(const std::string& pStr, int& pVal) const
   {
     pVal = static_cast<int>(roundf(100.0f * std::stof(pStr)));
   }
 
   template<>
-  void Converter<int>::ToStr(std::string& pStr, const int& pVal) const
+  void Converter<int>::ToStr(const int& pVal, std::string& pStr) const
   {
     std::ostringstream out;
     out << std::fixed << std::setprecision(2) << static_cast<float>(pVal) / 100.0f;
