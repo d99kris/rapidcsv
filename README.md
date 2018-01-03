@@ -131,10 +131,10 @@ Modify Document Structure
 These methods can be used for modifying document structure.
 
 ```cpp
-    void rapidcsv::Document::rapidcsv::Document::RemoveColumn(const size_t pColumnIdx);
-    void rapidcsv::Document::rapidcsv::Document::RemoveColumn(const std::string& pColumnName);
-    void rapidcsv::Document::rapidcsv::Document::RemoveRow(const size_t pRowIdx);
-    void rapidcsv::Document::rapidcsv::Document::RemoveRow(const std::string& pRowName);
+    void rapidcsv::Document::RemoveColumn(const size_t pColumnIdx);
+    void rapidcsv::Document::RemoveColumn(const std::string& pColumnName);
+    void rapidcsv::Document::RemoveRow(const size_t pRowIdx);
+    void rapidcsv::Document::RemoveRow(const std::string& pRowName);
     void rapidcsv::Document::SetColumnLabel(size_t pColumnIdx, const std::string& pColumnName);
     void rapidcsv::Document::SetRowLabel(size_t pRowIdx, const std::string& pRowName);
 ```
