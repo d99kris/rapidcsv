@@ -34,8 +34,9 @@ specific cell as well.
     }
 ```
 
-The [tests](https://github.com/d99kris/rapidcsv/tree/master/tests) directory contains many simple usage
-examples as well.
+The below section *More Examples* contains more examples(!), and additionally the
+[tests](https://github.com/d99kris/rapidcsv/tree/master/tests) directory contains many simple
+usage examples as well.
 
 Supported Platforms
 ===================
@@ -48,15 +49,45 @@ Installation
 ============
 Simply copy [src/rapidcsv.h](https://raw.githubusercontent.com/d99kris/rapidcsv/master/src/rapidcsv.h) to your project/include directory and include it. 
 
+More Examples
+=============
+
+Reading a File with Custom Separator
+------------------------------------
+For custom reading of files, one need to use the Properties class to specify how the file should
+be interpreted. The following line reads file.csv using semi-colon as separator.
+
+```cpp
+    rapidcsv::Document doc(rapidcsv::Properties("file.csv", ';'));
+```
+
+Reading a File without Headers
+------------------------------
+By default rapidcsv treats the first row as column headers, and the first column as row headers.
+This allows accessing rows/columns/cells using their labels, for example GetCell<float>("Close", "2011-03-09") to get the cell from column labelled "Close", at row labelled "2011-03-09". Sometimes
+one may prefer to be able to access first row and column as data, and only access cells by their
+row and column index. In order to do so one need to set pColumnNameIdx and pRowNameIdx to -1
+(disabled). Example:
+
+```cpp
+    rapidcsv::Document doc(rapidcsv::Properties("file.csv", -1, -1));
+```
+
 API Documentation
 =================
 
 Document Constructors
 ---------------------
-The Document can be created empty, or based on reading the content of specified file path. It is also possible to control which column and row index should be treated as labels. One can access the complete CSV file by setting pColumnNameIdx and pRowNameIdx to -1 (disabled).
+The Document can be created empty, or based on reading the content of specified file path.
+Using the Properties class, one can control which column and row index should be treated as labels,
+whether to include CR in linebreaks and which field separator to use.
 
 ```cpp
-    rapidcsv::Properties(const std::string& pPath = "", const int pColumnNameIdx = 0, const int pRowNameIdx = 0, const bool pHasCR = DEFAULT_HASCR);
+    explicit Properties(const std::string& pPath = std::string(), const int pColumnNameIdx = 0,
+                        const int pRowNameIdx = 0, const bool pHasCR = sPlatformHasCR,
+                        const char pSeparator = sDefaultSeparator);
+    explicit Properties(const std::string& pPath, const bool pHasCR);
+    explicit Properties(const std::string& pPath, const char pSeparator);
     explicit rapidcsv::Document(const std::string& pPath = "");
     explicit rapidcsv::Document(const rapidcsv::Properties& pProperties);
     explicit rapidcsv::Document(const rapidcsv::Document& pDocument);

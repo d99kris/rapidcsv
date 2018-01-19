@@ -26,13 +26,17 @@
 #if defined(_MSC_VER)
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
-#define DEFAULT_HASCR true
-#else
-#define DEFAULT_HASCR false
 #endif
 
 namespace rapidcsv
 {
+  static const char sDefaultSeparator = ',';
+#if defined(_MSC_VER)
+  static const bool sPlatformHasCR = true;
+#else
+  static const bool sPlatformHasCR = false; 
+#endif
+  
   class no_converter : public std::exception
   {
     virtual const char* what() const throw()
@@ -134,17 +138,40 @@ namespace rapidcsv
 
   struct Properties
   {
-    explicit Properties(const std::string& pPath = std::string(), const int pColumnNameIdx = 0, const int pRowNameIdx = 0, const bool pHasCR = DEFAULT_HASCR)
+    explicit Properties(const std::string& pPath = std::string(), const int pColumnNameIdx = 0,
+                        const int pRowNameIdx = 0, const bool pHasCR = sPlatformHasCR,
+                        const char pSeparator = sDefaultSeparator)
       : mPath(pPath)
       , mColumnNameIdx(pColumnNameIdx)
       , mRowNameIdx(pRowNameIdx)
       , mHasCR(pHasCR)
+      , mSeparator(pSeparator)
     {
     }
+
+    explicit Properties(const std::string& pPath, const bool pHasCR)
+      : mPath(pPath)
+      , mColumnNameIdx(0)
+      , mRowNameIdx(0)
+      , mHasCR(pHasCR)
+      , mSeparator(sDefaultSeparator)
+    {
+    }
+
+    explicit Properties(const std::string& pPath, const char pSeparator)
+      : mPath(pPath)
+      , mColumnNameIdx(0)
+      , mRowNameIdx(0)
+      , mHasCR(sPlatformHasCR)
+      , mSeparator(pSeparator)
+    {
+    }
+      
     std::string mPath;
     int mColumnNameIdx;
     int mRowNameIdx;
     bool mHasCR;
+    char mSeparator;
   };
 
   class Document
@@ -504,44 +531,42 @@ namespace rapidcsv
         file.read(buffer.data(), readLength);
         for (int i = 0; i < readLength; ++i)
         {
-          switch(buffer[i])
+          if (buffer[i] == '"')
           {
-            case '"':
-              if (cell.empty() || cell[0] == '"')
-              {
-                quoted = !quoted;
-              }
-              cell = cell + buffer[i];
-              break;
-
-            case ',':
-              if (!quoted)
-              {
-                row.push_back(cell);
-                cell.clear();
-              }
-              else
-              {
-                cell = cell + buffer[i];
-              }
-              break;
-
-            case '\r':
-              ++cr;
-              break;
-
-            case '\n':
-              ++lf;
+            if (cell.empty() || cell[0] == '"')
+            {
+              quoted = !quoted;
+            }
+            cell = cell + buffer[i];
+          }
+          else if (buffer[i] == mProperties.mSeparator)
+          {
+            if (!quoted)
+            {
               row.push_back(cell);
               cell.clear();
-              mData.push_back(row);
-              row.clear();
-              quoted = false; // disallow line breaks in quoted string, by auto-unquote at linebreak
-              break;
-
-            default:
+            }
+            else
+            {
               cell = cell + buffer[i];
-              break;
+            }
+          }
+          else if (buffer[i] == '\r')
+          {
+            ++cr;
+          }
+          else if (buffer[i] == '\n')
+          {
+            ++lf;
+            row.push_back(cell);
+            cell.clear();
+            mData.push_back(row);
+            row.clear();
+            quoted = false; // disallow line breaks in quoted string, by auto-unquote at linebreak
+          }
+          else
+          {
+              cell = cell + buffer[i];
           }
         }
         fileLength -= readLength;
@@ -595,7 +620,7 @@ namespace rapidcsv
           file << *itc;
           if (std::distance(itc, itr->end()) > 1)
           {
-            file << ",";
+            file << mProperties.mSeparator;
           }
         }
         file << (mProperties.mHasCR ? "\r\n" : "\n");
