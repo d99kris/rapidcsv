@@ -209,6 +209,11 @@ License
 =======
 Rapidcsv is distributed under the BSD 3-Clause license. See [LICENSE](https://github.com/d99kris/rapidcsv/blob/master/LICENSE) file.
 
+Contributions
+=============
+Bugs, PRs, etc are welcome on the GitHub project page https://github.com/d99kris/rapidcsv
+[![Buy me a coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/d99kris)
+
 Keywords
 ========
 c++, c++11, csv parser, comma separated values, single header library.
