@@ -212,6 +212,7 @@ Rapidcsv is distributed under the BSD 3-Clause license. See [LICENSE](https://gi
 Contributions
 =============
 Bugs, PRs, etc are welcome on the GitHub project page https://github.com/d99kris/rapidcsv
+
 [![Buy me a coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/d99kris)
 
 Keywords
