@@ -28,7 +28,7 @@ Copy constructor.
 ---
 
 ```c++
-T GetCell (const size_t pColumnIdx, const size_t pRowIdx)
+template<typename T > T GetCell (const size_t pColumnIdx, const size_t pRowIdx)
 ```
 Get cell by index. 
 
@@ -42,7 +42,7 @@ Get cell by index.
 ---
 
 ```c++
-T GetCell (const std::string & pColumnName, const std::string & pRowName)
+template<typename T > T GetCell (const std::string & pColumnName, const std::string & pRowName)
 ```
 Get cell by name. 
 
@@ -56,7 +56,7 @@ Get cell by name.
 ---
 
 ```c++
-std::vector<T> GetColumn (const size_t pColumnIdx)
+template<typename T > std::vector<T> GetColumn (const size_t pColumnIdx)
 ```
 Get column by index. 
 
@@ -69,7 +69,7 @@ Get column by index.
 ---
 
 ```c++
-std::vector<T> GetColumn (const std::string & pColumnName)
+template<typename T > std::vector<T> GetColumn (const std::string & pColumnName)
 ```
 Get column by name. 
 
@@ -92,7 +92,7 @@ Get number of data columns.
 ---
 
 ```c++
-std::vector<T> GetRow (const size_t pRowIdx)
+template<typename T > std::vector<T> GetRow (const size_t pRowIdx)
 ```
 Get row by index. 
 
@@ -105,7 +105,7 @@ Get row by index.
 ---
 
 ```c++
-std::vector<T> GetRow (const std::string & pRowName)
+template<typename T > std::vector<T> GetRow (const std::string & pRowName)
 ```
 Get row by name. 
 
@@ -188,7 +188,7 @@ Write Document data to file.
 ---
 
 ```c++
-void SetCell (const size_t pColumnIdx, const size_t pRowIdx, const T & pCell)
+template<typename T > void SetCell (const size_t pColumnIdx, const size_t pRowIdx, const T & pCell)
 ```
 Set cell by index. 
 
@@ -200,7 +200,7 @@ Set cell by index.
 ---
 
 ```c++
-void SetCell (const std::string & pColumnName, const std::string & pRowName, const T & pCell)
+template<typename T > void SetCell (const std::string & pColumnName, const std::string & pRowName, const T & pCell)
 ```
 Set cell by name. 
 
@@ -212,7 +212,7 @@ Set cell by name.
 ---
 
 ```c++
-void SetColumn (const size_t pColumnIdx, const std::vector< T > & pColumn)
+template<typename T > void SetColumn (const size_t pColumnIdx, const std::vector< T > & pColumn)
 ```
 Set column by index. 
 
@@ -223,7 +223,7 @@ Set column by index.
 ---
 
 ```c++
-void SetColumn (const std::string & pColumnName, const std::vector< T > & pColumn)
+template<typename T > void SetColumn (const std::string & pColumnName, const std::vector< T > & pColumn)
 ```
 Set column by name. 
 
@@ -245,7 +245,7 @@ Set column label.
 ---
 
 ```c++
-void SetRow (const size_t pRowIdx, const std::vector< T > & pRow)
+template<typename T > void SetRow (const size_t pRowIdx, const std::vector< T > & pRow)
 ```
 Set row by index. 
 
@@ -256,7 +256,7 @@ Set row by index.
 ---
 
 ```c++
-void SetRow (const std::string & pRowName, const std::vector< T > & pRow)
+template<typename T > void SetRow (const std::string & pRowName, const std::vector< T > & pRow)
 ```
 Set row by name. 
 

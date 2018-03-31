@@ -5,7 +5,7 @@ Class providing conversion to/from numerical datatypes and strings. Only intende
 ---
 
 ```c++
-Converter (const ConverterParams & pConverterParams)
+template<typename T> Converter (const ConverterParams & pConverterParams)
 ```
 Constructor. 
 
@@ -15,7 +15,7 @@ Constructor.
 ---
 
 ```c++
-void ToStr (const T & pVal, std::string & pStr)
+template<typename T> void ToStr (const T & pVal, std::string & pStr)
 ```
 Converts numerical value to string representation. 
 
@@ -26,7 +26,7 @@ Converts numerical value to string representation.
 ---
 
 ```c++
-void Converter< std::string >::ToStr (const std::string & pVal, std::string & pStr)
+template<> void Converter< std::string >::ToStr (const std::string & pVal, std::string & pStr)
 ```
 Specialized implementation handling string to string conversion. 
 
@@ -37,7 +37,7 @@ Specialized implementation handling string to string conversion.
 ---
 
 ```c++
-void ToVal (const std::string & pStr, T & pVal)
+template<typename T> void ToVal (const std::string & pStr, T & pVal)
 ```
 Converts string holding a numerical value to numerical datatype representation. 
 
@@ -48,7 +48,7 @@ Converts string holding a numerical value to numerical datatype representation.
 ---
 
 ```c++
-void Converter< std::string >::ToVal (const std::string & pStr, std::string & pVal)
+template<> void Converter< std::string >::ToVal (const std::string & pStr, std::string & pVal)
 ```
 Specialized implementation handling string to string conversion. 
 
