@@ -37,8 +37,20 @@ namespace rapidcsv
   static const bool sPlatformHasCR = false; 
 #endif
 
+  /**
+   * @brief     Datastructure holding parameters controlling how invalid numbers (including 
+   *            empty strings) should be handled.
+   */
   struct ConverterParams
   {
+    /**
+     * @brief   Constructor
+     * @param   pHasDefaultConverter  specifies if conversion of non-numerical strings shall be
+     *                                converted to a default numerical value, instead of causing
+     *                                an exception to be thrown (default).
+     * @param   pDefaultFloat         floating-point default value to represent invalid numbers.
+     * @param   pDefaultInteger       integer default value to represent invalid numbers.
+     */
     explicit ConverterParams(const bool pHasDefaultConverter = false,
                              const long double pDefaultFloat = std::numeric_limits<long double>::signaling_NaN(),
                              const long long pDefaultInteger = 0)
@@ -48,28 +60,63 @@ namespace rapidcsv
     {
     }
 
+    /**
+     * @brief   specifies if conversion of non-numerical strings shall be converted to a default 
+     *          numerical value, instead of causing an exception to be thrown (default).
+     */
     bool mHasDefaultConverter;
+
+    /**
+     * @brief   floating-point default value to represent invalid numbers.
+     */
     long double mDefaultFloat;
+
+    /**
+     * @brief   integer default value to represent invalid numbers.
+     */
     long long mDefaultInteger;
   };
   
+  /**
+   * @brief     Exception thrown when attempting to access Document data in a datatype which
+   *            is not supported by the Converter class.
+   */
   class no_converter : public std::exception
   {
+    /**
+     * @brief   Provides details about the exception
+     * @returns an explanatory string
+     */
     virtual const char* what() const throw()
     {
       return "unsupported conversion datatype";
     }
   };
 
+  /**
+   * @brief     Class providing conversion to/from numerical datatypes and strings. Only 
+   *            intended for rapidcsv internal usage, but exposed externally to allow 
+   *            specialization for custom datatype conversions.
+   */
   template <typename T>
   class Converter
   {
   public:
+    /**
+     * @brief   Constructor
+     * @param   pConverterParams      specifies how conversion of non-numerical values to
+     *                                numerical datatype shall be handled.
+     */
     Converter(const ConverterParams& pConverterParams)
       : mConverterParams(pConverterParams)
     {
     }
     
+    /**
+     * @brief   Converts numerical value to string representation.
+     * @param   pVal                  numerical value
+     * @param   pStr                  output string
+     */
     void ToStr(const T& pVal, std::string& pStr) const
     {
       if (typeid(T) == typeid(int) ||
@@ -96,6 +143,11 @@ namespace rapidcsv
       }
     }
 
+    /**
+     * @brief   Converts string holding a numerical value to numerical datatype representation.
+     * @param   pVal                  numerical value
+     * @param   pStr                  output string
+     */
     void ToVal(const std::string& pStr, T& pVal) const
     {
       try
@@ -190,46 +242,104 @@ namespace rapidcsv
     const ConverterParams& mConverterParams;
   };
 
+  /**
+   * @brief     Specialized implementation handling string to string conversion.
+   * @param     pVal                  string
+   * @param     pStr                  string
+   */
   template<>
   inline void Converter<std::string>::ToStr(const std::string& pVal, std::string& pStr) const
   {
     pStr = pVal;
   }
 
+  /**
+   * @brief     Specialized implementation handling string to string conversion.
+   * @param     pVal                  string
+   * @param     pStr                  string
+   */
   template<>
   inline void Converter<std::string>::ToVal(const std::string& pStr, std::string& pVal) const
   {
     pVal = pStr;
   }
 
+  /**
+   * @brief     Datastructure holding parameters controlling which row and column should be
+   *            treated as labels.
+   */
   struct LabelParams
   {
+    /**
+     * @brief   Constructor
+     * @param   pColumnNameIdx        specifies the zero-based row index of the column labels, setting
+     *                                it to -1 prevents column lookup by label name, and gives access
+     *                                to all rows as document data.
+     * @param   pRowNameIdx           specifies the zero-based column index of the row labels, setting
+     *                                it to -1 prevents row lookup by label name, and gives access
+     *                                to all columns as document data.
+     */
     explicit LabelParams(const int pColumnNameIdx = 0, const int pRowNameIdx = 0)
       : mColumnNameIdx(pColumnNameIdx)
       , mRowNameIdx(pRowNameIdx)      
     {
     }
 
+    /**
+     * @brief   specifies the zero-based row index of the column labels.
+     */
     int mColumnNameIdx;
+
+    /**
+     * @brief   specifies the zero-based column index of the row labels.
+     */
     int mRowNameIdx;
   };
 
+  /**
+   * @brief     Datastructure holding parameters controlling how the CSV data fields are separated.
+   */
   struct SeparatorParams
   {
+    /**
+     * @brief   Constructor
+     * @param   pSeparator            specifies the column separator (default ',').
+     * @param   pHasCR                specifies whether a new document (i.e. not an existing document read)
+     *                                should use CR/LF instead of only LF (default is to use standard
+     *                                behavior of underlying platforms - CR/LF for Win, and LF for others).
+     */
     explicit SeparatorParams(const char pSeparator = ',', const bool pHasCR = sPlatformHasCR)
       : mSeparator(pSeparator)
       , mHasCR(pHasCR)
     {
     }
 
+    /**
+     * @brief   specifies the column separator.
+     */
     char mSeparator;
+
+    /**
+     * @brief   specifies whether new documents should use CR/LF instead of LF.
+     */
     bool mHasCR;
   };
 
+  /**
+   * @brief     Class representing a CSV document.
+   */
   class Document
   {
   public:
-    // Contructors --------------------------------------------------------
+    /**
+     * @brief   Constructor
+     * @param   pPath                 specifies the path of an existing CSV-file to populate the Document
+     *                                data with.
+     * @param   pLabelParams          specifies which row and column should be treated as labels.
+     * @param   pSeparatorParams      specifies which field and row separators should be used.
+     * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be 
+     *                                handled.
+     */
     explicit Document(const std::string& pPath = std::string(),
                       const LabelParams& pLabelParams = LabelParams(),
                       const SeparatorParams& pSeparatorParams = SeparatorParams(),
@@ -245,6 +355,10 @@ namespace rapidcsv
       }
     }
 
+    /**
+     * @brief   Copy constructor
+     * @param   pDocument             specifies the Document instance to copy.
+     */
     explicit Document(const Document& pDocument)
       : mPath(pDocument.mPath)
       , mLabelParams(pDocument.mLabelParams)
@@ -256,18 +370,23 @@ namespace rapidcsv
     {
     }
 
-    // Destructors --------------------------------------------------------
-    virtual ~Document()
-    {
-    }
-
-    // Document Methods ---------------------------------------------------
+    /**
+     * @brief   Read Document data from file.
+     * @param   pPath                 specifies the path of an existing CSV-file to populate the Document
+     *                                data with.
+     */
     void Load(const std::string& pPath)
     {
       mPath = pPath;
       ReadCsv();
     }
 
+    /**
+     * @brief   Write Document data to file.
+     * @param   pPath                 optionally specifies the path where the CSV-file will be created 
+     *                                (if not specified, the original path provided when creating or
+     *                                loading the Document data will be used).
+     */
     void Save(const std::string& pPath = std::string())
     {
       if (!pPath.empty())
@@ -277,7 +396,11 @@ namespace rapidcsv
       WriteCsv();
     }
 
-    // Column Methods -----------------------------------------------------
+    /**
+     * @brief   Get column by index.
+     * @param   pColumnIdx            zero-based column index.
+     * @returns vector of column data.
+     */
     template<typename T>
     std::vector<T> GetColumn(const size_t pColumnIdx) const
     {
@@ -296,6 +419,11 @@ namespace rapidcsv
       return column;
     }
 
+    /**
+     * @brief   Get column by name.
+     * @param   pColumnName           column label name.
+     * @returns vector of column data.
+     */
     template<typename T>
     std::vector<T> GetColumn(const std::string& pColumnName) const
     {
@@ -307,6 +435,11 @@ namespace rapidcsv
       return GetColumn<T>(columnIdx);
     }
 
+    /**
+     * @brief   Set column by index.
+     * @param   pColumnIdx            zero-based column index.
+     * @param   pColumn               vector of column data.
+     */
     template<typename T>
     void SetColumn(const size_t pColumnIdx, const std::vector<T>& pColumn)
     {
@@ -336,6 +469,11 @@ namespace rapidcsv
       }
     }
 
+    /**
+     * @brief   Set column by name.
+     * @param   pColumnName           column label name.
+     * @param   pColumn               vector of column data.
+     */
     template<typename T>
     void SetColumn(const std::string& pColumnName, const std::vector<T>& pColumn)
     {
@@ -347,6 +485,10 @@ namespace rapidcsv
       SetColumn<T>(columnIdx, pColumn);
     }
 
+    /**
+     * @brief   Remove column by index.
+     * @param   pColumnIdx            zero-based column index.
+     */
     void RemoveColumn(const size_t pColumnIdx)
     {
       const ssize_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
@@ -356,6 +498,10 @@ namespace rapidcsv
       }
     }
 
+    /**
+     * @brief   Remove column by name.
+     * @param   pColumnName           column label name.
+     */
     void RemoveColumn(const std::string& pColumnName)
     {
       ssize_t columnIdx = GetColumnIdx(pColumnName);
@@ -367,12 +513,20 @@ namespace rapidcsv
       RemoveColumn(columnIdx);
     }
 
+    /**
+     * @brief   Get number of data columns.
+     * @returns column count.
+     */
     size_t GetColumnCount() const
     {
       return (mData.size() > 0) ? (mData.at(0).size() - (mLabelParams.mRowNameIdx + 1)) : 0;
     }
 
-    // Row Methods --------------------------------------------------------
+    /**
+     * @brief   Get row by index.
+     * @param   pRowIdx               zero-based row index.
+     * @returns vector of row data.
+     */
     template<typename T>
     std::vector<T> GetRow(const size_t pRowIdx) const
     {
@@ -391,6 +545,11 @@ namespace rapidcsv
       return row;
     }
 
+    /**
+     * @brief   Get row by name.
+     * @param   pRowName              row label name.
+     * @returns vector of row data.
+     */
     template<typename T>
     std::vector<T> GetRow(const std::string& pRowName) const
     {
@@ -402,6 +561,11 @@ namespace rapidcsv
       return GetRow<T>(rowIdx);
     }
 
+    /**
+     * @brief   Set row by index.
+     * @param   pRowIdx               zero-based row index.
+     * @param   pRow                  vector of row data.
+     */
     template<typename T>
     void SetRow(const size_t pRowIdx, const std::vector<T>& pRow)
     {
@@ -431,6 +595,11 @@ namespace rapidcsv
       }
     }
 
+    /**
+     * @brief   Set row by name.
+     * @param   pRowName              row label name.
+     * @param   pRow                  vector of row data.
+     */
     template<typename T>
     void SetRow(const std::string& pRowName, const std::vector<T>& pRow)
     {
@@ -442,12 +611,20 @@ namespace rapidcsv
       return SetRow<T>(rowIdx, pRow);
     }
 
+    /**
+     * @brief   Remove row by index.
+     * @param   pRowIdx               zero-based row index.
+     */
     void RemoveRow(const size_t pRowIdx)
     {
       const ssize_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
       mData.erase(mData.begin() + rowIdx);
     }
 
+    /**
+     * @brief   Remove row by name.
+     * @param   pRowName              row label name.
+     */
     void RemoveRow(const std::string& pRowName)
     {
       ssize_t rowIdx = GetRowIdx(pRowName);
@@ -459,12 +636,21 @@ namespace rapidcsv
       RemoveRow(rowIdx);
     }
 
+    /**
+     * @brief   Get number of data rows.
+     * @returns row count.
+     */
     size_t GetRowCount() const
     {
       return mData.size() - (mLabelParams.mColumnNameIdx + 1);
     }
 
-    // Cell Methods -------------------------------------------------------
+    /**
+     * @brief   Get cell by index.
+     * @param   pRowIdx               zero-based row index.
+     * @param   pColumnIdx            zero-based column index.
+     * @returns cell data.
+     */
     template<typename T>
     T GetCell(const size_t pColumnIdx, const size_t pRowIdx) const
     {
@@ -477,6 +663,12 @@ namespace rapidcsv
       return val;
     }
 
+    /**
+     * @brief   Get cell by name.
+     * @param   pColumnName           column label name.
+     * @param   pRowName              row label name.
+     * @returns cell data.
+     */
     template<typename T>
     T GetCell(const std::string& pColumnName, const std::string& pRowName) const
     {
@@ -495,6 +687,12 @@ namespace rapidcsv
       return GetCell<T>(columnIdx, rowIdx);
     }
 
+    /**
+     * @brief   Set cell by index.
+     * @param   pRowIdx               zero-based row index.
+     * @param   pColumnIdx            zero-based column index.
+     * @param   pCell                 cell data.
+     */
     template<typename T>
     void SetCell(const size_t pColumnIdx, const size_t pRowIdx, const T& pCell)
     {
@@ -522,6 +720,12 @@ namespace rapidcsv
       mData.at(rowIdx).at(columnIdx) = str;
     }
 
+    /**
+     * @brief   Set cell by name.
+     * @param   pColumnName           column label name.
+     * @param   pRowName              row label name.
+     * @param   pCell                 cell data.
+     */
     template<typename T>
     void SetCell(const std::string& pColumnName, const std::string& pRowName, const T& pCell)
     {
@@ -540,7 +744,11 @@ namespace rapidcsv
       SetCell<T>(columnIdx, rowIdx, pCell);
     }
 
-    // Label Methods ------------------------------------------------------
+    /**
+     * @brief   Set column label
+     * @param   pColumnIdx            zero-based column index.
+     * @param   pColumnName           column label name.
+     */
     void SetColumnLabel(size_t pColumnIdx, const std::string& pColumnName)
     {
       const ssize_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
@@ -551,6 +759,11 @@ namespace rapidcsv
       }
     }
 
+    /**
+     * @brief   Set row label
+     * @param   pRowIdx               zero-based row index.
+     * @param   pRowName              row label name.
+     */
     void SetRowLabel(size_t pRowIdx, const std::string& pRowName)
     {
       const ssize_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
