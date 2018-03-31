@@ -22,7 +22,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(rapidcsv::Properties(path, -1, -1));
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(-1, -1));
 
     doc.SetRow<int>(0, std::vector<int>({3, 9, 81}));
     doc.SetRow<std::string>(1, std::vector<std::string>({"4", "16", "256"}));

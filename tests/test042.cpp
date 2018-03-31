@@ -22,7 +22,7 @@ int main()
     unittest::ExpectEqual(size_t, doc1.GetColumnCount(), 3);
     unittest::ExpectEqual(size_t, doc1.GetRowCount(), 2);
 
-    rapidcsv::Document doc2(rapidcsv::Properties(path, -1, -1));
+    rapidcsv::Document doc2(path, rapidcsv::LabelParams(-1, -1));
     unittest::ExpectEqual(size_t, doc2.GetColumnCount(), 4);
     unittest::ExpectEqual(size_t, doc2.GetRowCount(), 3);
   }

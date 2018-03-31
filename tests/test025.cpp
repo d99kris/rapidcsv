@@ -17,7 +17,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(rapidcsv::Properties(path, -1, -1));
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(-1, -1));
 
     std::vector<int> ints;
     std::vector<std::string> strs;

@@ -24,7 +24,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(rapidcsv::Properties(path, ';'));
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(), rapidcsv::SeparatorParams(';'));
 
     doc.SetCell<int>(0, 0, 3);
     doc.SetCell<int>(1, 0, 9);

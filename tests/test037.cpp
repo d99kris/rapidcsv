@@ -25,7 +25,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(rapidcsv::Properties(path, -1, -1));
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(-1, -1));
 
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(0, 0), "1997");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(1, 0), "Ford");

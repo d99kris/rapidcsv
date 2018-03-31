@@ -18,7 +18,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(rapidcsv::Properties("", -1, -1, false));
+    rapidcsv::Document doc("", rapidcsv::LabelParams(-1, -1), rapidcsv::SeparatorParams(',', false));
 
     doc.SetRow<int>(0, std::vector<int>({2, 4}));
     doc.SetRow<int>(1, std::vector<int>({3, 9, 81, 6561}));

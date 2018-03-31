@@ -28,7 +28,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(rapidcsv::Properties(path, 0, -1));
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(0, -1));
 
     doc.RemoveColumn("C");
     doc.RemoveColumn(0);

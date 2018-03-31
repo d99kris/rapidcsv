@@ -19,7 +19,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(rapidcsv::Properties("", 0, -1, false));
+    rapidcsv::Document doc("", rapidcsv::LabelParams(0, -1), rapidcsv::SeparatorParams(',', false));
 
     doc.SetColumn<int>(0, std::vector<int>({2, 3}));
     doc.SetColumn<int>(1, std::vector<int>({4, 9, 16, 25}));
