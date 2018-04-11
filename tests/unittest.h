@@ -22,7 +22,7 @@
     {                                                                                         \
       expr;                                                                                   \
     }                                                                                         \
-    catch (const excp & ex)                                                                   \
+    catch (const excp&)                                                                       \
     {                                                                                         \
       success = true;                                                                         \
     }                                                                                         \
