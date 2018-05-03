@@ -745,6 +745,23 @@ namespace rapidcsv
     }
 
     /**
+    * @brief Get column label
+    * @param pColumnIdx zero-based column index.
+    * @returns string of column label
+    */
+    std::string GetColumnLabel(const ssize_t pColumnIdx) 
+    {
+      for (auto column : mColumnNames)
+      {
+        if ((ssize_t) column.second == pColumnIdx)
+        {
+          return column.first; 
+        }
+      }
+    throw std::out_of_range("column index not found: " + std::to_string(pColumnIdx));
+    }
+
+    /**
      * @brief   Set column label
      * @param   pColumnIdx            zero-based column index.
      * @param   pColumnName           column label name.
