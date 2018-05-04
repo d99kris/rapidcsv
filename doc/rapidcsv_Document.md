@@ -92,6 +92,19 @@ Get number of data columns.
 ---
 
 ```c++
+std::string GetColumnLabel (const ssize_t pColumnIdx)
+```
+Get column label. 
+
+**Parameters**
+- `pColumnIdx` zero-based column index. 
+
+**Returns:**
+- column label name. 
+
+---
+
+```c++
 template<typename T > std::vector<T> GetRow (const size_t pRowIdx)
 ```
 Get row by index. 
