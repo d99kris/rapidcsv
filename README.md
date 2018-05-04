@@ -131,6 +131,10 @@ Rapidcsv uses cmake for its tests. Commands to build and execute the test suite:
 
     mkdir -p build && cd build && cmake .. && make && ctest --output-on-failure ; cd -
 
+Rapidcsv uses [doxyman2md](https://github.com/d99kris/doxyman2md) to generate its API documentation:
+
+    doxyman2md src doc
+
 Alternatives
 ============
 There are many CSV parsers for C++, for example:
