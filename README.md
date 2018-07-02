@@ -135,6 +135,10 @@ Rapidcsv uses [doxyman2md](https://github.com/d99kris/doxyman2md) to generate it
 
     doxyman2md src doc
 
+Rapidcsv uses Uncrustify to ensure consistent code formatting:
+
+    uncrustify -c uncrustify.cfg --no-backup src/rapidcsv.h
+
 Alternatives
 ============
 There are many CSV parsers for C++, for example:

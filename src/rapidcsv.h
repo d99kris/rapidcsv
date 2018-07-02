@@ -6,7 +6,7 @@
  *
  * Copyright (C) 2017-2018 Kristofer Berggren
  * All rights reserved.
- * 
+ *
  * rapidcsv is distributed under the BSD 3-Clause license, see LICENSE for details.
  *
  */
@@ -34,11 +34,11 @@ namespace rapidcsv
 #if defined(_MSC_VER)
   static const bool sPlatformHasCR = true;
 #else
-  static const bool sPlatformHasCR = false; 
+  static const bool sPlatformHasCR = false;
 #endif
 
   /**
-   * @brief     Datastructure holding parameters controlling how invalid numbers (including 
+   * @brief     Datastructure holding parameters controlling how invalid numbers (including
    *            empty strings) should be handled.
    */
   struct ConverterParams
@@ -61,7 +61,7 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   specifies if conversion of non-numerical strings shall be converted to a default 
+     * @brief   specifies if conversion of non-numerical strings shall be converted to a default
      *          numerical value, instead of causing an exception to be thrown (default).
      */
     bool mHasDefaultConverter;
@@ -76,7 +76,7 @@ namespace rapidcsv
      */
     long long mDefaultInteger;
   };
-  
+
   /**
    * @brief     Exception thrown when attempting to access Document data in a datatype which
    *            is not supported by the Converter class.
@@ -94,11 +94,11 @@ namespace rapidcsv
   };
 
   /**
-   * @brief     Class providing conversion to/from numerical datatypes and strings. Only 
-   *            intended for rapidcsv internal usage, but exposed externally to allow 
+   * @brief     Class providing conversion to/from numerical datatypes and strings. Only
+   *            intended for rapidcsv internal usage, but exposed externally to allow
    *            specialization for custom datatype conversions.
    */
-  template <typename T>
+  template<typename T>
   class Converter
   {
   public:
@@ -111,7 +111,7 @@ namespace rapidcsv
       : mConverterParams(pConverterParams)
     {
     }
-    
+
     /**
      * @brief   Converts numerical value to string representation.
      * @param   pVal                  numerical value
@@ -281,7 +281,7 @@ namespace rapidcsv
      */
     explicit LabelParams(const int pColumnNameIdx = 0, const int pRowNameIdx = 0)
       : mColumnNameIdx(pColumnNameIdx)
-      , mRowNameIdx(pRowNameIdx)      
+      , mRowNameIdx(pRowNameIdx)
     {
     }
 
@@ -337,7 +337,7 @@ namespace rapidcsv
      *                                data with.
      * @param   pLabelParams          specifies which row and column should be treated as labels.
      * @param   pSeparatorParams      specifies which field and row separators should be used.
-     * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be 
+     * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
      *                                handled.
      */
     explicit Document(const std::string& pPath = std::string(),
@@ -383,7 +383,7 @@ namespace rapidcsv
 
     /**
      * @brief   Write Document data to file.
-     * @param   pPath                 optionally specifies the path where the CSV-file will be created 
+     * @param   pPath                 optionally specifies the path where the CSV-file will be created
      *                                (if not specified, the original path provided when creating or
      *                                loading the Document data will be used).
      */
@@ -444,7 +444,7 @@ namespace rapidcsv
     void SetColumn(const size_t pColumnIdx, const std::vector<T>& pColumn)
     {
       const size_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
-        
+
       while (pColumn.size() + (mLabelParams.mColumnNameIdx + 1) > GetDataRowCount())
       {
         std::vector<std::string> row;
@@ -459,7 +459,7 @@ namespace rapidcsv
           itRow->resize(columnIdx + 1 + (mLabelParams.mRowNameIdx + 1));
         }
       }
-      
+
       Converter<T> converter(mConverterParams);
       for (auto itRow = pColumn.begin(); itRow != pColumn.end(); ++itRow)
       {
@@ -656,7 +656,7 @@ namespace rapidcsv
     {
       const ssize_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
       const ssize_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
-        
+
       T val;
       Converter<T> converter(mConverterParams);
       converter.ToVal(mData.at(rowIdx).at(columnIdx), val);
@@ -749,7 +749,7 @@ namespace rapidcsv
      * @param   pColumnIdx            zero-based column index.
      * @returns column label name.
      */
-    std::string GetColumnLabel(const ssize_t pColumnIdx) 
+    std::string GetColumnLabel(const ssize_t pColumnIdx)
     {
       const ssize_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
       if (mLabelParams.mColumnNameIdx >= 0)
@@ -952,4 +952,3 @@ namespace rapidcsv
     std::map<std::string, size_t> mRowNames;
   };
 }
-
