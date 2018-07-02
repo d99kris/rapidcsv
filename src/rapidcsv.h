@@ -847,7 +847,7 @@ namespace rapidcsv
           }
           else
           {
-              cell = cell + buffer[i];
+            cell = cell + buffer[i];
           }
         }
         fileLength -= readLength;
