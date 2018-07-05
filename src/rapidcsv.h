@@ -786,7 +786,7 @@ namespace rapidcsv
       if (mLabelParams.mColumnNameIdx >= 0)
       {
         return std::vector<std::string>(mData.at(mLabelParams.mColumnNameIdx).begin() +
-                                        mLabelParams.mRowNameIdx + 1,
+                                        (mLabelParams.mRowNameIdx + 1),
                                         mData.at(mLabelParams.mColumnNameIdx).end());
       }
 
