@@ -27,9 +27,9 @@ int main()
     doc.SetCell<int>(1, 1, 16);
     doc.SetCell<int>(2, 1, 256);
     
-    doc.SetColumnLabel(0, "A");
-    doc.SetColumnLabel(1, "B");
-    doc.SetColumnLabel(2, "C");
+    doc.SetColumnName(0, "A");
+    doc.SetColumnName(1, "B");
+    doc.SetColumnName(2, "C");
 
     doc.Save(path);
 

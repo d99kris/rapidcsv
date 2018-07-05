@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  2.0
+ * Version:  3.0
  *
  * Copyright (C) 2017-2018 Kristofer Berggren
  * All rights reserved.
@@ -745,49 +745,105 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   Get column label
+     * @brief   Get column name
      * @param   pColumnIdx            zero-based column index.
-     * @returns column label name.
+     * @returns column name.
      */
-    std::string GetColumnLabel(const ssize_t pColumnIdx)
+    std::string GetColumnName(const ssize_t pColumnIdx)
     {
       const ssize_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
-      if (mLabelParams.mColumnNameIdx >= 0)
+      if (mLabelParams.mColumnNameIdx < 0)
       {
-        return mData.at(mLabelParams.mColumnNameIdx).at(columnIdx);
+        throw std::out_of_range("column name row index < 0: " + std::to_string(mLabelParams.mColumnNameIdx));
       }
 
-      throw std::out_of_range("column name row index < 0: " + std::to_string(mLabelParams.mColumnNameIdx));
+      return mData.at(mLabelParams.mColumnNameIdx).at(columnIdx);
     }
 
     /**
-     * @brief   Set column label
+     * @brief   Set column name
      * @param   pColumnIdx            zero-based column index.
-     * @param   pColumnName           column label name.
+     * @param   pColumnName           column name.
      */
-    void SetColumnLabel(size_t pColumnIdx, const std::string& pColumnName)
+    void SetColumnName(size_t pColumnIdx, const std::string& pColumnName)
     {
       const ssize_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
       mColumnNames[pColumnName] = columnIdx;
-      if (mLabelParams.mColumnNameIdx >= 0)
+      if (mLabelParams.mColumnNameIdx < 0)
       {
-        mData.at(mLabelParams.mColumnNameIdx).at(columnIdx) = pColumnName;
+        throw std::out_of_range("column name row index < 0: " + std::to_string(mLabelParams.mColumnNameIdx));
       }
+
+      mData.at(mLabelParams.mColumnNameIdx).at(columnIdx) = pColumnName;
     }
 
     /**
-     * @brief   Set row label
-     * @param   pRowIdx               zero-based row index.
-     * @param   pRowName              row label name.
+     * @brief   Get column names
+     * @returns vector of column names.
      */
-    void SetRowLabel(size_t pRowIdx, const std::string& pRowName)
+    std::vector<std::string> GetColumnNames()
+    {
+      if (mLabelParams.mColumnNameIdx >= 0)
+      {
+        return std::vector<std::string>(mData.at(mLabelParams.mColumnNameIdx).begin() +
+                                        mLabelParams.mRowNameIdx + 1,
+                                        mData.at(mLabelParams.mColumnNameIdx).end());
+      }
+
+      return std::vector<std::string>();
+    }
+
+    /**
+     * @brief   Get row name
+     * @param   pRowIdx               zero-based column index.
+     * @returns row name.
+     */
+    std::string GetRowName(const ssize_t pRowIdx)
+    {
+      const ssize_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
+      if (mLabelParams.mRowNameIdx < 0)
+      {
+        throw std::out_of_range("row name column index < 0: " + std::to_string(mLabelParams.mRowNameIdx));
+      }
+
+      return mData.at(rowIdx).at(mLabelParams.mRowNameIdx);
+    }
+
+    /**
+     * @brief   Set row name
+     * @param   pRowIdx               zero-based row index.
+     * @param   pRowName              row name.
+     */
+    void SetRowName(size_t pRowIdx, const std::string& pRowName)
     {
       const ssize_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
       mRowNames[pRowName] = rowIdx;
+      if (mLabelParams.mRowNameIdx < 0)
+      {
+        throw std::out_of_range("row name column index < 0: " + std::to_string(mLabelParams.mRowNameIdx));
+      }
+
+      mData.at(rowIdx).at(mLabelParams.mRowNameIdx) = pRowName;
+    }
+
+    /**
+     * @brief   Get row names
+     * @returns vector of row names.
+     */
+    std::vector<std::string> GetRowNames()
+    {
+      std::vector<std::string> rownames;
       if (mLabelParams.mRowNameIdx >= 0)
       {
-        mData.at(rowIdx).at(mLabelParams.mRowNameIdx) = pRowName;
+        for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
+        {
+          if (std::distance(mData.begin(), itRow) > mLabelParams.mColumnNameIdx)
+          {
+            rownames.push_back(itRow->at(mLabelParams.mRowNameIdx));
+          }
+        }
       }
+      return rownames;
     }
 
   private:

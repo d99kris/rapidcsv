@@ -92,15 +92,25 @@ Get number of data columns.
 ---
 
 ```c++
-std::string GetColumnLabel (const ssize_t pColumnIdx)
+std::string GetColumnName (const ssize_t pColumnIdx)
 ```
-Get column label. 
+Get column name. 
 
 **Parameters**
 - `pColumnIdx` zero-based column index. 
 
 **Returns:**
-- column label name. 
+- column name. 
+
+---
+
+```c++
+std::vector<std::string> GetColumnNames ()
+```
+Get column names. 
+
+**Returns:**
+- vector of column names. 
 
 ---
 
@@ -137,6 +147,29 @@ Get number of data rows.
 
 **Returns:**
 - row count. 
+
+---
+
+```c++
+std::string GetRowName (const ssize_t pRowIdx)
+```
+Get row name. 
+
+**Parameters**
+- `pRowIdx` zero-based column index. 
+
+**Returns:**
+- row name. 
+
+---
+
+```c++
+std::vector<std::string> GetRowNames ()
+```
+Get row names. 
+
+**Returns:**
+- vector of row names. 
 
 ---
 
@@ -247,13 +280,13 @@ Set column by name.
 ---
 
 ```c++
-void SetColumnLabel (size_t pColumnIdx, const std::string & pColumnName)
+void SetColumnName (size_t pColumnIdx, const std::string & pColumnName)
 ```
-Set column label. 
+Set column name. 
 
 **Parameters**
 - `pColumnIdx` zero-based column index. 
-- `pColumnName` column label name. 
+- `pColumnName` column name. 
 
 ---
 
@@ -280,13 +313,13 @@ Set row by name.
 ---
 
 ```c++
-void SetRowLabel (size_t pRowIdx, const std::string & pRowName)
+void SetRowName (size_t pRowIdx, const std::string & pRowName)
 ```
-Set row label. 
+Set row name. 
 
 **Parameters**
 - `pRowIdx` zero-based row index. 
-- `pRowName` row label name. 
+- `pRowName` row name. 
 
 ---
 

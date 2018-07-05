@@ -29,10 +29,10 @@ int main()
     doc.SetCell<int>(0, 2, 4);
     doc.SetCell<int>(0, 3, 5);
 
-    doc.SetColumnLabel(0, "A");
-    doc.SetColumnLabel(1, "B");
-    doc.SetColumnLabel(2, "C");
-    doc.SetColumnLabel(3, "D");
+    doc.SetColumnName(0, "A");
+    doc.SetColumnName(1, "B");
+    doc.SetColumnName(2, "C");
+    doc.SetColumnName(3, "D");
 
     doc.Save(path);
 

@@ -87,6 +87,17 @@ std::numeric_limits<long double>::signaling_NaN() for float types, and 0 for int
     rapidcsv::Document doc("file.csv", rapidcsv::LabelParams(), rapidcsv::SeparatorParams(), rapidcsv::ConverterParams(true));
 ```
 
+Check if a Column Exists
+------------------------
+Rapidcsv provides the methods GetColumnNames() and GetRowNames() to retrieve the column and row names. To
+check whether a particular column name exists one can for example do:
+
+```cpp
+    rapidcsv::Document doc("file.csv");
+    std::vector<std::string> columnNames = doc.GetColumnNames();
+    bool column_A_exists = (std::find(columnNames.begin(), columnNames.end(), "A") != columnNames.end());
+```
+
 Custom Data Conversion
 ----------------------
 The internal cell representation in the Document class is using std::string and when other types are

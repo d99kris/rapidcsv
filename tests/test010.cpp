@@ -29,15 +29,15 @@ int main()
     doc.SetCell<int>(0, 2, 4);
     doc.SetCell<int>(0, 3, 5);
 
-    doc.SetColumnLabel(0, "A");
-    doc.SetColumnLabel(1, "B");
-    doc.SetColumnLabel(2, "C");
-    doc.SetColumnLabel(3, "D");
+    doc.SetColumnName(0, "A");
+    doc.SetColumnName(1, "B");
+    doc.SetColumnName(2, "C");
+    doc.SetColumnName(3, "D");
 
-    doc.SetRowLabel(0, "0");
-    doc.SetRowLabel(1, "1");
-    doc.SetRowLabel(2, "2");
-    doc.SetRowLabel(3, "3");
+    doc.SetRowName(0, "0");
+    doc.SetRowName(1, "1");
+    doc.SetRowName(2, "2");
+    doc.SetRowName(3, "3");
 
     doc.Save(path);
 

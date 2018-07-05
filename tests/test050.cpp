@@ -19,20 +19,20 @@ int main()
   try
   {
     rapidcsv::Document doc(path);
-    unittest::ExpectEqual(std::string, doc.GetColumnLabel(0), "A");
-    unittest::ExpectEqual(std::string, doc.GetColumnLabel(1), "B");
-    unittest::ExpectEqual(std::string, doc.GetColumnLabel(2), "C");
-    ExpectException(doc.GetColumnLabel(3), std::out_of_range);
+    unittest::ExpectEqual(std::string, doc.GetColumnName(0), "A");
+    unittest::ExpectEqual(std::string, doc.GetColumnName(1), "B");
+    unittest::ExpectEqual(std::string, doc.GetColumnName(2), "C");
+    ExpectException(doc.GetColumnName(3), std::out_of_range);
     
     rapidcsv::Document doc2(path, rapidcsv::LabelParams(-1, -1));
-    ExpectException(doc2.GetColumnLabel(0), std::out_of_range);
+    ExpectException(doc2.GetColumnName(0), std::out_of_range);
 
     rapidcsv::Document doc3(path, rapidcsv::LabelParams(0, -1));
-    unittest::ExpectEqual(std::string, doc3.GetColumnLabel(0), "-");
-    unittest::ExpectEqual(std::string, doc3.GetColumnLabel(1), "A");
-    unittest::ExpectEqual(std::string, doc3.GetColumnLabel(2), "B");
-    unittest::ExpectEqual(std::string, doc3.GetColumnLabel(3), "C");
-    ExpectException(doc3.GetColumnLabel(4), std::out_of_range);
+    unittest::ExpectEqual(std::string, doc3.GetColumnName(0), "-");
+    unittest::ExpectEqual(std::string, doc3.GetColumnName(1), "A");
+    unittest::ExpectEqual(std::string, doc3.GetColumnName(2), "B");
+    unittest::ExpectEqual(std::string, doc3.GetColumnName(3), "C");
+    ExpectException(doc3.GetColumnName(4), std::out_of_range);
   }
   catch(const std::exception& ex)
   {
