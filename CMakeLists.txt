@@ -15,6 +15,7 @@ else()
 endif()
 
 # Test init
+include(CTest)
 enable_testing()
 include_directories("src")
 set(LIB_HEADERS "src/rapidcsv.h")
