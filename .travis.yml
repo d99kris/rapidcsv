@@ -13,5 +13,6 @@ script:
   - cd build
   - cmake ..
   - make
-  - ctest --output-on-failure
+  - ctest -C unit --output-on-failure
+  - ctest -C perf --verbose
 
