@@ -36,6 +36,7 @@ endmacro (add_unit_test)
 # Unit tests
 add_unit_test(test001)
 add_unit_test(test002)
+if(false)
 add_unit_test(test003)
 add_unit_test(test004)
 add_unit_test(test005)
@@ -86,6 +87,7 @@ add_unit_test(test048)
 add_unit_test(test049)
 add_unit_test(test050)
 add_unit_test(test051)
+endif()
 
 # perf tests
 add_perf_test(ptest001)
