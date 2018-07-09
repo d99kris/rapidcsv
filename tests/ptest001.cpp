@@ -6,7 +6,6 @@
 
 int main()
 {
-  return 13;
   int rv = 0;
 
   try

@@ -14,7 +14,6 @@ environment:
 
 # build configuration, i.e. Debug, Release, etc.
 configuration:
-  - Debug
   - Release
 
 # scripts that are called at very beginning, before repo cloning
@@ -41,6 +40,6 @@ build:
 
 test_script:
   - cmd: cd C:\projects\rapidcsv\build
-  - cmd: if "%configuration%"=="Debug"    ctest -C Debug   --output-on-failure
-  - cmd: if "%configuration%"=="Release"  ctest -C Release --output-on-failure
+  - cmd: ctest -C unit --output-on-failure
+  - cmd: ctest -C perf --verbose
 
