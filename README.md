@@ -140,7 +140,7 @@ Technical Details
 =================
 Rapidcsv uses cmake for its tests. Commands to build and execute the test suite:
 
-    mkdir -p build && cd build && cmake .. && make && ctest --output-on-failure ; cd -
+    mkdir -p build && cd build && cmake .. && make && ctest -C unit --output-on-failure && ctest -C perf --verbose ; cd -
 
 Rapidcsv uses [doxyman2md](https://github.com/d99kris/doxyman2md) to generate its API documentation:
 

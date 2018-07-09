@@ -41,5 +41,6 @@ build:
 
 test_script:
   - cmd: cd C:\projects\rapidcsv\build
-  - cmd: ctest --build-config %configuration% --output-on-failure
+  - cmd: if "%configuration%"=="Debug"    ctest -C Debug   --output-on-failure
+  - cmd: if "%configuration%"=="Release"  ctest -C Release --verbose
 
