@@ -5,6 +5,7 @@
 
 int main()
 {
+  return 12;
   int rv = 0;
 
   std::string csv =
