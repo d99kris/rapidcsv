@@ -24,13 +24,13 @@ set(TEST_HEADERS "tests/unittest.h")
 # Test macro add_perf_test
 macro (add_perf_test testname)
   add_executable(${testname} tests/${testname}.cpp)
-  add_test(NAME ${testname} CONFIGURATIONS perf COMMAND "${PROJECT_BINARY_DIR}/${testname}")
+  add_test(NAME ${testname} CONFIGURATIONS perf Release COMMAND "${PROJECT_BINARY_DIR}/${testname}")
 endmacro (add_perf_test)
 
 # Test macro add_unit_test
 macro (add_unit_test testname)
   add_executable(${testname} tests/${testname}.cpp)
-  add_test(NAME ${testname} CONFIGURATIONS unit COMMAND "${PROJECT_BINARY_DIR}/${testname}")
+  add_test(NAME ${testname} CONFIGURATIONS unit Debug COMMAND "${PROJECT_BINARY_DIR}/${testname}")
 endmacro (add_unit_test)
 
 # Unit tests
