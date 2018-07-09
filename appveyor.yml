@@ -13,8 +13,8 @@ environment:
   MSVC_DEFAULT_OPTIONS: ON
 
 # build configuration, i.e. Debug, Release, etc.
-configuration:
-  - Release
+#configuration:
+#  - Release
 
 # scripts that are called at very beginning, before repo cloning
 init:
