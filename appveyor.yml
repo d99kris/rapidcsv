@@ -39,13 +39,9 @@ build:
   parallel: true                                    # enable MSBuild parallel builds
   verbosity: quiet                                  # MSBuild verb level (quiet|minimal|normal|detailed)
 
-configuration: Debug
-  test_script:
-    - cmd: cd C:\projects\rapidcsv\build
-    - cmd: ctest -C Debug --output-on-failure
-
-configuration: Release
-  test_script:
-    - cmd: cd C:\projects\rapidcsv\build
-    - cmd: ctest -C Release --verbose
+test_script:
+  - cmd: cd C:\projects\rapidcsv\build
+  - cmd: ctest -C Debug --output-on-failure
+  - cmd: if "%configuration%"=="Debug"    ctest -C Debug   --output-on-failure
+  - cmd: if "%configuration%"=="Release"  ctest -C Release --output-on-failure
 
