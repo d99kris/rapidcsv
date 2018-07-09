@@ -874,7 +874,7 @@ namespace rapidcsv
             {
               quoted = !quoted;
             }
-            cell = cell + buffer[i];
+            cell += buffer[i];
           }
           else if (buffer[i] == mSeparatorParams.mSeparator)
           {
@@ -885,7 +885,7 @@ namespace rapidcsv
             }
             else
             {
-              cell = cell + buffer[i];
+              cell += buffer[i];
             }
           }
           else if (buffer[i] == '\r')
@@ -903,7 +903,7 @@ namespace rapidcsv
           }
           else
           {
-            cell = cell + buffer[i];
+            cell += buffer[i];
           }
         }
         fileLength -= readLength;
