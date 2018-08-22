@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  3.0
+ * Version:  3.1
  *
  * Copyright (C) 2017-2018 Kristofer Berggren
  * All rights reserved.
@@ -127,11 +127,8 @@ namespace rapidcsv
           typeid(T) == typeid(unsigned long long) ||
           typeid(T) == typeid(float) ||
           typeid(T) == typeid(double) ||
-          typeid(T) == typeid(long double))
-      {
-        pStr = std::to_string(pVal);
-      }
-      else if (typeid(T) == typeid(char))
+          typeid(T) == typeid(long double) ||
+          typeid(T) == typeid(char))
       {
         std::ostringstream out;
         out << pVal;
