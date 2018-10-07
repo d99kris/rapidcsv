@@ -354,7 +354,7 @@ namespace rapidcsv
 
     /**
      * @brief   Constructor
-     * @param   pStream               specified an input stream to read CSV data from.
+     * @param   pStream               specifies an input stream to read CSV data from.
      * @param   pLabelParams          specifies which row and column should be treated as labels.
      * @param   pSeparatorParams      specifies which field and row separators should be used.
      * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
@@ -416,7 +416,7 @@ namespace rapidcsv
 
     /**
      * @brief   Write Document data to stream.
-     * @param   pStream               specified an output stream to write the data to.
+     * @param   pStream               specifies an output stream to write the data to.
      */
     void Save(std::ostream& pStream)
     {

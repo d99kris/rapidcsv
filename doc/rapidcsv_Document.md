@@ -23,7 +23,7 @@ Document (std::istream & pStream, const LabelParams & pLabelParams = LabelParams
 Constructor. 
 
 **Parameters**
-- `pStream` specified an input stream to read CSV data from. 
+- `pStream` specifies an input stream to read CSV data from. 
 - `pLabelParams` specifies which row and column should be treated as labels. 
 - `pSeparatorParams` specifies which field and row separators should be used. 
 - `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
@@ -252,7 +252,7 @@ void Save (std::ostream & pStream)
 Write Document data to stream. 
 
 **Parameters**
-- `pStream` specified an output stream to write the data to. 
+- `pStream` specifies an output stream to write the data to. 
 
 ---
 
