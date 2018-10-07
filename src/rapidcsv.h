@@ -351,6 +351,27 @@ namespace rapidcsv
         ReadCsv();
       }
     }
+    /**
+     * @brief   Constructor
+     * @param   pStream               CSV data content.
+     * @param   pLength               CSV data length.
+     * @param   pLabelParams          specifies which row and column should be treated as labels.
+     * @param   pSeparatorParams      specifies which field and row separators should be used.
+     * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
+     *                                handled.
+     */
+    explicit Document(std::istream &pStream, std::streamsize pLength,
+                      const LabelParams& pLabelParams = LabelParams(),
+                      const SeparatorParams& pSeparatorParams = SeparatorParams(),
+                      const ConverterParams& pConverterParams = ConverterParams())
+      : mPath()
+      , mLabelParams(pLabelParams)
+      , mSeparatorParams(pSeparatorParams)
+      , mConverterParams(pConverterParams)
+    {
+      ReadCsv(pStream, pLength);
+    }
+
 
     /**
      * @brief   Copy constructor
@@ -391,6 +412,15 @@ namespace rapidcsv
         mPath = pPath;
       }
       WriteCsv();
+    }
+
+    /**
+     * @brief   Write Document data to stream.
+     * @param   pStream     Stream to write the data to.
+     */
+    void Save(std::ostream &pStream)
+    {
+      WriteCsv(pStream);
     }
 
     /**
@@ -851,6 +881,10 @@ namespace rapidcsv
       file.open(mPath, std::ios::binary | std::ios::ate);
       std::streamsize fileLength = file.tellg();
       file.seekg(0, std::ios::beg);
+      ReadCsv(file, fileLength);
+    }
+    void ReadCsv(std::istream &file, std::streamsize fileLength)
+    {
       const std::streamsize bufLength = 64 * 1024;
       std::vector<char> buffer(bufLength);
       std::vector<std::string> row;
@@ -947,11 +981,23 @@ namespace rapidcsv
       std::ofstream file;
       file.exceptions(std::ofstream::failbit | std::ofstream::badbit);
       file.open(mPath, std::ios::binary | std::ios::trunc);
+      WriteCsv(file);
+    }
+
+    void WriteCsv(std::ostream &file) const
+    {
       for (auto itr = mData.begin(); itr != mData.end(); ++itr)
       {
         for (auto itc = itr->begin(); itc != itr->end(); ++itc)
         {
-          file << *itc;
+          if (std::string::npos == itc->find(mSeparatorParams.mSeparator))
+          {
+            file << *itc;
+          } 
+          else
+          {
+            file << '"' << *itc << '"';
+          }
           if (std::distance(itc, itr->end()) > 1)
           {
             file << mSeparatorParams.mSeparator;
