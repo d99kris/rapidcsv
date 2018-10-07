@@ -18,6 +18,19 @@ Constructor.
 ---
 
 ```c++
+Document (std::istream & pStream, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
+```
+Constructor. 
+
+**Parameters**
+- `pStream` specified an input stream to read CSV data from. 
+- `pLabelParams` specifies which row and column should be treated as labels. 
+- `pSeparatorParams` specifies which field and row separators should be used. 
+- `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
+
+---
+
+```c++
 Document (const Document & pDocument)
 ```
 Copy constructor. 
@@ -230,6 +243,16 @@ Write Document data to file.
 
 **Parameters**
 - `pPath` optionally specifies the path where the CSV-file will be created (if not specified, the original path provided when creating or loading the Document data will be used). 
+
+---
+
+```c++
+void Save (std::ostream & pStream)
+```
+Write Document data to stream. 
+
+**Parameters**
+- `pStream` specified an output stream to write the data to. 
 
 ---
 

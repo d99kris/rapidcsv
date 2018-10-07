@@ -351,16 +351,16 @@ namespace rapidcsv
         ReadCsv();
       }
     }
+
     /**
      * @brief   Constructor
-     * @param   pStream               CSV data content.
-     * @param   pLength               CSV data length.
+     * @param   pStream               specified an input stream to read CSV data from.
      * @param   pLabelParams          specifies which row and column should be treated as labels.
      * @param   pSeparatorParams      specifies which field and row separators should be used.
      * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
      *                                handled.
      */
-    explicit Document(std::istream &pStream, std::streamsize pLength,
+    explicit Document(std::istream& pStream,
                       const LabelParams& pLabelParams = LabelParams(),
                       const SeparatorParams& pSeparatorParams = SeparatorParams(),
                       const ConverterParams& pConverterParams = ConverterParams())
@@ -369,7 +369,7 @@ namespace rapidcsv
       , mSeparatorParams(pSeparatorParams)
       , mConverterParams(pConverterParams)
     {
-      ReadCsv(pStream, pLength);
+      ReadCsv(pStream);
     }
 
 
@@ -416,9 +416,9 @@ namespace rapidcsv
 
     /**
      * @brief   Write Document data to stream.
-     * @param   pStream     Stream to write the data to.
+     * @param   pStream               specified an output stream to write the data to.
      */
-    void Save(std::ostream &pStream)
+    void Save(std::ostream& pStream)
     {
       WriteCsv(pStream);
     }
@@ -876,15 +876,17 @@ namespace rapidcsv
   private:
     void ReadCsv()
     {
-      std::ifstream file;
-      file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-      file.open(mPath, std::ios::binary | std::ios::ate);
-      std::streamsize fileLength = file.tellg();
-      file.seekg(0, std::ios::beg);
-      ReadCsv(file, fileLength);
+      std::ifstream stream;
+      stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+      stream.open(mPath, std::ios::binary | std::ios::ate);
+      ReadCsv(stream);
     }
-    void ReadCsv(std::istream &file, std::streamsize fileLength)
+
+    void ReadCsv(std::istream& pStream)
     {
+      pStream.seekg(0, std::ios::end);
+      std::streamsize fileLength = pStream.tellg();
+      pStream.seekg(0, std::ios::beg);
       const std::streamsize bufLength = 64 * 1024;
       std::vector<char> buffer(bufLength);
       std::vector<std::string> row;
@@ -895,8 +897,8 @@ namespace rapidcsv
 
       while (fileLength > 0)
       {
-        long long readLength = std::min(fileLength, bufLength);
-        file.read(buffer.data(), readLength);
+        std::streamsize readLength = std::min(fileLength, bufLength);
+        pStream.read(buffer.data(), readLength);
         for (int i = 0; i < readLength; ++i)
         {
           if (buffer[i] == '"')
@@ -978,32 +980,34 @@ namespace rapidcsv
 
     void WriteCsv() const
     {
-      std::ofstream file;
-      file.exceptions(std::ofstream::failbit | std::ofstream::badbit);
-      file.open(mPath, std::ios::binary | std::ios::trunc);
-      WriteCsv(file);
+      std::ofstream stream;
+      stream.exceptions(std::ofstream::failbit | std::ofstream::badbit);
+      stream.open(mPath, std::ios::binary | std::ios::trunc);
+      WriteCsv(stream);
     }
 
-    void WriteCsv(std::ostream &file) const
+    void WriteCsv(std::ostream& pStream) const
     {
       for (auto itr = mData.begin(); itr != mData.end(); ++itr)
       {
         for (auto itc = itr->begin(); itc != itr->end(); ++itc)
         {
-          if (std::string::npos == itc->find(mSeparatorParams.mSeparator))
+          if ((std::string::npos == itc->find(mSeparatorParams.mSeparator)) ||
+              ((itc->length() >= 2) && ((*itc)[0] == '\"') && ((*itc)[itc->length() - 1] == '\"')))
           {
-            file << *itc;
-          } 
+            pStream << *itc;
+          }
           else
           {
-            file << '"' << *itc << '"';
+            pStream << '"' << *itc << '"';
           }
+
           if (std::distance(itc, itr->end()) > 1)
           {
-            file << mSeparatorParams.mSeparator;
+            pStream << mSeparatorParams.mSeparator;
           }
         }
-        file << (mSeparatorParams.mHasCR ? "\r\n" : "\n");
+        pStream << (mSeparatorParams.mHasCR ? "\r\n" : "\n");
       }
     }
 
