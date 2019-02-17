@@ -1125,10 +1125,10 @@ namespace rapidcsv
     }
 
 #ifdef HAS_CODECVT
+#pragma warning disable 4996
     static std::string ToString(const std::wstring& pWStr)
     {
       size_t len = std::wcstombs(nullptr, pWStr.c_str(), 0) + 1;
-      std::cout << len << std::endl;
       char* cstr = new char[len];
       std::wcstombs(cstr, pWStr.c_str(), len);
       std::string str(cstr);
@@ -1145,6 +1145,7 @@ namespace rapidcsv
       delete[] wcstr;
       return wstr;
     }
+#pragma warning restore 4996
 #endif
 
   private:
