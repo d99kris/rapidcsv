@@ -904,9 +904,18 @@ namespace rapidcsv
         std::wifstream wstream;
         wstream.exceptions(std::wifstream::failbit | std::wifstream::badbit);
         wstream.open(mPath, std::ios::binary);
-        wstream.imbue(std::locale(wstream.getloc(),
-                                  new std::codecvt_utf16<wchar_t, 0x10ffff,
-                                  std::consume_header>));
+        if (mIsLE)
+        {
+          wstream.imbue(std::locale(wstream.getloc(),
+                                    new std::codecvt_utf16<wchar_t, 0x10ffff,
+                                    static_cast<std::codecvt_mode>(std::consume_header | std::little_endian)>));
+        }
+        else
+        {
+          wstream.imbue(std::locale(wstream.getloc(),
+                                    new std::codecvt_utf16<wchar_t, 0x10ffff,
+                                    std::consume_header>));
+        }
         std::wstringstream wss;
         wss << wstream.rdbuf();
         std::string utf8 = ToString(wss.str());
@@ -1028,23 +1037,22 @@ namespace rapidcsv
         std::wstring wstr = ToWString(utf8);
 
         std::wofstream wstream;
-        wstream.exceptions(std::wifstream::failbit | std::wifstream::badbit);
-        wstream.open(mPath, std::ios::binary);
+        wstream.exceptions(std::wofstream::failbit | std::wofstream::badbit);
+        wstream.open(mPath, std::ios::binary | std::ios::trunc);
 
         if (mIsLE)
         {
           wstream.imbue(std::locale(wstream.getloc(),
                                     new std::codecvt_utf16<wchar_t, 0x10ffff,
-                                    static_cast<std::codecvt_mode>(std::generate_header |
-                                                                   std::little_endian)>));
+                                    static_cast<std::codecvt_mode>(std::little_endian)>));
         }
         else
         {
           wstream.imbue(std::locale(wstream.getloc(),
-                                    new std::codecvt_utf16<wchar_t, 0x10ffff,
-                                    std::generate_header>));
+                                    new std::codecvt_utf16<wchar_t, 0x10ffff>));
         }
 
+        wstream << (wchar_t)0xfeff;
         wstream << wstr;
       }
       else
