@@ -21,6 +21,7 @@
 #elif defined(_MSC_VER)
 #define HAS_CODECVT
 #endif
+#endif
 
 #include <algorithm>
 #include <cassert>
