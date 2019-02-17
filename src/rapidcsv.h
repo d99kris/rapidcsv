@@ -2,9 +2,9 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  3.1
+ * Version:  4.0
  *
- * Copyright (C) 2017-2018 Kristofer Berggren
+ * Copyright (C) 2017-2019 Kristofer Berggren
  * All rights reserved.
  *
  * rapidcsv is distributed under the BSD 3-Clause license, see LICENSE for details.
@@ -16,6 +16,9 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#ifdef HAS_CODECVT
+#include <codecvt>
+#endif
 #include <fstream>
 #include <iostream>
 #include <map>
@@ -878,8 +881,53 @@ namespace rapidcsv
     {
       std::ifstream stream;
       stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-      stream.open(mPath, std::ios::binary | std::ios::ate);
-      ReadCsv(stream);
+      stream.open(mPath, std::ios::binary);
+
+#ifdef HAS_CODECVT
+      stream.seekg(0, std::ios::end);
+      std::streamsize length = stream.tellg();
+      stream.seekg(0, std::ios::beg);
+
+      std::vector<char> bom(2, '\0');
+      if (length >= 2)
+      {
+        stream.read(bom.data(), 2);
+      }
+
+      static const std::vector<char> bomU16le = { '\xff', '\xfe' };
+      static const std::vector<char> bomU16be = { '\xfe', '\xff' };
+      if ((bom == bomU16le) || (bom == bomU16be))
+      {
+        mIsUtf16 = true;
+        mIsLE = (bom == bomU16le);
+
+        std::wifstream wstream;
+        wstream.exceptions(std::wifstream::failbit | std::wifstream::badbit);
+        wstream.open(mPath, std::ios::binary);
+        if (mIsLE)
+        {
+          wstream.imbue(std::locale(wstream.getloc(),
+                                    new std::codecvt_utf16<wchar_t, 0x10ffff,
+                                                           static_cast<std::codecvt_mode>(std::consume_header | std::little_endian)>));
+        }
+        else
+        {
+          wstream.imbue(std::locale(wstream.getloc(),
+                                    new std::codecvt_utf16<wchar_t, 0x10ffff,
+                                                           std::consume_header>));
+        }
+        std::wstringstream wss;
+        wss << wstream.rdbuf();
+        std::string utf8 = ToString(wss.str());
+        std::stringstream ss(utf8);
+        ReadCsv(ss);
+      }
+      else
+#endif
+      {
+        stream.seekg(0, std::ios::beg);
+        ReadCsv(stream);
+      }
     }
 
     void ReadCsv(std::istream& pStream)
@@ -980,10 +1028,41 @@ namespace rapidcsv
 
     void WriteCsv() const
     {
-      std::ofstream stream;
-      stream.exceptions(std::ofstream::failbit | std::ofstream::badbit);
-      stream.open(mPath, std::ios::binary | std::ios::trunc);
-      WriteCsv(stream);
+#ifdef HAS_CODECVT
+      if (mIsUtf16)
+      {
+        std::stringstream ss;
+        WriteCsv(ss);
+        std::string utf8 = ss.str();
+        std::wstring wstr = ToWString(utf8);
+
+        std::wofstream wstream;
+        wstream.exceptions(std::wofstream::failbit | std::wofstream::badbit);
+        wstream.open(mPath, std::ios::binary | std::ios::trunc);
+
+        if (mIsLE)
+        {
+          wstream.imbue(std::locale(wstream.getloc(),
+                                    new std::codecvt_utf16<wchar_t, 0x10ffff,
+                                                           static_cast<std::codecvt_mode>(std::little_endian)>));
+        }
+        else
+        {
+          wstream.imbue(std::locale(wstream.getloc(),
+                                    new std::codecvt_utf16<wchar_t, 0x10ffff>));
+        }
+
+        wstream << (wchar_t) 0xfeff;
+        wstream << wstr;
+      }
+      else
+#endif
+      {
+        std::ofstream stream;
+        stream.exceptions(std::ofstream::failbit | std::ofstream::badbit);
+        stream.open(mPath, std::ios::binary | std::ios::trunc);
+        WriteCsv(stream);
+      }
     }
 
     void WriteCsv(std::ostream& pStream) const
@@ -1045,6 +1124,34 @@ namespace rapidcsv
       return (mData.size() > 0) ? mData.at(0).size() : 0;
     }
 
+#ifdef HAS_CODECVT
+#if defined(_MSC_VER)
+#pragma warning (disable: 4996)
+#endif
+    static std::string ToString(const std::wstring& pWStr)
+    {
+      size_t len = std::wcstombs(nullptr, pWStr.c_str(), 0) + 1;
+      char* cstr = new char[len];
+      std::wcstombs(cstr, pWStr.c_str(), len);
+      std::string str(cstr);
+      delete[] cstr;
+      return str;
+    }
+
+    static std::wstring ToWString(const std::string& pStr)
+    {
+      size_t len = 1 + mbstowcs(nullptr, pStr.c_str(), 0);
+      wchar_t* wcstr = new wchar_t[len];
+      std::mbstowcs(wcstr, pStr.c_str(), len);
+      std::wstring wstr(wcstr);
+      delete[] wcstr;
+      return wstr;
+    }
+#if defined(_MSC_VER)
+#pragma warning (default: 4996)
+#endif
+#endif
+
   private:
     std::string mPath;
     LabelParams mLabelParams;
@@ -1053,5 +1160,9 @@ namespace rapidcsv
     std::vector<std::vector<std::string> > mData;
     std::map<std::string, size_t> mColumnNames;
     std::map<std::string, size_t> mRowNames;
+#ifdef HAS_CODECVT
+    bool mIsUtf16 = false;
+    bool mIsLE = false;
+#endif
   };
 }

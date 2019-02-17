@@ -126,6 +126,14 @@ program example.
     }
 ```
 
+UTF-16 and UTF-8
+----------------
+The preferred encoding for non-ASCII text is UTF-8. UTF-16 LE and UTF-16 BE can be read and
+written by rapidcsv on systems where codecvt header is present. Define HAS_CODECVT before
+including rapidcsv.h in order to enable the functionality. For rapidcsv unit tests it
+automatically detects the presence of codecvt, see its CMakeLists.txt for reference.
+When enabled, the UTF-16 encoding of any loaded file is automatically detected.
+
 API Documentation
 =================
 The following classes makes up the Rapidcsv interface:
