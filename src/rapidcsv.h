@@ -1148,7 +1148,7 @@ namespace rapidcsv
       return wstr;
     }
 #if defined(_MSC_VER)
-#pragma warning (restore: 4996)
+#pragma warning (default: 4996)
 #endif
 #endif
 
