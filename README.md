@@ -126,6 +126,11 @@ program example.
     }
 ```
 
+UTF-16 and UTF-8
+----------------
+The preferred encoding for non-ASCII text is UTF-8. UTF-16 LE and UTF-16 BE can be read and
+written by rapidcsv under C++11 and C++14, but not C++17 or later (due to depending on codecvt). 
+
 API Documentation
 =================
 The following classes makes up the Rapidcsv interface:
