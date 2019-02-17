@@ -885,8 +885,8 @@ namespace rapidcsv
 
 #ifdef HAS_CODECVT
       stream.seekg(0, std::ios::end);
-      std::streamsize length = stream.tellg(); 
-      stream.seekg(0, std::ios::beg); 
+      std::streamsize length = stream.tellg();
+      stream.seekg(0, std::ios::beg);
 
       std::vector<char> bom(2, '\0');
       if (length >= 2)
@@ -900,7 +900,7 @@ namespace rapidcsv
       {
         mIsUtf16 = true;
         mIsLE = (bom == bomU16le);
-        
+
         std::wifstream wstream;
         wstream.exceptions(std::wifstream::failbit | std::wifstream::badbit);
         wstream.open(mPath, std::ios::binary);
@@ -908,13 +908,13 @@ namespace rapidcsv
         {
           wstream.imbue(std::locale(wstream.getloc(),
                                     new std::codecvt_utf16<wchar_t, 0x10ffff,
-                                    static_cast<std::codecvt_mode>(std::consume_header | std::little_endian)>));
+                                                           static_cast<std::codecvt_mode>(std::consume_header | std::little_endian)>));
         }
         else
         {
           wstream.imbue(std::locale(wstream.getloc(),
                                     new std::codecvt_utf16<wchar_t, 0x10ffff,
-                                    std::consume_header>));
+                                                           std::consume_header>));
         }
         std::wstringstream wss;
         wss << wstream.rdbuf();
@@ -1044,7 +1044,7 @@ namespace rapidcsv
         {
           wstream.imbue(std::locale(wstream.getloc(),
                                     new std::codecvt_utf16<wchar_t, 0x10ffff,
-                                    static_cast<std::codecvt_mode>(std::little_endian)>));
+                                                           static_cast<std::codecvt_mode>(std::little_endian)>));
         }
         else
         {
@@ -1052,7 +1052,7 @@ namespace rapidcsv
                                     new std::codecvt_utf16<wchar_t, 0x10ffff>));
         }
 
-        wstream << (wchar_t)0xfeff;
+        wstream << (wchar_t) 0xfeff;
         wstream << wstr;
       }
       else
@@ -1125,7 +1125,9 @@ namespace rapidcsv
     }
 
 #ifdef HAS_CODECVT
-#pragma warning disable 4996
+#if defined(_MSC_VER)
+#pragma warning (disable: 4996)
+#endif
     static std::string ToString(const std::wstring& pWStr)
     {
       size_t len = std::wcstombs(nullptr, pWStr.c_str(), 0) + 1;
@@ -1145,7 +1147,9 @@ namespace rapidcsv
       delete[] wcstr;
       return wstr;
     }
-#pragma warning restore 4996
+#if defined(_MSC_VER)
+#pragma warning (restore: 4996)
+#endif
 #endif
 
   private:
