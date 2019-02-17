@@ -894,8 +894,8 @@ namespace rapidcsv
         stream.read(bom.data(), 2);
       }
 
-      static const std::vector<char> bomU16le = { (char)0xff, (char)0xfe };
-      static const std::vector<char> bomU16be = { (char)0xfe, (char)0xff };
+      static const std::vector<char> bomU16le = { '\xff', '\xfe' };
+      static const std::vector<char> bomU16be = { '\xfe', '\xff' };
       if ((bom == bomU16le) || (bom == bomU16be))
       {
         mIsUtf16 = true;
