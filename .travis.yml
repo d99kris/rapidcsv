@@ -11,6 +11,9 @@ os:
 dist:
   - xenial
 
+compiler:
+  - clang
+
 script:
   - mkdir -p build
   - cd build
