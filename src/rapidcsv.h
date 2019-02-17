@@ -13,7 +13,12 @@
 
 #pragma once
 
-#if (__cplusplus < 201703L)
+#if (__cplusplus >= 201103L) && (__cplusplus < 201703L)
+#if defined(__clang__)
+#define HAS_CODECVT
+#elif defined(__GNUC__) && (__GNUC__ >= 5)
+#define HAS_CODECVT
+#elif defined(_MSC_VER)
 #define HAS_CODECVT
 #endif
 
