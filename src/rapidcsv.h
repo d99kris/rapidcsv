@@ -949,43 +949,43 @@ namespace rapidcsv
         pStream.read(buffer.data(), readLength);
         for (int i = 0; i < readLength; ++i)
         {
-          if (buffer[i] == '"')
-          {
-            if (cell.empty() || cell[0] == '"')
+          if (buffer[i] == '"') 
+          { 
+            if (cell.empty() || quoted ) 
+            { 
+              quoted = !quoted; 
+            } 
+            else 
+            { 
+              //Throw Exception for un-paired content. 
+            } 
+            cell += buffer[i]; 
+          } 
+          else 
+          { 
+            if ( quoted ) 
+            { 
+              cell += buffer[i]; 
+            } 
+            else if (buffer[i] == mSeparatorParams.mSeparator) 
             {
-              quoted = !quoted;
-            }
-            cell += buffer[i];
-          }
-          else if (buffer[i] == mSeparatorParams.mSeparator)
-          {
-            if (!quoted)
-            {
-              row.push_back(cell);
-              cell.clear();
-            }
-            else
-            {
-              cell += buffer[i];
-            }
-          }
-          else if (buffer[i] == '\r')
-          {
-            ++cr;
-          }
-          else if (buffer[i] == '\n')
-          {
-            ++lf;
-            row.push_back(cell);
-            cell.clear();
-            mData.push_back(row);
-            row.clear();
-            quoted = false; // disallow line breaks in quoted string, by auto-unquote at linebreak
-          }
-          else
-          {
-            cell += buffer[i];
-          }
+              row.push_back(cell); 
+              cell.clear(); 
+            } 
+            else if (buffer[i] == '\r') 
+            { 
+              ++cr; 
+            } 
+            else if (buffer[i] == '\n') 
+            { 
+              ++lf; 
+              row.push_back(cell); 
+              cell.clear(); 
+              mData.push_back(row); 
+              row.clear(); 
+              quoted = false; // disallow line breaks in quoted string, by auto-unquote at linebreak 
+            } 
+          }          
         }
         fileLength -= readLength;
       }
