@@ -951,19 +951,12 @@ namespace rapidcsv
         {
           if (buffer[i] == '"') 
           { 
-            if (cell.empty() || quoted ) 
-            { 
-              quoted = !quoted; 
-            } 
-            else 
-            { 
-              //Throw Exception for un-paired content. 
-            } 
+            quoted = !quoted; 
             cell += buffer[i]; 
           } 
           else 
           { 
-            if ( quoted ) 
+            if ( quoted && buffer[i] != '\n') 
             { 
               cell += buffer[i]; 
             } 
