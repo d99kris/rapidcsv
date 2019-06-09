@@ -111,5 +111,11 @@ add_perf_test(ptest001)
 add_perf_test(ptest002)
 
 # Examples
-add_executable(example001 examples/example001.cpp)
+add_executable(ex001 examples/ex001.cpp)
+add_executable(ex002 examples/ex002.cpp)
+add_executable(ex003 examples/ex003.cpp)
+add_executable(ex004 examples/ex004.cpp)
+add_executable(ex005 examples/ex005.cpp)
+add_executable(ex006 examples/ex006.cpp)
+add_executable(ex007 examples/ex007.cpp)
 
