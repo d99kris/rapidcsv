@@ -16,7 +16,7 @@ Example Usage
 Here is a simple example reading a CSV file and getting 'Close' column as a
 vector of floats, and an example of getting a specific cell as well.
 
-[rowcolhdr.csv](/examples/rowcolhdr.csv) content:
+[rowcolhdr.csv](examples/colrowhdr.csv) content:
 ```
     Open,High,Low,Close,Volume,Adj Close
     64.529999,64.800003,64.139999,64.620003,21705200,64.620003
@@ -26,7 +26,7 @@ vector of floats, and an example of getting a specific cell as well.
     64.470001,64.690002,64.300003,64.620003,21234600,64.620003
 ```
 
-[ex001.cpp](/examples/ex001.cpp) content:
+[ex001.cpp](examples/ex001.cpp) content:
 ```cpp
     #include <iostream>
     #include <vector>
