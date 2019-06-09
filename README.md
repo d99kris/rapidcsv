@@ -84,7 +84,7 @@ prefer to be able to access first row and/or column as data, and only access
 cells by their row and column index. In order to do so one need use
 LabelParams and set pColumnNameIdx and/or pRowNameIdx to -1 (disabled).
 
-**Column Headers Only**
+### Column Headers Only
 [colhdr.csv](examples/colhdr.csv) content:
 ```
     Open,High,Low,Close,Volume,Adj Close
@@ -110,7 +110,7 @@ LabelParams and set pColumnNameIdx and/or pRowNameIdx to -1 (disabled).
     }
 ```
 
-**Row Headers Only**
+### Row Headers Only
 [rowhdr.csv](examples/rowhdr.csv) content:
 ```
     2017-02-24,64.529999,64.800003,64.139999,64.620003,21705200,64.620003
@@ -135,7 +135,7 @@ LabelParams and set pColumnNameIdx and/or pRowNameIdx to -1 (disabled).
     }
 ```
 
-**No Headers**
+### No Headers
 [nohdr.csv](examples/nohdr.csv) content:
 ```
     64.529999,64.800003,64.139999,64.620003,21705200,64.620003
