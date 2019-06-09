@@ -45,8 +45,7 @@ vector of floats, and an example of getting a specific cell as well.
 ```
 
 Refer to section [More Examples](#more-examples) below for more examples.
-The [tests](https://github.com/d99kris/rapidcsv/tree/master/tests) directory
-also contains many simple usage examples.
+The [tests](tests/) directory also contains many simple usage examples.
 
 Supported Platforms
 ===================
