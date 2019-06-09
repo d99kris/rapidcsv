@@ -65,7 +65,7 @@ More Examples
 =============
 
 Several of the following examples are also provided in the `examples/`
-directory and can be executed directly under Linux and macOS due to a
+directory and can be executed directly under Linux and macOS thanks to a
 shebang-hack. Example running ex001.cpp:
 
 ```
