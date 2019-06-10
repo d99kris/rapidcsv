@@ -225,6 +225,7 @@ as a character. The following example illustrates the supported datatypes.
     {
       rapidcsv::Document doc("examples/colrowhdr.csv");
 
+      std::cout << doc.GetCell<std::string>("Volume", "2017-02-22") << std::endl;
       std::cout << doc.GetCell<int>("Volume", "2017-02-22") << std::endl;
       std::cout << doc.GetCell<long>("Volume", "2017-02-22") << std::endl;
       std::cout << doc.GetCell<long long>("Volume", "2017-02-22") << std::endl;
