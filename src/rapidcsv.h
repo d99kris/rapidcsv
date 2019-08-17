@@ -304,12 +304,16 @@ namespace rapidcsv
     /**
      * @brief   Constructor
      * @param   pSeparator            specifies the column separator (default ',').
+     * @param   pTrim                 specifies whether to trim leading and trailing spaces from 
+     *                                cells read.
      * @param   pHasCR                specifies whether a new document (i.e. not an existing document read)
      *                                should use CR/LF instead of only LF (default is to use standard
      *                                behavior of underlying platforms - CR/LF for Win, and LF for others).
      */
-    explicit SeparatorParams(const char pSeparator = ',', const bool pHasCR = sPlatformHasCR)
+    explicit SeparatorParams(const char pSeparator = ',', const bool pTrim = false,
+                             const bool pHasCR = sPlatformHasCR)
       : mSeparator(pSeparator)
+      , mTrim(pTrim)
       , mHasCR(pHasCR)
     {
     }
@@ -318,6 +322,11 @@ namespace rapidcsv
      * @brief   specifies the column separator.
      */
     char mSeparator;
+
+    /**
+     * @brief   specifies whether to trim leading and trailing spaces from cells read.
+     */
+    bool mTrim;
 
     /**
      * @brief   specifies whether new documents should use CR/LF instead of LF.
@@ -961,7 +970,7 @@ namespace rapidcsv
           {
             if (!quoted)
             {
-              row.push_back(cell);
+              row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
               cell.clear();
             }
             else
@@ -976,7 +985,7 @@ namespace rapidcsv
           else if (buffer[i] == '\n')
           {
             ++lf;
-            row.push_back(cell);
+            row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
             cell.clear();
             mData.push_back(row);
             row.clear();
@@ -993,7 +1002,7 @@ namespace rapidcsv
       // Handle last line without linebreak
       if (!cell.empty() || !row.empty())
       {
-        row.push_back(cell);
+        row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
         cell.clear();
         mData.push_back(row);
         row.clear();
@@ -1151,6 +1160,23 @@ namespace rapidcsv
 #pragma warning (default: 4996)
 #endif
 #endif
+
+    static std::string Trim(const std::string& pStr)
+    {
+      std::string str = pStr;
+      
+      // ltrim
+      str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](int ch) {
+        return !isspace(ch);
+      }));
+
+      // rtrim
+      str.erase(std::find_if(str.rbegin(), str.rend(), [](int ch) {
+        return !isspace(ch);
+      }).base(), str.end());
+    
+      return str;
+    }
 
   private:
     std::string mPath;
