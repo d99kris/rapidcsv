@@ -104,6 +104,7 @@ if(1)
     add_unit_test(test059)
     add_unit_test(test060)
   endif()
+  add_unit_test(test061)
 endif()
   
 # perf tests
