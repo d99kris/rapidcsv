@@ -686,8 +686,8 @@ namespace rapidcsv
 
     /**
      * @brief   Get cell by index.
-     * @param   pRowIdx               zero-based row index.
      * @param   pColumnIdx            zero-based column index.
+     * @param   pRowIdx               zero-based row index.
      * @returns cell data.
      */
     template<typename T>
@@ -724,6 +724,42 @@ namespace rapidcsv
       }
 
       return GetCell<T>(columnIdx, rowIdx);
+    }
+
+    /**
+     * @brief   Get cell by column name and row index.
+     * @param   pColumnName           column label name.
+     * @param   pRowIdx               zero-based row index.
+     * @returns cell data.
+     */
+    template<typename T>
+    T GetCell(const std::string& pColumnName, const size_t pRowIdx) const
+    {
+      const ssize_t columnIdx = GetColumnIdx(pColumnName);
+      if (columnIdx < 0)
+      {
+        throw std::out_of_range("column not found: " + pColumnName);
+      }
+
+      return GetCell<T>(columnIdx, pRowIdx);
+    }
+
+    /**
+     * @brief   Get cell by column index and row name.
+     * @param   pColumnIdx            zero-based column index.
+     * @param   pRowName              row label name.
+     * @returns cell data.
+     */
+    template<typename T>
+    T GetCell(const size_t pColumnIdx, const std::string& pRowName) const
+    {
+      const ssize_t rowIdx = GetRowIdx(pRowName);
+      if (rowIdx < 0)
+      {
+        throw std::out_of_range("row not found: " + pRowName);
+      }
+
+      return GetCell<T>(pColumnIdx, rowIdx);
     }
 
     /**

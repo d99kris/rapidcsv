@@ -46,8 +46,8 @@ template<typename T > T GetCell (const size_t pColumnIdx, const size_t pRowIdx)
 Get cell by index. 
 
 **Parameters**
-- `pRowIdx` zero-based row index. 
 - `pColumnIdx` zero-based column index. 
+- `pRowIdx` zero-based row index. 
 
 **Returns:**
 - cell data. 
@@ -61,6 +61,34 @@ Get cell by name.
 
 **Parameters**
 - `pColumnName` column label name. 
+- `pRowName` row label name. 
+
+**Returns:**
+- cell data. 
+
+---
+
+```c++
+template<typename T > T GetCell (const std::string & pColumnName, const size_t pRowIdx)
+```
+Get cell by column name and row index. 
+
+**Parameters**
+- `pColumnName` column label name. 
+- `pRowIdx` zero-based row index. 
+
+**Returns:**
+- cell data. 
+
+---
+
+```c++
+template<typename T > T GetCell (const size_t pColumnIdx, const std::string & pRowName)
+```
+Get cell by column index and row name. 
+
+**Parameters**
+- `pColumnIdx` zero-based column index. 
 - `pRowName` row label name. 
 
 **Returns:**
