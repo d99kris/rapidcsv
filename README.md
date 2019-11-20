@@ -267,6 +267,65 @@ for a complete program example.
     }
 ```
 
+Another example of a custom `Coverter` is [ex008.cpp](examples/ex008.cpp):
+
+```cpp
+#include "rapidcsv.h"
+
+namespace rapidcsv
+{
+  template<typename T>
+  class CustomConverter : public Converter<T>
+  {
+  public:
+    explicit CustomConverter(bool pHasDefaultConverter, const T& pDefaultVal)
+      : Converter<T>(pHasDefaultConverter, pDefaultVal)
+    {
+    }
+
+    void ToVal(const std::string& pStr, T& pVal) const;
+    void ToStr(const T& pVal, std::string& pStr) const;
+  };
+
+  template<>
+  void CustomConverter<int>::ToVal(const std::string& pStr, int& pVal) const
+  {
+    Converter<int>::ToVal(pStr, pVal);
+    pVal /= 4;
+  }
+
+  template<>
+  void CustomConverter<int>::ToStr(const int& pVal, std::string& pStr) const
+  {
+    const auto val = pVal * 4;
+    Converter<int>::ToStr(val, pStr);
+  }
+}
+
+int main()
+{
+  std::stringstream sstream("1,10,,1000,X\n");
+  rapidcsv::Document doc(sstream, rapidcsv::LabelParams(-1, -1));
+
+  // Create a custom converter that will force empty/invalid values
+  // to 4000. The converter will convert all inputs to integer values
+  // and then divide them by 4.
+  rapidcsv::CustomConverter<int> customConverter(true, 4000);
+
+  for (auto i = 0; i < 5; ++i)
+  {
+    std::cout << doc.GetCell<int>(i, 0, customConverter) << std::endl;
+  }
+
+  // Output:
+  // 0        // int(1 / 4) = 0
+  // 2        // int(10 / 4) = 2
+  // 1000     // int(4000 / 4) = 1000, as '' -> 4000 (default).
+  // 250      // int(1000 / 4) = 250
+  // 1000     // int(4000 / 4) = 1000, as 'X' -> 4000 (default).
+}
+```
+
 Reading CSV Data from a Stream or String
 ----------------------------------------
 In addition to specifying a filename, rapidcsv supports constructing a Document
@@ -384,7 +443,9 @@ Rapidcsv is distributed under the BSD 3-Clause license. See
 Contributions
 =============
 Bugs, PRs, etc are welcome on the GitHub project page
-https://github.com/d99kris/rapidcsv
+[https://github.com/d99kris/rapidcsv](https://github.com/d99kris/rapidcsv).
+Contributors to this repository are listed in the
+[AUTHORS](https://github.com/d99kris/rapidcsv/blob/master/AUTHORS) file.
 
 Keywords
 ========
