@@ -1021,8 +1021,10 @@ namespace rapidcsv
           else if (buffer[i] == '\n')
           {
             ++lf;
-            row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
-            cell.clear();
+            if (!cell.empty()) {
+              row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
+              cell.clear();
+            }
             mData.push_back(row);
             row.clear();
             quoted = false; // disallow line breaks in quoted string, by auto-unquote at linebreak
