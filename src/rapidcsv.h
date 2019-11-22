@@ -309,12 +309,14 @@ namespace rapidcsv
      * @param   pHasCR                specifies whether a new document (i.e. not an existing document read)
      *                                should use CR/LF instead of only LF (default is to use standard
      *                                behavior of underlying platforms - CR/LF for Win, and LF for others).
+     * @param   pLBinQuotes           specifies whether to allow line breaks in quoted text.
      */
     explicit SeparatorParams(const char pSeparator = ',', const bool pTrim = false,
-                             const bool pHasCR = sPlatformHasCR)
+                             const bool pHasCR = sPlatformHasCR, const bool pLBinQuotes = false)
       : mSeparator(pSeparator)
       , mTrim(pTrim)
       , mHasCR(pHasCR)
+      , mLinebreakInQuotes(pLBinQuotes)
     {
     }
 
@@ -332,6 +334,11 @@ namespace rapidcsv
      * @brief   specifies whether new documents should use CR/LF instead of LF.
      */
     bool mHasCR;
+
+    /**
+     * @brief   specifies whether to allow line breaks in quoted text.
+     */
+    bool mLinebreakInQuotes;
   };
 
   /**
@@ -1032,18 +1039,26 @@ namespace rapidcsv
           }
           else if (buffer[i] == '\r')
           {
-            ++cr;
+            if (mSeparatorParams.mLinebreakInQuotes && quoted) {
+              cell += buffer[i];
+            } else {
+              ++cr;
+            }
           }
           else if (buffer[i] == '\n')
           {
-            ++lf;
-            if (!cell.empty()) {
-              row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
-              cell.clear();
+            if (mSeparatorParams.mLinebreakInQuotes && quoted) {
+              cell += buffer[i];
+            } else {
+              ++lf;
+              if (!cell.empty()) {
+                row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
+                cell.clear();
+              }
+              mData.push_back(row);
+              row.clear();
+              quoted = NOT_QUOTED;
             }
-            mData.push_back(row);
-            row.clear();
-            quoted = NOT_QUOTED; // disallow line breaks in quoted string, by auto-unquote at linebreak
           }
           else
           {
