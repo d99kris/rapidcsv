@@ -984,9 +984,13 @@ namespace rapidcsv
       std::vector<char> buffer(bufLength);
       std::vector<std::string> row;
       std::string cell;
-      bool quoted = false;
       int cr = 0;
       int lf = 0;
+      enum {
+        NOT_QUOTED,
+        SINGLE_QUOTE,
+        DOUBLE_QUOTE,
+      } quoted = NOT_QUOTED;
 
       while (fileLength > 0)
       {
@@ -994,11 +998,23 @@ namespace rapidcsv
         pStream.read(buffer.data(), readLength);
         for (int i = 0; i < readLength; ++i)
         {
-          if (buffer[i] == '"')
+          if (buffer[i] == '\"')
           {
-            if (cell.empty() || cell[0] == '"')
-            {
-              quoted = !quoted;
+            if (quoted == NOT_QUOTED && Trim(cell).empty()) {
+              quoted = DOUBLE_QUOTE;
+            }
+            else if (quoted == DOUBLE_QUOTE && Trim(cell)[0] == '\"') {
+              quoted = NOT_QUOTED;
+            }
+            cell += buffer[i];
+          }
+          else if (buffer[i] == '\'')
+          {
+            if (quoted == NOT_QUOTED && Trim(cell).empty()) {
+              quoted == SINGLE_QUOTE;
+            }
+            else if (quoted == SINGLE_QUOTE && Trim(cell)[0] == '\'') {
+              quoted = NOT_QUOTED;
             }
             cell += buffer[i];
           }
@@ -1027,7 +1043,7 @@ namespace rapidcsv
             }
             mData.push_back(row);
             row.clear();
-            quoted = false; // disallow line breaks in quoted string, by auto-unquote at linebreak
+            quoted = NOT_QUOTED; // disallow line breaks in quoted string, by auto-unquote at linebreak
           }
           else
           {
@@ -1119,13 +1135,18 @@ namespace rapidcsv
         for (auto itc = itr->begin(); itc != itr->end(); ++itc)
         {
           if ((std::string::npos == itc->find(mSeparatorParams.mSeparator)) ||
-              ((itc->length() >= 2) && ((*itc)[0] == '\"') && ((*itc)[itc->length() - 1] == '\"')))
+              ((itc->length() >= 2) && (((Trim(*itc).front() == '\"') && (Trim(*itc).back() == '\"')) ||
+                                        ((Trim(*itc).front() == '\'') && (Trim(*itc).back() == '\'')))))
           {
             pStream << *itc;
           }
           else
           {
-            pStream << '"' << *itc << '"';
+            if (itc->find('\"') == std::string::npos) {
+              pStream << '\"' << *itc << '\"';
+            } else {
+              pStream << '\'' << *itc << '\'';
+            }
           }
 
           if (std::distance(itc, itr->end()) > 1)
