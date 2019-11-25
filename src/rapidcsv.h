@@ -1007,20 +1007,20 @@ namespace rapidcsv
         {
           if (buffer[i] == '\"')
           {
-            if (quoted == NOT_QUOTED && Trim(cell).empty()) {
+            if (quoted == NOT_QUOTED && (cell.empty() || cell[0] == '\"')) {
               quoted = DOUBLE_QUOTE;
             }
-            else if (quoted == DOUBLE_QUOTE && Trim(cell)[0] == '\"') {
+            else if (quoted == DOUBLE_QUOTE && cell[0] == '\"') {
               quoted = NOT_QUOTED;
             }
             cell += buffer[i];
           }
           else if (buffer[i] == '\'')
           {
-            if (quoted == NOT_QUOTED && Trim(cell).empty()) {
-              quoted == SINGLE_QUOTE;
+            if (quoted == NOT_QUOTED && (cell.empty() || cell[0] == '\'')) {
+              quoted = SINGLE_QUOTE;
             }
-            else if (quoted == SINGLE_QUOTE && Trim(cell)[0] == '\'') {
+            else if (quoted == SINGLE_QUOTE && cell[0] == '\'') {
               quoted = NOT_QUOTED;
             }
             cell += buffer[i];
