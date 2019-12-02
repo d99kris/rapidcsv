@@ -303,17 +303,20 @@ namespace rapidcsv
   {
     /**
      * @brief   Constructor
-     * @param   pSeparator            specifies the column separator (default ',').
-     * @param   pTrim                 specifies whether to trim leading and trailing spaces from 
-     *                                cells read.
-     * @param   pHasCR                specifies whether a new document (i.e. not an existing document read)
-     *                                should use CR/LF instead of only LF (default is to use standard
-     *                                behavior of underlying platforms - CR/LF for Win, and LF for others).
+     * @param   pSeparator              specifies the column separator (default ',').
+     * @param   pTrim                   specifies whether to trim leading and trailing spaces from
+     *                                  cells read.
+     * @param   pDropEmptyTrailingCells specifies, whether to drop empty cells at the end of each CSV line,
+     *                                  in case the last separator is immediately followed by a line break.
+     * @param   pHasCR                  specifies whether a new document (i.e. not an existing document read)
+     *                                  should use CR/LF instead of only LF (default is to use standard
+     *                                  behavior of underlying platforms - CR/LF for Win, and LF for others).
      */
     explicit SeparatorParams(const char pSeparator = ',', const bool pTrim = false,
-                             const bool pHasCR = sPlatformHasCR)
+                             const bool pDropEmptyTrailingCells = false, const bool pHasCR = sPlatformHasCR)
       : mSeparator(pSeparator)
       , mTrim(pTrim)
+      , mDropEmptyTrailingCells(pDropEmptyTrailingCells)
       , mHasCR(pHasCR)
     {
     }
@@ -327,6 +330,12 @@ namespace rapidcsv
      * @brief   specifies whether to trim leading and trailing spaces from cells read.
      */
     bool mTrim;
+
+    /**
+     * @brief   specifies, whether to drop empty cells at the end of each CSV line,
+     *          in case the last separator is immediately followed by a line break.
+     */
+    bool mDropEmptyTrailingCells;
 
     /**
      * @brief   specifies whether new documents should use CR/LF instead of LF.
@@ -1021,7 +1030,8 @@ namespace rapidcsv
           else if (buffer[i] == '\n')
           {
             ++lf;
-            if (!cell.empty()) {
+            if (!mSeparatorParams.mDropEmptyTrailingCells ||
+                (mSeparatorParams.mDropEmptyTrailingCells && !cell.empty())) {
               row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
               cell.clear();
             }
