@@ -2,9 +2,9 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  4.10
+ * Version:  5.00
  *
- * Copyright (C) 2017-2019 Kristofer Berggren
+ * Copyright (C) 2017-2019 Kristofer Berggren and contributors.
  * All rights reserved.
  *
  * rapidcsv is distributed under the BSD 3-Clause license, see LICENSE for details.
