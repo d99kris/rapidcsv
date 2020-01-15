@@ -122,3 +122,5 @@ add_executable(ex005 examples/ex005.cpp)
 add_executable(ex006 examples/ex006.cpp)
 add_executable(ex007 examples/ex007.cpp)
 add_executable(ex008 examples/ex008.cpp)
+add_executable(ex009 examples/ex009.cpp)
+

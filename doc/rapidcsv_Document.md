@@ -5,7 +5,7 @@ Class representing a CSV document.
 ---
 
 ```c++
-Document (const std::string & pPath = std::string(), const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), bool pHasDefaultConverter = false)
+Document (const std::string & pPath = std::string(), const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
 ```
 Constructor. 
 
@@ -13,12 +13,12 @@ Constructor.
 - `pPath` specifies the path of an existing CSV-file to populate the Document data with. 
 - `pLabelParams` specifies which row and column should be treated as labels. 
 - `pSeparatorParams` specifies which field and row separators should be used. 
-- `pHasDefaultConverter` specifies if conversion of non-numerical strings shall be converted to a default value, instead of causing an exception to be thrown (default). 
+- `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
 
 ---
 
 ```c++
-Document (std::istream & pStream, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), bool pHasDefaultConverter = false)
+Document (std::istream & pStream, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
 ```
 Constructor. 
 
@@ -26,7 +26,7 @@ Constructor.
 - `pStream` specifies an input stream to read CSV data from. 
 - `pLabelParams` specifies which row and column should be treated as labels. 
 - `pSeparatorParams` specifies which field and row separators should be used. 
-- `pHasDefaultConverter` specifies if conversion of non-numerical strings shall be converted to a default value, instead of causing an exception to be thrown (default). 
+- `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
 
 ---
 
@@ -41,22 +41,7 @@ Copy constructor.
 ---
 
 ```c++
-template<typename T > T GetCell (size_t pColumnIdx, size_t pRowIdx, const Converter< T > & pConverter)
-```
-Get cell by index using custom converter. 
-
-**Parameters**
-- `pColumnIdx` zero-based column index. 
-- `pRowIdx` zero-based row index. 
-- `pConverter` converter for custom datatype conversion. 
-
-**Returns:**
-- cell data. 
-
----
-
-```c++
-template<typename T > T GetCell (size_t pColumnIdx, size_t pRowIdx)
+template<typename T > T GetCell (const size_t pColumnIdx, const size_t pRowIdx)
 ```
 Get cell by index. 
 
@@ -70,14 +55,14 @@ Get cell by index.
 ---
 
 ```c++
-template<typename T > T GetCell (const std::string & pColumnName, const std::string & pRowName, const Converter< T > & pConverter)
+template<typename T > T GetCell (const size_t pColumnIdx, const size_t pRowIdx, ConvFunc< T > pToVal)
 ```
-Get cell by index using custom converter. 
+Get cell by index. 
 
 **Parameters**
-- `pColumnName` column label name. 
-- `pRowName` row label name. 
-- `pConverter` converter for custom datatype conversion. 
+- `pColumnIdx` zero-based column index. 
+- `pRowIdx` zero-based row index. 
+- `pToVal` conversion function. 
 
 **Returns:**
 - cell data. 
@@ -99,14 +84,14 @@ Get cell by name.
 ---
 
 ```c++
-template<typename T > T GetCell (const std::string & pColumnName, const size_t pRowIdx, const Converter< T > & pConverter)
+template<typename T > T GetCell (const std::string & pColumnName, const std::string & pRowName, ConvFunc< T > pToVal)
 ```
-Get cell by name using custom converter. 
+Get cell by name. 
 
 **Parameters**
 - `pColumnName` column label name. 
-- `pRowIdx` zero-based row index. 
-- `pConverter` converter for custom datatype conversion. 
+- `pRowName` row label name. 
+- `pToVal` conversion function. 
 
 **Returns:**
 - cell data. 
@@ -128,14 +113,14 @@ Get cell by column name and row index.
 ---
 
 ```c++
-template<typename T > T GetCell (const size_t pColumnIdx, const std::string & pRowName, const Converter< T > & pConverter)
+template<typename T > T GetCell (const std::string & pColumnName, const size_t pRowIdx, ConvFunc< T > pToVal)
 ```
-Get cell by column name and row index using custom converter. 
+Get cell by column name and row index. 
 
 **Parameters**
-- `pColumnIdx` zero-based column index. 
-- `pRowName` row label name. 
-- `pConverter` converter for custom datatype conversion. 
+- `pColumnName` column label name. 
+- `pRowIdx` zero-based row index. 
+- `pToVal` conversion function. 
 
 **Returns:**
 - cell data. 
@@ -157,16 +142,17 @@ Get cell by column index and row name.
 ---
 
 ```c++
-template<typename T > std::vector<T> GetColumn (const size_t pColumnIdx, const Converter< T > & pConverter)
+template<typename T > T GetCell (const size_t pColumnIdx, const std::string & pRowName, ConvFunc< T > pToVal)
 ```
-Get column by index using custom converter. 
+Get cell by column index and row name. 
 
 **Parameters**
 - `pColumnIdx` zero-based column index. 
-- `pConverter` converter for custom datatype conversion. 
+- `pRowName` row label name. 
+- `pToVal` conversion function. 
 
 **Returns:**
-- vector of column data. 
+- cell data. 
 
 ---
 
@@ -184,13 +170,13 @@ Get column by index.
 ---
 
 ```c++
-template<typename T > std::vector<T> GetColumn (const std::string & pColumnName, const Converter< T > & pConverter)
+template<typename T > std::vector<T> GetColumn (const size_t pColumnIdx, ConvFunc< T > pToVal)
 ```
-Get column by name using custom converter. 
+Get column by index. 
 
 **Parameters**
-- `pColumnName` column label name. 
-- `pConverter` converter for custom datatype conversion. 
+- `pColumnIdx` zero-based column index. 
+- `pToVal` conversion function. 
 
 **Returns:**
 - vector of column data. 
@@ -204,6 +190,20 @@ Get column by name.
 
 **Parameters**
 - `pColumnName` column label name. 
+
+**Returns:**
+- vector of column data. 
+
+---
+
+```c++
+template<typename T > std::vector<T> GetColumn (const std::string & pColumnName, ConvFunc< T > pToVal)
+```
+Get column by name. 
+
+**Parameters**
+- `pColumnName` column label name. 
+- `pToVal` conversion function. 
 
 **Returns:**
 - vector of column data. 
@@ -257,12 +257,40 @@ Get row by index.
 ---
 
 ```c++
+template<typename T > std::vector<T> GetRow (const size_t pRowIdx, ConvFunc< T > pToVal)
+```
+Get row by index. 
+
+**Parameters**
+- `pRowIdx` zero-based row index. 
+- `pToVal` conversion function. 
+
+**Returns:**
+- vector of row data. 
+
+---
+
+```c++
 template<typename T > std::vector<T> GetRow (const std::string & pRowName)
 ```
 Get row by name. 
 
 **Parameters**
 - `pRowName` row label name. 
+
+**Returns:**
+- vector of row data. 
+
+---
+
+```c++
+template<typename T > std::vector<T> GetRow (const std::string & pRowName, ConvFunc< T > pToVal)
+```
+Get row by name. 
+
+**Parameters**
+- `pRowName` row label name. 
+- `pToVal` conversion function. 
 
 **Returns:**
 - vector of row data. 
@@ -373,19 +401,6 @@ Write Document data to stream.
 ---
 
 ```c++
-template<typename T > void SetCell (const size_t pColumnIdx, const size_t pRowIdx, const T & pCell, const Converter< T > & pConverter)
-```
-Set cell by index using custom converter. 
-
-**Parameters**
-- `pRowIdx` zero-based row index. 
-- `pColumnIdx` zero-based column index. 
-- `pCell` cell data. 
-- `pConverter` converter for custom datatype conversion. 
-
----
-
-```c++
 template<typename T > void SetCell (const size_t pColumnIdx, const size_t pRowIdx, const T & pCell)
 ```
 Set cell by index. 
@@ -398,19 +413,6 @@ Set cell by index.
 ---
 
 ```c++
-template<typename T > void SetCell (const std::string & pColumnName, const std::string & pRowName, const T & pCell, const Converter< T > & pConverter)
-```
-Set cell by name using custom converter. 
-
-**Parameters**
-- `pColumnName` column label name. 
-- `pRowName` row label name. 
-- `pCell` cell data. 
-- `pConverter` converter for custom datatype conversion. 
-
----
-
-```c++
 template<typename T > void SetCell (const std::string & pColumnName, const std::string & pRowName, const T & pCell)
 ```
 Set cell by name. 
@@ -419,18 +421,6 @@ Set cell by name.
 - `pColumnName` column label name. 
 - `pRowName` row label name. 
 - `pCell` cell data. 
-
----
-
-```c++
-template<typename T > void SetColumn (const size_t pColumnIdx, const std::vector< T > & pColumn, const Converter< T > & pConverter)
-```
-Set column by index using custom converter. 
-
-**Parameters**
-- `pColumnIdx` zero-based column index. 
-- `pColumn` vector of column data. 
-- `pConverter` converter for custom datatype conversion. 
 
 ---
 

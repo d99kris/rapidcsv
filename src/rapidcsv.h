@@ -2,9 +2,9 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  5.01
+ * Version:  6.00
  *
- * Copyright (C) 2017-2019 Kristofer Berggren and contributors.
+ * Copyright (C) 2017-2020 Kristofer Berggren
  * All rights reserved.
  *
  * rapidcsv is distributed under the BSD 3-Clause license, see LICENSE for details.
@@ -20,6 +20,7 @@
 #include <codecvt>
 #endif
 #include <fstream>
+#include <functional>
 #include <iostream>
 #include <map>
 #include <sstream>
@@ -39,6 +40,46 @@ namespace rapidcsv
 #else
   static const bool sPlatformHasCR = false;
 #endif
+
+  /**
+   * @brief     Datastructure holding parameters controlling how invalid numbers (including
+   *            empty strings) should be handled.
+   */
+  struct ConverterParams
+  {
+    /**
+     * @brief   Constructor
+     * @param   pHasDefaultConverter  specifies if conversion of non-numerical strings shall be
+     *                                converted to a default numerical value, instead of causing
+     *                                an exception to be thrown (default).
+     * @param   pDefaultFloat         floating-point default value to represent invalid numbers.
+     * @param   pDefaultInteger       integer default value to represent invalid numbers.
+     */
+    explicit ConverterParams(const bool pHasDefaultConverter = false,
+                             const long double pDefaultFloat = std::numeric_limits<long double>::signaling_NaN(),
+                             const long long pDefaultInteger = 0)
+      : mHasDefaultConverter(pHasDefaultConverter)
+      , mDefaultFloat(pDefaultFloat)
+      , mDefaultInteger(pDefaultInteger)
+    {
+    }
+
+    /**
+     * @brief   specifies if conversion of non-numerical strings shall be converted to a default
+     *          numerical value, instead of causing an exception to be thrown (default).
+     */
+    bool mHasDefaultConverter;
+
+    /**
+     * @brief   floating-point default value to represent invalid numbers.
+     */
+    long double mDefaultFloat;
+
+    /**
+     * @brief   integer default value to represent invalid numbers.
+     */
+    long long mDefaultInteger;
+  };
 
   /**
    * @brief     Exception thrown when attempting to access Document data in a datatype which
@@ -67,130 +108,140 @@ namespace rapidcsv
   public:
     /**
      * @brief   Constructor
-     * @param   pHasDefaultConverter  specifies if conversion of non-numerical strings shall be
-     *                                converted to a default value, instead of causing
-     *                                an exception to be thrown (default).
-     * @param   pDefaultVal           default value to represent invalid numbers.
+     * @param   pConverterParams      specifies how conversion of non-numerical values to
+     *                                numerical datatype shall be handled.
      */
-    explicit Converter(bool pHasDefaultConverter, const T& pDefaultVal)
-      : mHasDefaultConverter(pHasDefaultConverter)
-      , mDefaultVal(pDefaultVal)
-    {
-    }
-
-    /**
-     * @brief   Constructor
-     * @param   pHasDefaultConverter  specifies if conversion of non-numerical strings shall be
-     *                                converted to a default value, instead of causing
-     *                                an exception to be thrown (default).
-     */
-    explicit Converter(bool pHasDefaultConverter)
-      : mHasDefaultConverter(pHasDefaultConverter)
-      , mDefaultVal(0)
-    {
-    }
-
-    /**
-     * @brief   Constructor
-     */
-    explicit Converter()
-      : Converter(false)
+    Converter(const ConverterParams& pConverterParams)
+      : mConverterParams(pConverterParams)
     {
     }
 
     /**
      * @brief   Converts numerical value to string representation.
-     * @param   pVal                  value
+     * @param   pVal                  numerical value
      * @param   pStr                  output string
      */
-    virtual void ToStr(const T& pVal, std::string& pStr) const
+    void ToStr(const T& pVal, std::string& pStr) const
     {
-      pStr = std::to_string(pVal);
+      if (typeid(T) == typeid(int) ||
+          typeid(T) == typeid(long) ||
+          typeid(T) == typeid(long long) ||
+          typeid(T) == typeid(unsigned) ||
+          typeid(T) == typeid(unsigned long) ||
+          typeid(T) == typeid(unsigned long long) ||
+          typeid(T) == typeid(float) ||
+          typeid(T) == typeid(double) ||
+          typeid(T) == typeid(long double) ||
+          typeid(T) == typeid(char))
+      {
+        std::ostringstream out;
+        out << pVal;
+        pStr = out.str();
+      }
+      else
+      {
+        throw no_converter();
+      }
     }
 
     /**
      * @brief   Converts string holding a numerical value to numerical datatype representation.
-     * @param   pVal                  value
+     * @param   pVal                  numerical value
      * @param   pStr                  output string
      */
-    virtual void ToVal(const std::string& pStr, T& pVal) const
+    void ToVal(const std::string& pStr, T& pVal) const
     {
-      pVal = static_cast<T>(pStr[0]);
-    }
-
-  private:
-
-    void ToDefaultVal(T& pVal) const
-    {
-      if (!mHasDefaultConverter)
+      try
       {
-        throw;
+        if (typeid(T) == typeid(int))
+        {
+          pVal = static_cast<T>(std::stoi(pStr));
+          return;
+        }
+        else if (typeid(T) == typeid(long))
+        {
+          pVal = static_cast<T>(std::stol(pStr));
+          return;
+        }
+        else if (typeid(T) == typeid(long long))
+        {
+          pVal = static_cast<T>(std::stoll(pStr));
+          return;
+        }
+        else if (typeid(T) == typeid(unsigned))
+        {
+          pVal = static_cast<T>(std::stoul(pStr));
+          return;
+        }
+        else if (typeid(T) == typeid(unsigned long))
+        {
+          pVal = static_cast<T>(std::stoul(pStr));
+          return;
+        }
+        else if (typeid(T) == typeid(unsigned long long))
+        {
+          pVal = static_cast<T>(std::stoull(pStr));
+          return;
+        }
+      }
+      catch (...)
+      {
+        if (!mConverterParams.mHasDefaultConverter)
+        {
+          throw;
+        }
+        else
+        {
+          pVal = static_cast<T>(mConverterParams.mDefaultInteger);
+          return;
+        }
+      }
+
+      try
+      {
+        if (typeid(T) == typeid(float))
+        {
+          pVal = static_cast<T>(std::stof(pStr));
+          return;
+        }
+        else if (typeid(T) == typeid(double))
+        {
+          pVal = static_cast<T>(std::stod(pStr));
+          return;
+        }
+        else if (typeid(T) == typeid(long double))
+        {
+          pVal = static_cast<T>(std::stold(pStr));
+          return;
+        }
+      }
+      catch (...)
+      {
+        if (!mConverterParams.mHasDefaultConverter)
+        {
+          throw;
+        }
+        else
+        {
+          pVal = static_cast<T>(mConverterParams.mDefaultFloat);
+          return;
+        }
+      }
+
+      if (typeid(T) == typeid(char))
+      {
+        pVal = static_cast<T>(pStr[0]);
+        return;
       }
       else
       {
-        pVal = mDefaultVal;
+        throw no_converter();
       }
     }
 
-    /**
-     * @brief   specifies if conversion of non-numerical strings shall be converted to a default
-     *          value, instead of causing an exception to be thrown (default).
-     */
-    bool mHasDefaultConverter;
-
-    /**
-     * @brief   default value to represent invalid values.
-     */
-    T mDefaultVal;
+  private:
+    const ConverterParams& mConverterParams;
   };
-
-  /**
-   * @brief     Specialized constructor handling string conversion.
-   * @param     pHasDefaultConverter  specifies if conversion of non-numerical strings shall be
-   *                                  converted to a default value, instead of causing
-   *                                  an exception to be thrown (default).      
-   */
-  template<>
-  inline Converter<std::string>::Converter(bool pHasDefaultConverter)
-    : Converter(pHasDefaultConverter, "")
-  {
-  }
-
-  /**
-   * @brief     Specialized constructor handling float conversion.
-   * @param     pHasDefaultConverter  specifies if conversion of non-numerical strings shall be
-   *                                  converted to a default value, instead of causing
-   *                                  an exception to be thrown (default).      
-   */
-  template<>
-  inline Converter<float>::Converter(bool pHasDefaultConverter)
-    : Converter(pHasDefaultConverter, std::numeric_limits<float>::signaling_NaN())
-  {
-  }
-
-  /**
-   * @brief     Specialized constructor handling double conversion.
-   * @param     pHasDefaultConverter  specifies if conversion of non-numerical strings shall be
-   *                                  converted to a default value, instead of causing
-   *                                  an exception to be thrown (default).      
-   */
-  template<>
-  inline Converter<double>::Converter(bool pHasDefaultConverter)
-    : Converter(pHasDefaultConverter, std::numeric_limits<double>::signaling_NaN())
-  {
-  }
-
-  /**
-   * @brief     Specialized constructor handling long double conversion.
-   * @param     pHasDefaultConverter  specifies if conversion of non-numerical strings shall be
-   *                                  converted to a default value, instead of causing
-   *                                  an exception to be thrown (default).      
-   */
-  template<>
-  inline Converter<long double>::Converter(bool pHasDefaultConverter)
-    : Converter(pHasDefaultConverter, std::numeric_limits<long double>::signaling_NaN())
-  {
-  }
 
   /**
    * @brief     Specialized implementation handling string to string conversion.
@@ -204,30 +255,6 @@ namespace rapidcsv
   }
 
   /**
-   * @brief     Specialized implementation handling char to string conversion.
-   * @param     pVal                  char
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<char>::ToStr(const char& pVal, std::string& pStr) const
-  {
-    pStr = pVal;
-  }
-
-  /**
-   * @brief     Specialized implementation handling double to string conversion.
-   * @param     pVal                  double
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<double>::ToStr(const double& pVal, std::string& pStr) const
-  {
-    std::ostringstream out;
-    out << pVal;
-    pStr = out.str();
-  }
-
-  /**
    * @brief     Specialized implementation handling string to string conversion.
    * @param     pVal                  string
    * @param     pStr                  string
@@ -238,178 +265,8 @@ namespace rapidcsv
     pVal = pStr;
   }
 
-  /**
-   * @brief     Specialized implementation handling int to string conversion.
-   * @param     pVal                  int
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<int>::ToVal(const std::string& pStr, int& pVal) const
-  {
-    try
-    {
-      pVal = static_cast<int>(std::stoi(pStr));
-    }
-    catch (...)
-    {
-      Converter<int>::ToDefaultVal(pVal);
-    }
-  }
-
-  /**
-   * @brief     Specialized implementation handling long to string conversion.
-   * @param     pVal                  long
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<long>::ToVal(const std::string& pStr, long& pVal) const
-  {
-    try
-    {
-      pVal = static_cast<long>(std::stol(pStr));
-    }
-    catch (...)
-    {
-      Converter<long>::ToDefaultVal(pVal);
-    }
-  }
-
-  /**
-   * @brief     Specialized implementation handling long long to string conversion.
-   * @param     pVal                  long long
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<long long>::ToVal(const std::string& pStr, long long& pVal) const
-  {
-    try
-    {
-      pVal = static_cast<long long>(std::stoll(pStr));
-    }
-    catch (...)
-    {
-      Converter<long long>::ToDefaultVal(pVal);
-    }
-  }
-
-  /**
-   * @brief     Specialized implementation handling unsigned to string conversion.
-   * @param     pVal                  unsigned
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<unsigned>::ToVal(const std::string& pStr, unsigned& pVal) const
-  {
-    try
-    {
-      pVal = static_cast<unsigned>(std::stoul(pStr));
-    }
-    catch (...)
-    {
-      Converter<unsigned>::ToDefaultVal(pVal);
-    }
-  }
-
-  /**
-   * @brief     Specialized implementation handling unsigned long to string conversion.
-   * @param     pVal                  unsigned long
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<unsigned long>::ToVal(const std::string& pStr, unsigned long& pVal) const
-  {
-    try
-    {
-      pVal = static_cast<unsigned long>(std::stoul(pStr));
-    }
-    catch (...)
-    {
-      Converter<unsigned long>::ToDefaultVal(pVal);
-    }
-  }
-
-  /**
-   * @brief     Specialized implementation handling unsigned long long to string conversion.
-   * @param     pVal                  unsigned long long
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<unsigned long long>::ToVal(const std::string& pStr, unsigned long long& pVal) const
-  {
-    try
-    {
-      pVal = static_cast<unsigned long long>(std::stoull(pStr));
-    }
-    catch (...)
-    {
-      Converter<unsigned long long>::ToDefaultVal(pVal);
-    }
-  }
-
-  /**
-   * @brief     Specialized implementation handling float to string conversion.
-   * @param     pVal                  float
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<float>::ToVal(const std::string& pStr, float& pVal) const
-  {
-    try
-    {
-      pVal = static_cast<float>(std::stof(pStr));
-    }
-    catch (...)
-    {
-      Converter<float>::ToDefaultVal(pVal);
-    }
-  }
-
-  /**
-   * @brief     Specialized implementation handling double to string conversion.
-   * @param     pVal                  double
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<double>::ToVal(const std::string& pStr, double& pVal) const
-  {
-    try
-    {
-      pVal = static_cast<double>(std::stod(pStr));
-    }
-    catch (...)
-    {
-      Converter<double>::ToDefaultVal(pVal);
-    }
-  }
-
-  /**
-   * @brief     Specialized implementation handling long double to string conversion.
-   * @param     pVal                  long double
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<long double>::ToVal(const std::string& pStr, long double& pVal) const
-  {
-    try
-    {
-      pVal = static_cast<long double>(std::stold(pStr));
-    }
-    catch (...)
-    {
-      Converter<long double>::ToDefaultVal(pVal);
-    }
-  }
-
-  /**
-   * @brief     Specialized implementation handling bool to string conversion.
-   * @param     pVal                  bool
-   * @param     pStr                  string
-   */
-  template<>
-  inline void Converter<bool>::ToVal(const std::string& pStr, bool& pVal) const
-  {
-    pVal = (pStr == "true");
-  }
+  template<typename T>
+  using ConvFunc = std::function<void(const std::string & pStr, T & pVal)>;
 
   /**
    * @brief     Datastructure holding parameters controlling which row and column should be
@@ -493,18 +350,17 @@ namespace rapidcsv
      *                                data with.
      * @param   pLabelParams          specifies which row and column should be treated as labels.
      * @param   pSeparatorParams      specifies which field and row separators should be used.
-     * @param   pHasDefaultConverter  specifies if conversion of non-numerical strings shall be
-     *                                converted to a default value, instead of causing
-     *                                an exception to be thrown (default).
+     * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
+     *                                handled.
      */
     explicit Document(const std::string& pPath = std::string(),
                       const LabelParams& pLabelParams = LabelParams(),
                       const SeparatorParams& pSeparatorParams = SeparatorParams(),
-                      bool pHasDefaultConverter = false)
+                      const ConverterParams& pConverterParams = ConverterParams())
       : mPath(pPath)
       , mLabelParams(pLabelParams)
       , mSeparatorParams(pSeparatorParams)
-      , mHasDefaultConverter(pHasDefaultConverter)
+      , mConverterParams(pConverterParams)
     {
       if (!mPath.empty())
       {
@@ -517,18 +373,17 @@ namespace rapidcsv
      * @param   pStream               specifies an input stream to read CSV data from.
      * @param   pLabelParams          specifies which row and column should be treated as labels.
      * @param   pSeparatorParams      specifies which field and row separators should be used.
-     * @param   pHasDefaultConverter  specifies if conversion of non-numerical strings shall be
-     *                                converted to a default value, instead of causing
-     *                                an exception to be thrown (default).
+     * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
+     *                                handled.
      */
     explicit Document(std::istream& pStream,
                       const LabelParams& pLabelParams = LabelParams(),
                       const SeparatorParams& pSeparatorParams = SeparatorParams(),
-                      bool pHasDefaultConverter = false)
+                      const ConverterParams& pConverterParams = ConverterParams())
       : mPath()
       , mLabelParams(pLabelParams)
       , mSeparatorParams(pSeparatorParams)
-      , mHasDefaultConverter(pHasDefaultConverter)
+      , mConverterParams(pConverterParams)
     {
       ReadCsv(pStream);
     }
@@ -542,7 +397,7 @@ namespace rapidcsv
       : mPath(pDocument.mPath)
       , mLabelParams(pDocument.mLabelParams)
       , mSeparatorParams(pDocument.mSeparatorParams)
-      , mHasDefaultConverter(pDocument.mHasDefaultConverter)
+      , mConverterParams(pDocument.mConverterParams)
       , mData(pDocument.mData)
       , mColumnNames(pDocument.mColumnNames)
       , mRowNames(pDocument.mRowNames)
@@ -585,22 +440,22 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   Get column by index using custom converter.
+     * @brief   Get column by index.
      * @param   pColumnIdx            zero-based column index.
-     * @param   pConverter            converter for custom datatype conversion.
      * @returns vector of column data.
      */
     template<typename T>
-    std::vector<T> GetColumn(const size_t pColumnIdx, const Converter<T>& pConverter) const
+    std::vector<T> GetColumn(const size_t pColumnIdx) const
     {
       const ssize_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
       std::vector<T> column;
+      Converter<T> converter(mConverterParams);
       for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
       {
         if (std::distance(mData.begin(), itRow) > mLabelParams.mColumnNameIdx)
         {
           T val;
-          pConverter.ToVal(itRow->at(columnIdx), val);
+          converter.ToVal(itRow->at(columnIdx), val);
           column.push_back(val);
         }
       }
@@ -610,29 +465,24 @@ namespace rapidcsv
     /**
      * @brief   Get column by index.
      * @param   pColumnIdx            zero-based column index.
+     * @param   pToVal                conversion function.
      * @returns vector of column data.
      */
     template<typename T>
-    std::vector<T> GetColumn(const size_t pColumnIdx) const
+    std::vector<T> GetColumn(const size_t pColumnIdx, ConvFunc<T> pToVal) const
     {
-      return GetColumn<T>(pColumnIdx, Converter<T>(mHasDefaultConverter));
-    }
-
-    /**
-     * @brief   Get column by name using custom converter.
-     * @param   pColumnName           column label name.
-     * @param   pConverter            converter for custom datatype conversion.
-     * @returns vector of column data.
-     */
-    template<typename T>
-    std::vector<T> GetColumn(const std::string& pColumnName, const Converter<T>& pConverter) const
-    {
-      const ssize_t columnIdx = GetColumnIdx(pColumnName);
-      if (columnIdx < 0)
+      const ssize_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
+      std::vector<T> column;
+      for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
       {
-        throw std::out_of_range("column not found: " + pColumnName);
+        if (std::distance(mData.begin(), itRow) > mLabelParams.mColumnNameIdx)
+        {
+          T val;
+          pToVal(itRow->at(columnIdx), val);
+          column.push_back(val);
+        }
       }
-      return GetColumn<T>(columnIdx, pConverter);
+      return column;
     }
 
     /**
@@ -643,17 +493,38 @@ namespace rapidcsv
     template<typename T>
     std::vector<T> GetColumn(const std::string& pColumnName) const
     {
-      return GetColumn<T>(pColumnName, Converter<T>(mHasDefaultConverter));
+      const ssize_t columnIdx = GetColumnIdx(pColumnName);
+      if (columnIdx < 0)
+      {
+        throw std::out_of_range("column not found: " + pColumnName);
+      }
+      return GetColumn<T>(columnIdx);
     }
 
     /**
-     * @brief   Set column by index using custom converter.
-     * @param   pColumnIdx            zero-based column index.
-     * @param   pColumn               vector of column data.
-     * @param   pConverter            converter for custom datatype conversion.
+     * @brief   Get column by name.
+     * @param   pColumnName           column label name.
+     * @param   pToVal                conversion function.
+     * @returns vector of column data.
      */
     template<typename T>
-    void SetColumn(const size_t pColumnIdx, const std::vector<T>& pColumn, const Converter<T>& pConverter)
+    std::vector<T> GetColumn(const std::string& pColumnName, ConvFunc<T> pToVal) const
+    {
+      const ssize_t columnIdx = GetColumnIdx(pColumnName);
+      if (columnIdx < 0)
+      {
+        throw std::out_of_range("column not found: " + pColumnName);
+      }
+      return GetColumn<T>(columnIdx, pToVal);
+    }
+
+    /**
+     * @brief   Set column by index.
+     * @param   pColumnIdx            zero-based column index.
+     * @param   pColumn               vector of column data.
+     */
+    template<typename T>
+    void SetColumn(const size_t pColumnIdx, const std::vector<T>& pColumn)
     {
       const size_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
 
@@ -672,23 +543,13 @@ namespace rapidcsv
         }
       }
 
+      Converter<T> converter(mConverterParams);
       for (auto itRow = pColumn.begin(); itRow != pColumn.end(); ++itRow)
       {
         std::string str;
-        pConverter.ToStr(*itRow, str);
+        converter.ToStr(*itRow, str);
         mData.at(std::distance(pColumn.begin(), itRow) + (mLabelParams.mColumnNameIdx + 1)).at(columnIdx) = str;
       }
-    }
-
-    /**
-     * @brief   Set column by index.
-     * @param   pColumnIdx            zero-based column index.
-     * @param   pColumn               vector of column data.
-     */
-    template<typename T>
-    void SetColumn(const size_t pColumnIdx, const std::vector<T>& pColumn)
-    {
-      SetColumn(pColumnIdx, pColumn, Converter<T>(mHasDefaultConverter));
     }
 
     /**
@@ -754,13 +615,37 @@ namespace rapidcsv
     {
       const ssize_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
       std::vector<T> row;
-      Converter<T> converter(mHasDefaultConverter);
+      Converter<T> converter(mConverterParams);
       for (auto itCol = mData.at(rowIdx).begin(); itCol != mData.at(rowIdx).end(); ++itCol)
       {
         if (std::distance(mData.at(rowIdx).begin(), itCol) > mLabelParams.mRowNameIdx)
         {
           T val;
           converter.ToVal(*itCol, val);
+          row.push_back(val);
+        }
+      }
+      return row;
+    }
+
+    /**
+     * @brief   Get row by index.
+     * @param   pRowIdx               zero-based row index.
+     * @param   pToVal                conversion function.
+     * @returns vector of row data.
+     */
+    template<typename T>
+    std::vector<T> GetRow(const size_t pRowIdx, ConvFunc<T> pToVal) const
+    {
+      const ssize_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
+      std::vector<T> row;
+      Converter<T> converter(mConverterParams);
+      for (auto itCol = mData.at(rowIdx).begin(); itCol != mData.at(rowIdx).end(); ++itCol)
+      {
+        if (std::distance(mData.at(rowIdx).begin(), itCol) > mLabelParams.mRowNameIdx)
+        {
+          T val;
+          pToVal(*itCol, val);
           row.push_back(val);
         }
       }
@@ -781,6 +666,23 @@ namespace rapidcsv
         throw std::out_of_range("row not found: " + pRowName);
       }
       return GetRow<T>(rowIdx);
+    }
+
+    /**
+     * @brief   Get row by name.
+     * @param   pRowName              row label name.
+     * @param   pToVal                conversion function.
+     * @returns vector of row data.
+     */
+    template<typename T>
+    std::vector<T> GetRow(const std::string& pRowName, ConvFunc<T> pToVal) const
+    {
+      ssize_t rowIdx = GetRowIdx(pRowName);
+      if (rowIdx < 0)
+      {
+        throw std::out_of_range("row not found: " + pRowName);
+      }
+      return GetRow<T>(rowIdx, pToVal);
     }
 
     /**
@@ -808,7 +710,7 @@ namespace rapidcsv
         }
       }
 
-      Converter<T> converter(mHasDefaultConverter);
+      Converter<T> converter(mConverterParams);
       for (auto itCol = pRow.begin(); itCol != pRow.end(); ++itCol)
       {
         std::string str;
@@ -868,20 +770,20 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   Get cell by index using custom converter.
+     * @brief   Get cell by index.
      * @param   pColumnIdx            zero-based column index.
      * @param   pRowIdx               zero-based row index.
-     * @param   pConverter            converter for custom datatype conversion.
      * @returns cell data.
      */
     template<typename T>
-    T GetCell(size_t pColumnIdx, size_t pRowIdx, const Converter<T>& pConverter) const
+    T GetCell(const size_t pColumnIdx, const size_t pRowIdx) const
     {
       const ssize_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
       const ssize_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
 
       T val;
-      pConverter.ToVal(mData.at(rowIdx).at(columnIdx), val);
+      Converter<T> converter(mConverterParams);
+      converter.ToVal(mData.at(rowIdx).at(columnIdx), val);
       return val;
     }
 
@@ -889,37 +791,18 @@ namespace rapidcsv
      * @brief   Get cell by index.
      * @param   pColumnIdx            zero-based column index.
      * @param   pRowIdx               zero-based row index.
+     * @param   pToVal                conversion function.
      * @returns cell data.
      */
     template<typename T>
-    T GetCell(size_t pColumnIdx, size_t pRowIdx) const
+    T GetCell(const size_t pColumnIdx, const size_t pRowIdx, ConvFunc<T> pToVal) const
     {
-      return GetCell<T>(pColumnIdx, pRowIdx, Converter<T>(mHasDefaultConverter));
-    }
+      const ssize_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
+      const ssize_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
 
-    /**
-     * @brief   Get cell by index using custom converter.
-     * @param   pColumnName           column label name.
-     * @param   pRowName              row label name.
-     * @param   pConverter            converter for custom datatype conversion.
-     * @returns cell data.
-     */
-    template<typename T>
-    T GetCell(const std::string& pColumnName, const std::string& pRowName, const Converter<T>& pConverter) const
-    {
-      const ssize_t columnIdx = GetColumnIdx(pColumnName);
-      if (columnIdx < 0)
-      {
-        throw std::out_of_range("column not found: " + pColumnName);
-      }
-
-      const ssize_t rowIdx = GetRowIdx(pRowName);
-      if (rowIdx < 0)
-      {
-        throw std::out_of_range("row not found: " + pRowName);
-      }
-
-      return GetCell<T>(columnIdx, rowIdx, pConverter);
+      T val;
+      pToVal(mData.at(rowIdx).at(columnIdx), val);
+      return val;
     }
 
     /**
@@ -931,18 +814,30 @@ namespace rapidcsv
     template<typename T>
     T GetCell(const std::string& pColumnName, const std::string& pRowName) const
     {
-      return GetCell(pColumnName, pRowName, Converter<T>(mHasDefaultConverter));
+      const ssize_t columnIdx = GetColumnIdx(pColumnName);
+      if (columnIdx < 0)
+      {
+        throw std::out_of_range("column not found: " + pColumnName);
+      }
+
+      const ssize_t rowIdx = GetRowIdx(pRowName);
+      if (rowIdx < 0)
+      {
+        throw std::out_of_range("row not found: " + pRowName);
+      }
+
+      return GetCell<T>(columnIdx, rowIdx);
     }
 
     /**
-     * @brief   Get cell by name using custom converter.
+     * @brief   Get cell by name.
      * @param   pColumnName           column label name.
-     * @param   pRowIdx               zero-based row index.
-     * @param   pConverter            converter for custom datatype conversion.
+     * @param   pRowName              row label name.
+     * @param   pToVal                conversion function.
      * @returns cell data.
      */
     template<typename T>
-    T GetCell(const std::string& pColumnName, const size_t pRowIdx, const Converter<T>& pConverter) const
+    T GetCell(const std::string& pColumnName, const std::string& pRowName, ConvFunc<T> pToVal) const
     {
       const ssize_t columnIdx = GetColumnIdx(pColumnName);
       if (columnIdx < 0)
@@ -950,7 +845,13 @@ namespace rapidcsv
         throw std::out_of_range("column not found: " + pColumnName);
       }
 
-      return GetCell<T>(columnIdx, pRowIdx, pConverter);
+      const ssize_t rowIdx = GetRowIdx(pRowName);
+      if (rowIdx < 0)
+      {
+        throw std::out_of_range("row not found: " + pRowName);
+      }
+
+      return GetCell<T>(columnIdx, rowIdx, pToVal);
     }
 
     /**
@@ -962,25 +863,32 @@ namespace rapidcsv
     template<typename T>
     T GetCell(const std::string& pColumnName, const size_t pRowIdx) const
     {
-      return GetCell(pColumnName, pRowIdx, Converter<T>(mHasDefaultConverter));
+      const ssize_t columnIdx = GetColumnIdx(pColumnName);
+      if (columnIdx < 0)
+      {
+        throw std::out_of_range("column not found: " + pColumnName);
+      }
+
+      return GetCell<T>(columnIdx, pRowIdx);
     }
 
     /**
-     * @brief   Get cell by column name and row index using custom converter.
-     * @param   pColumnIdx            zero-based column index.
-     * @param   pRowName              row label name.
-     * @param   pConverter            converter for custom datatype conversion.
+     * @brief   Get cell by column name and row index.
+     * @param   pColumnName           column label name.
+     * @param   pRowIdx               zero-based row index.
+     * @param   pToVal                conversion function.
      * @returns cell data.
      */
     template<typename T>
-    T GetCell(const size_t pColumnIdx, const std::string& pRowName, const Converter<T>& pConverter) const
+    T GetCell(const std::string& pColumnName, const size_t pRowIdx, ConvFunc<T> pToVal) const
     {
-      const ssize_t rowIdx = GetRowIdx(pRowName);
-      if (rowIdx < 0)
+      const ssize_t columnIdx = GetColumnIdx(pColumnName);
+      if (columnIdx < 0)
       {
-        throw std::out_of_range("row not found: " + pRowName);
+        throw std::out_of_range("column not found: " + pColumnName);
       }
-      return GetCell<T>(pColumnIdx, rowIdx, pConverter);
+
+      return GetCell<T>(columnIdx, pRowIdx, pToVal);
     }
 
     /**
@@ -992,18 +900,42 @@ namespace rapidcsv
     template<typename T>
     T GetCell(const size_t pColumnIdx, const std::string& pRowName) const
     {
-      return GetCell(pColumnIdx, pRowName, Converter<T>(mHasDefaultConverter));
+      const ssize_t rowIdx = GetRowIdx(pRowName);
+      if (rowIdx < 0)
+      {
+        throw std::out_of_range("row not found: " + pRowName);
+      }
+
+      return GetCell<T>(pColumnIdx, rowIdx);
     }
 
     /**
-     * @brief   Set cell by index using custom converter.
+     * @brief   Get cell by column index and row name.
+     * @param   pColumnIdx            zero-based column index.
+     * @param   pRowName              row label name.
+     * @param   pToVal                conversion function.
+     * @returns cell data.
+     */
+    template<typename T>
+    T GetCell(const size_t pColumnIdx, const std::string& pRowName, ConvFunc<T> pToVal) const
+    {
+      const ssize_t rowIdx = GetRowIdx(pRowName);
+      if (rowIdx < 0)
+      {
+        throw std::out_of_range("row not found: " + pRowName);
+      }
+
+      return GetCell<T>(pColumnIdx, rowIdx, pToVal);
+    }
+
+    /**
+     * @brief   Set cell by index.
      * @param   pRowIdx               zero-based row index.
      * @param   pColumnIdx            zero-based column index.
      * @param   pCell                 cell data.
-     * @param   pConverter            converter for custom datatype conversion.
      */
     template<typename T>
-    void SetCell(const size_t pColumnIdx, const size_t pRowIdx, const T& pCell, const Converter<T>& pConverter)
+    void SetCell(const size_t pColumnIdx, const size_t pRowIdx, const T& pCell)
     {
       const size_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
       const size_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
@@ -1024,31 +956,19 @@ namespace rapidcsv
       }
 
       std::string str;
-      pConverter.ToStr(pCell, str);
+      Converter<T> converter(mConverterParams);
+      converter.ToStr(pCell, str);
       mData.at(rowIdx).at(columnIdx) = str;
     }
 
     /**
-     * @brief   Set cell by index.
-     * @param   pRowIdx               zero-based row index.
-     * @param   pColumnIdx            zero-based column index.
-     * @param   pCell                 cell data.
-     */
-    template<typename T>
-    void SetCell(const size_t pColumnIdx, const size_t pRowIdx, const T& pCell)
-    {
-      SetCell(pColumnIdx, pRowIdx, pCell, Converter<T>(mHasDefaultConverter));
-    }
-
-    /**
-     * @brief   Set cell by name using custom converter.
+     * @brief   Set cell by name.
      * @param   pColumnName           column label name.
      * @param   pRowName              row label name.
      * @param   pCell                 cell data.
-     * @param   pConverter            converter for custom datatype conversion.
      */
     template<typename T>
-    void SetCell(const std::string& pColumnName, const std::string& pRowName, const T& pCell, const Converter<T>& pConverter)
+    void SetCell(const std::string& pColumnName, const std::string& pRowName, const T& pCell)
     {
       const ssize_t columnIdx = GetColumnIdx(pColumnName);
       if (columnIdx < 0)
@@ -1062,19 +982,7 @@ namespace rapidcsv
         throw std::out_of_range("row not found: " + pRowName);
       }
 
-      SetCell<T>(columnIdx, rowIdx, pCell, pConverter);
-    }
-
-    /**
-     * @brief   Set cell by name.
-     * @param   pColumnName           column label name.
-     * @param   pRowName              row label name.
-     * @param   pCell                 cell data.
-     */
-    template<typename T>
-    void SetCell(const std::string& pColumnName, const std::string& pRowName, const T& pCell)
-    {
-      SetCell(pColumnName, pRowName, pCell, Converter<T>(mHasDefaultConverter));
+      SetCell<T>(columnIdx, rowIdx, pCell);
     }
 
     /**
@@ -1211,7 +1119,8 @@ namespace rapidcsv
         {
           wstream.imbue(std::locale(wstream.getloc(),
                                     new std::codecvt_utf16<wchar_t, 0x10ffff,
-                                                           static_cast<std::codecvt_mode>(std::consume_header | std::little_endian)>));
+                                                           static_cast<std::codecvt_mode>(std::consume_header |
+                                                                                          std::little_endian)>));
         }
         else
         {
@@ -1458,17 +1367,13 @@ namespace rapidcsv
     static std::string Trim(const std::string& pStr)
     {
       std::string str = pStr;
-      
+
       // ltrim
-      str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](int ch) {
-        return !isspace(ch);
-      }));
+      str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](int ch) { return !isspace(ch); }));
 
       // rtrim
-      str.erase(std::find_if(str.rbegin(), str.rend(), [](int ch) {
-        return !isspace(ch);
-      }).base(), str.end());
-    
+      str.erase(std::find_if(str.rbegin(), str.rend(), [](int ch) { return !isspace(ch); }).base(), str.end());
+
       return str;
     }
 
@@ -1476,8 +1381,8 @@ namespace rapidcsv
     std::string mPath;
     LabelParams mLabelParams;
     SeparatorParams mSeparatorParams;
-    bool mHasDefaultConverter;
-    std::vector<std::vector<std::string> > mData;
+    ConverterParams mConverterParams;
+    std::vector<std::vector<std::string>> mData;
     std::map<std::string, size_t> mColumnNames;
     std::map<std::string, size_t> mRowNames;
 #ifdef HAS_CODECVT

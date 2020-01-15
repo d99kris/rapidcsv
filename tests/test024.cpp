@@ -10,12 +10,12 @@ int main()
   std::string csvref =
     "3,9,81\n"
     "4,16,256\n"
-    ;
+  ;
 
   std::string csv =
     "0,0,0\n"
     "0,0,0\n"
-    ;
+  ;
 
   std::string path = unittest::TempPath();
   unittest::WriteFile(path, csv);
@@ -46,7 +46,7 @@ int main()
 
     unittest::ExpectEqual(std::string, csvref, csvread);
   }
-  catch(const std::exception& ex)
+  catch (const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;
@@ -56,4 +56,3 @@ int main()
 
   return rv;
 }
-

@@ -10,12 +10,12 @@ int main()
   std::string csvref =
     "3,9,81\n"
     "4,16,256\n"
-    ;
+  ;
 
   std::string csv =
     "0,0,0\n"
     "0,0,0\n"
-    ;
+  ;
 
   std::string path = unittest::TempPath();
   unittest::WriteFile(path, csv);
@@ -24,9 +24,9 @@ int main()
   {
     rapidcsv::Document doc(path, rapidcsv::LabelParams(-1, -1));
 
-    doc.SetColumn<int>(0, std::vector<int>({3, 4}));
-    doc.SetColumn<int>(1, std::vector<int>({9, 16}));
-    doc.SetColumn<std::string>(2, std::vector<std::string>({"81", "256"}));
+    doc.SetColumn<int>(0, std::vector<int>({ 3, 4 }));
+    doc.SetColumn<int>(1, std::vector<int>({ 9, 16 }));
+    doc.SetColumn<std::string>(2, std::vector<std::string>({ "81", "256" }));
 
     std::vector<int> ints;
     std::vector<std::string> strs;
@@ -45,14 +45,14 @@ int main()
     unittest::ExpectEqual(size_t, ints.size(), 2);
     unittest::ExpectEqual(int, ints.at(0), 81);
     unittest::ExpectEqual(int, ints.at(1), 256);
-    
+
     doc.Save();
 
     std::string csvread = unittest::ReadFile(path);
 
     unittest::ExpectEqual(std::string, csvref, csvread);
   }
-  catch(const std::exception& ex)
+  catch (const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;
@@ -62,4 +62,3 @@ int main()
 
   return rv;
 }
-

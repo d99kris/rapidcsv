@@ -20,7 +20,7 @@ int main()
   try
   {
     rapidcsv::Document doc(path, rapidcsv::LabelParams(), rapidcsv::SeparatorParams(),
-                           true);
+                           rapidcsv::ConverterParams(true));
 
     unittest::ExpectEqual(int, doc.GetCell<int>(0, 0), 0);
     unittest::ExpectEqual(long long, doc.GetCell<long long>(1, 0), 0);

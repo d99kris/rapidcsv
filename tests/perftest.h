@@ -46,7 +46,7 @@ namespace perftest
         sort(spans.begin(), spans.end());
         median = spans.at(spans.size() / 2);
       }
-      
+
       return median;
     }
 
@@ -60,7 +60,7 @@ namespace perftest
       std::cout << "Test median duration                           Elapsed   ";
       std::cout << static_cast<long long>(round(GetMedianDurationUs())) << " us\n";
     }
-    
+
   private:
     std::chrono::high_resolution_clock::time_point start;
     std::chrono::high_resolution_clock::time_point stop;
@@ -69,4 +69,3 @@ namespace perftest
     std::vector<double> spans;
   };
 }
-

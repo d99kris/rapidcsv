@@ -10,12 +10,12 @@ int main()
   std::string csvref =
     "-,A,B,C\n"
     "1,1.2e10,2.00E-07,1e100\n"
-    ;
+  ;
 
   std::string csv =
     "-,A,B,C\n"
     "1,0,0,0\n"
-    ;
+  ;
 
   std::string path = unittest::TempPath();
   unittest::WriteFile(path, csv);
@@ -47,7 +47,7 @@ int main()
     double val3 = doc2.GetCell<double>("C", "1");
     unittest::ExpectTrue(fabs(val3 - exp3) < eps3);
   }
-  catch(const std::exception& ex)
+  catch (const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;
@@ -57,4 +57,3 @@ int main()
 
   return rv;
 }
-

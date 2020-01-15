@@ -197,13 +197,13 @@ semi-colon as separator.
     }
 ```
 
-Supported Get/Set Datatypes
----------------------------
+Supported Get/Set Data Types
+----------------------------
 The internal cell representation in the Document class is using std::string
 and when other types are requested, standard conversion routines are used.
 All standard conversions are relatively straight-forward, with the
 exception of `char` for which rapidcsv interprets the cell's (first) byte
-as a character. The following example illustrates the supported datatypes.
+as a character. The following example illustrates the supported data types.
 
 [colrowhdr.csv](examples/colrowhdr.csv) content:
 ```
@@ -240,15 +240,20 @@ as a character. The following example illustrates the supported datatypes.
 
 ```
 
-Custom Data Conversion
-----------------------
+Global Custom Data Type Conversion
+----------------------------------
 One may override conversion routines (or add new ones) by implementing ToVal()
-and ToStr(). Here is an example overriding int conversion, to instead provide
-two decimal fixed-point numbers. See
+and/or ToStr(). Below is an example overriding int conversion, to instead provide
+two decimal fixed-point numbers. Also see 
 [tests/test035.cpp](https://github.com/d99kris/rapidcsv/blob/master/tests/test035.cpp)
-for a complete program example.
+for a test overriding ToVal() and ToStr().
 
+[ex008.cpp](examples/ex008.cpp) content:
 ```cpp
+    #include <iostream>
+    #include <vector>
+    #include "rapidcsv.h"
+
     namespace rapidcsv
     {
       template<>
@@ -256,74 +261,58 @@ for a complete program example.
       {
         pVal = roundf(100.0 * stof(pStr));
       }
-    
-      template<>
-      void Converter<int>::ToStr(const int& pVal, std::string& pStr) const
-      {
-        std::ostringstream out;
-        out << std::fixed << std::setprecision(2) << static_cast<float>(pVal) / 100.0f;
-        pStr = out.str();
-      }
+    }
+
+    int main()
+    {
+      rapidcsv::Document doc("examples/colrowhdr.csv");
+
+      std::vector<int> close = doc.GetColumn<int>("Close");
+      std::cout << "close[0]  = " << close[0] << std::endl;
+      std::cout << "close[1]  = " << close[1] << std::endl;
     }
 ```
 
-Another example of a custom `Coverter` is [ex008.cpp](examples/ex008.cpp):
+Custom Data Type Conversion Per Call
+------------------------------------
+It is also possible to override conversions on a per-call basis, enabling more
+flexibility. This is illustrated in the following example. Additional conversion
+override usage can be found in the test 
+[tests/test063.cpp](https://github.com/d99kris/rapidcsv/blob/master/tests/test063.cpp)
 
+[ex009.cpp](examples/ex009.cpp) content:
 ```cpp
-#include "rapidcsv.h"
+    #include <iostream>
+    #include <vector>
+    #include "rapidcsv.h"
 
-namespace rapidcsv
-{
-  template<typename T>
-  class CustomConverter : public Converter<T>
-  {
-  public:
-    explicit CustomConverter(bool pHasDefaultConverter, const T& pDefaultVal)
-      : Converter<T>(pHasDefaultConverter, pDefaultVal)
+    void ConvFixPoint(const std::string& pStr, int& pVal)
     {
+      pVal = roundf(100.0 * stof(pStr));
     }
 
-    void ToVal(const std::string& pStr, T& pVal) const;
-    void ToStr(const T& pVal, std::string& pStr) const;
-  };
+    struct MyStruct
+    {
+      int val = 0;
+    };
 
-  template<>
-  void CustomConverter<int>::ToVal(const std::string& pStr, int& pVal) const
-  {
-    Converter<int>::ToVal(pStr, pVal);
-    pVal /= 4;
-  }
+    void ConvMyStruct(const std::string& pStr, MyStruct& pVal)
+    {
+      pVal.val = roundf(100.0 * stof(pStr));
+    }
 
-  template<>
-  void CustomConverter<int>::ToStr(const int& pVal, std::string& pStr) const
-  {
-    const auto val = pVal * 4;
-    Converter<int>::ToStr(val, pStr);
-  }
-}
+    int main()
+    {
+      rapidcsv::Document doc("examples/colrowhdr.csv");
 
-int main()
-{
-  std::stringstream sstream("1,10,,1000,X\n");
-  rapidcsv::Document doc(sstream, rapidcsv::LabelParams(-1, -1));
+      std::cout << "regular         = " << doc.GetCell<int>("Close", "2017-02-21") << "\n";
+      std::cout << "fixpointfunc    = " << doc.GetCell<int>("Close", "2017-02-21", ConvFixPoint) << "\n";
 
-  // Create a custom converter that will force empty/invalid values
-  // to 4000. The converter will convert all inputs to integer values
-  // and then divide them by 4.
-  rapidcsv::CustomConverter<int> customConverter(true, 4000);
+      auto convFixLambda = [](const std::string& pStr, int& pVal) { pVal = roundf(100.0 * stof(pStr)); };
+      std::cout << "fixpointlambda  = " << doc.GetCell<int>("Close", "2017-02-21", convFixLambda) << "\n";
 
-  for (auto i = 0; i < 5; ++i)
-  {
-    std::cout << doc.GetCell<int>(i, 0, customConverter) << std::endl;
-  }
-
-  // Output:
-  // 0        // int(1 / 4) = 0
-  // 2        // int(10 / 4) = 2
-  // 1000     // int(4000 / 4) = 1000, as '' -> 4000 (default).
-  // 250      // int(1000 / 4) = 250
-  // 1000     // int(4000 / 4) = 1000, as 'X' -> 4000 (default).
-}
+      std::cout << "mystruct        = " << doc.GetCell<MyStruct>("Close", "2017-02-21", ConvMyStruct).val << "\n";
+    }
 ```
 
 Reading CSV Data from a Stream or String
@@ -363,11 +352,11 @@ simple example reading CSV data from a string:
 Reading a File with Invalid Numbers (e.g. Empty Cells) as Numeric Data
 -----------------------------------------------------------------------
 By default rapidcsv throws an exception if one tries to access non-numeric
-data as a numeric datatype, as it basically propagates the underlying
+data as a numeric data type, as it basically propagates the underlying
 conversion routines' exceptions to the calling application.
 
 The reason for this is to ensure data correctness. If one wants to be able
-to read data with invalid numbers as numeric datatypes, one can use
+to read data with invalid numbers as numeric data types, one can use
 ConverterParams to configure the converter to default to a numeric value.
 The value is configurable and by default it's
 std::numeric_limits<long double>::signaling_NaN() for float types, and 0 for
@@ -443,9 +432,7 @@ Rapidcsv is distributed under the BSD 3-Clause license. See
 Contributions
 =============
 Bugs, PRs, etc are welcome on the GitHub project page
-[https://github.com/d99kris/rapidcsv](https://github.com/d99kris/rapidcsv).
-Contributors to this repository are listed in the
-[AUTHORS](https://github.com/d99kris/rapidcsv/blob/master/AUTHORS) file.
+https://github.com/d99kris/rapidcsv
 
 Keywords
 ========

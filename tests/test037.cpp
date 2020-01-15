@@ -18,7 +18,7 @@ int main()
     "Los Angeles,34°03'N,118°15'W,US\n"
     "New York City,40°42'46\"N,74°00'21\"W,US\n"
     "Paris,48°51'24\"N,2°21'03\"E,France\n"
-    ;
+  ;
 
   std::string path = unittest::TempPath();
   unittest::WriteFile(path, csv);
@@ -46,7 +46,7 @@ int main()
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(1, 3), "\"Ford\"");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(2, 3), "\"E350\"");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(3, 3), "\"Truck\"");
-    
+
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(0, 4), "1997");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(1, 4), "Ford");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(2, 4), "E350");
@@ -72,7 +72,7 @@ int main()
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(2, 8), "2°21'03\"E");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(3, 8), "France");
   }
-  catch(const std::exception& ex)
+  catch (const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;
@@ -82,4 +82,3 @@ int main()
 
   return rv;
 }
-

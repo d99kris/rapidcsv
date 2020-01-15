@@ -22,11 +22,11 @@
     {                                                                                         \
       expr;                                                                                   \
     }                                                                                         \
-    catch (const excp&)                                                                       \
+    catch (const excp &)                                                                      \
     {                                                                                         \
       success = true;                                                                         \
     }                                                                                         \
-    catch(const std::exception& ex)                                                           \
+    catch (const std::exception& ex)                                                          \
     {                                                                                         \
       std::stringstream ss;                                                                   \
       ss << unittest::detail::FileName(__FILE__) << ":" << std::to_string(__LINE__);          \
@@ -70,7 +70,7 @@ namespace unittest
 #endif
     return std::string(name);
   }
-  
+
   inline void WriteFile(const std::string& pPath, const std::string& pData)
   {
     std::ofstream outfile;
@@ -78,7 +78,7 @@ namespace unittest
     outfile << pData;
     outfile.close();
   }
-  
+
   inline std::string ReadFile(const std::string& pPath)
   {
     std::ifstream infile;
@@ -122,4 +122,3 @@ namespace unittest
     }
   }
 }
-
