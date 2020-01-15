@@ -93,7 +93,7 @@ if [[ "${SRC}" == "1" ]]; then
       head -7 ${SRC}         > ${DST}.header  # store header separately (first 7 lines)
     done
     
-    uncrustify -c uncrustify.cfg --no-backup src/rapidcsv.h tests/*.cpp tests/*.h ${TMPDIR}/*.cpp
+    uncrustify -c uncrustify.cfg --replace --no-backup src/rapidcsv.h tests/*.cpp tests/*.h ${TMPDIR}/*.cpp
     if [[ "${?}" != "0" ]]; then
         rm -rf ${TMPDIR}
         echo "src failed, exiting."
