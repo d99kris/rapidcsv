@@ -12,7 +12,7 @@ int main()
     "-,A,B,C\n"
     "1,,x,#\n"
     "2,,y,$\n"
-  ;
+    ;
 
   std::string path = unittest::TempPath();
   unittest::WriteFile(path, csv);
@@ -20,17 +20,17 @@ int main()
   try
   {
     rapidcsv::Document doc(path, rapidcsv::LabelParams(), rapidcsv::SeparatorParams(),
-                           true);
+                           rapidcsv::ConverterParams(true));
 
-    unittest::ExpectEqual(int, doc.GetCell<int>(0, 0), 0);
-    unittest::ExpectEqual(long long, doc.GetCell<long long>(1, 0), 0);
-    unittest::ExpectEqual(unsigned int, doc.GetCell<unsigned int>(2, 0), 0);
+    unittest::ExpectEqual(int, doc.GetCell<int>(0,0), 0);
+    unittest::ExpectEqual(long long, doc.GetCell<long long>(1,0), 0);
+    unittest::ExpectEqual(unsigned int, doc.GetCell<unsigned int>(2,0), 0);
 
-    unittest::ExpectTrue(std::isnan(doc.GetCell<double>(0, 1)));
-    unittest::ExpectTrue(std::isnan(doc.GetCell<long double>(1, 1)));
-    unittest::ExpectTrue(std::isnan(doc.GetCell<float>(2, 1)));
+    unittest::ExpectTrue(std::isnan(doc.GetCell<double>(0,1)));
+    unittest::ExpectTrue(std::isnan(doc.GetCell<long double>(1,1)));
+    unittest::ExpectTrue(std::isnan(doc.GetCell<float>(2,1)));
   }
-  catch (const std::exception& ex)
+  catch(const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;
@@ -40,3 +40,4 @@ int main()
 
   return rv;
 }
+
