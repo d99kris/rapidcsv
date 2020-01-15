@@ -11,7 +11,7 @@ int main()
     "-,A,B,C\n"
     "1,3,9,81\n"
     "2,4,16,256\n"
-    ;
+  ;
 
   std::string path = unittest::TempPath();
   unittest::WriteFile(path, csv);
@@ -26,7 +26,7 @@ int main()
     unittest::ExpectEqual(size_t, doc2.GetColumnCount(), 4);
     unittest::ExpectEqual(size_t, doc2.GetRowCount(), 3);
   }
-  catch(const std::exception& ex)
+  catch (const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;

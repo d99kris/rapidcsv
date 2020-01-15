@@ -11,7 +11,7 @@ int main()
     "-,A,B,C\n"
     "1,a,b,c\n"
     "2,x,y,z\n"
-    ;
+  ;
 
   std::string path = unittest::TempPath();
   unittest::WriteFile(path, csv);
@@ -38,7 +38,7 @@ int main()
     unittest::ExpectEqual(char, chars.at(1), 'y');
     unittest::ExpectEqual(char, chars.at(2), 'z');
   }
-  catch(const std::exception& ex)
+  catch (const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;

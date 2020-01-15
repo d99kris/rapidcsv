@@ -106,6 +106,7 @@ if(1)
   endif()
   add_unit_test(test061)
   add_unit_test(test062)
+  add_unit_test(test063)
 endif()
   
 # perf tests
@@ -120,4 +121,6 @@ add_executable(ex004 examples/ex004.cpp)
 add_executable(ex005 examples/ex005.cpp)
 add_executable(ex006 examples/ex006.cpp)
 add_executable(ex007 examples/ex007.cpp)
+add_executable(ex008 examples/ex008.cpp)
+add_executable(ex009 examples/ex009.cpp)
 

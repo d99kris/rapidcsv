@@ -11,7 +11,7 @@ int main()
     ",A,B,C\n"
     "1,3,9,81\n"
     "2,4,16,256\n"
-    ;
+  ;
 
   std::string path = unittest::TempPath();
 
@@ -26,7 +26,7 @@ int main()
     doc.SetCell<int>(0, 1, 4);
     doc.SetCell<int>(1, 1, 16);
     doc.SetCell<int>(2, 1, 256);
-    
+
     doc.SetColumnName(0, "A");
     doc.SetColumnName(1, "B");
     doc.SetColumnName(2, "C");
@@ -40,7 +40,7 @@ int main()
 
     unittest::ExpectEqual(std::string, csvref, csvread);
   }
-  catch(const std::exception& ex)
+  catch (const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;
@@ -50,4 +50,3 @@ int main()
 
   return rv;
 }
-
