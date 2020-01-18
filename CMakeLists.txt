@@ -20,6 +20,13 @@ if(HAS_CODECVT)
   add_definitions(-DHAS_CODECVT)
 endif()
 
+# Ccache
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+  message(STATUS "Found ccache")
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+endif()
+
 # Test init
 include(CTest)
 enable_testing()
