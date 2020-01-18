@@ -266,7 +266,7 @@ namespace rapidcsv
   }
 
   template<typename T>
-  using ConvFunc = std::function<void(const std::string & pStr, T & pVal)>;
+  using ConvFunc = std::function<void (const std::string & pStr, T & pVal)>;
 
   /**
    * @brief     Datastructure holding parameters controlling which row and column should be
