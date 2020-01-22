@@ -309,14 +309,14 @@ namespace rapidcsv
      * @param   pHasCR                specifies whether a new document (i.e. not an existing document read)
      *                                should use CR/LF instead of only LF (default is to use standard
      *                                behavior of underlying platforms - CR/LF for Win, and LF for others).
-     * @param   pLBinQuotes           specifies whether to allow line breaks in quoted text.
+     * @param   pQuotedLinebreaks     specifies whether to allow line breaks in quoted text.
      */
     explicit SeparatorParams(const char pSeparator = ',', const bool pTrim = false,
-                             const bool pHasCR = sPlatformHasCR, const bool pLBinQuotes = false)
+                             const bool pHasCR = sPlatformHasCR, const bool pQuotedLinebreaks = false)
       : mSeparator(pSeparator)
       , mTrim(pTrim)
       , mHasCR(pHasCR)
-      , mLinebreakInQuotes(pLBinQuotes)
+      , mQuotedLinebreaks(pQuotedLinebreaks)
     {
     }
 
@@ -338,7 +338,7 @@ namespace rapidcsv
     /**
      * @brief   specifies whether to allow line breaks in quoted text.
      */
-    bool mLinebreakInQuotes;
+    bool mQuotedLinebreaks;
   };
 
   /**
@@ -1023,22 +1023,26 @@ namespace rapidcsv
           }
           else if (buffer[i] == '\r')
           {
-            if (mSeparatorParams.mLinebreakInQuotes && quoted) {
+            if (mSeparatorParams.mQuotedLinebreaks && quoted)
+            {
               cell += buffer[i];
-            } else {
+            }
+            else
+            {
               ++cr;
             }
           }
           else if (buffer[i] == '\n')
           {
-            if (mSeparatorParams.mLinebreakInQuotes && quoted) {
+            if (mSeparatorParams.mQuotedLinebreaks && quoted)
+            {
               cell += buffer[i];
-            } else {
+            }
+            else
+            {
               ++lf;
-              if (!cell.empty()) {
-                row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
-                cell.clear();
-              }
+              row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
+              cell.clear();
               mData.push_back(row);
               row.clear();
               quoted = false;
