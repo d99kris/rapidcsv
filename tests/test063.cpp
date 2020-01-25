@@ -18,7 +18,7 @@ struct Struct
 
 void ToStruct(const std::string& pStr, Struct& pVal)
 {
-  pVal.val = roundf(100.0 * stof(pStr));
+  pVal.val = static_cast<int>(roundf(100.0f * std::stof(pStr)));
 }
 
 int main()
