@@ -259,7 +259,7 @@ for a test overriding ToVal() and ToStr().
       template<>
       void Converter<int>::ToVal(const std::string& pStr, int& pVal) const
       {
-        pVal = roundf(100.0 * stof(pStr));
+        pVal = static_cast<int>(roundf(100.0f * std::stof(pStr)));
       }
     }
 
@@ -288,7 +288,7 @@ override usage can be found in the test
 
     void ConvFixPoint(const std::string& pStr, int& pVal)
     {
-      pVal = roundf(100.0 * stof(pStr));
+      pVal = static_cast<int>(roundf(100.0f * std::stof(pStr)));
     }
 
     struct MyStruct
@@ -298,7 +298,7 @@ override usage can be found in the test
 
     void ConvMyStruct(const std::string& pStr, MyStruct& pVal)
     {
-      pVal.val = roundf(100.0 * stof(pStr));
+      pVal.val = static_cast<int>(roundf(100.0f * std::stof(pStr)));
     }
 
     int main()
@@ -308,7 +308,7 @@ override usage can be found in the test
       std::cout << "regular         = " << doc.GetCell<int>("Close", "2017-02-21") << "\n";
       std::cout << "fixpointfunc    = " << doc.GetCell<int>("Close", "2017-02-21", ConvFixPoint) << "\n";
 
-      auto convFixLambda = [](const std::string& pStr, int& pVal) { pVal = roundf(100.0 * stof(pStr)); };
+      auto convFixLambda = [](const std::string& pStr, int& pVal) { pVal = static_cast<int>(roundf(100.0f * stof(pStr))); };
       std::cout << "fixpointlambda  = " << doc.GetCell<int>("Close", "2017-02-21", convFixLambda) << "\n";
 
       std::cout << "mystruct        = " << doc.GetCell<MyStruct>("Close", "2017-02-21", ConvMyStruct).val << "\n";
