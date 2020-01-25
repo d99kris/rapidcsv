@@ -313,12 +313,14 @@ namespace rapidcsv
      * @param   pHasCR                specifies whether a new document (i.e. not an existing document read)
      *                                should use CR/LF instead of only LF (default is to use standard
      *                                behavior of underlying platforms - CR/LF for Win, and LF for others).
+     * @param   pQuotedLinebreaks     specifies whether to allow line breaks in quoted text.
      */
     explicit SeparatorParams(const char pSeparator = ',', const bool pTrim = false,
-                             const bool pHasCR = sPlatformHasCR)
+                             const bool pHasCR = sPlatformHasCR, const bool pQuotedLinebreaks = false)
       : mSeparator(pSeparator)
       , mTrim(pTrim)
       , mHasCR(pHasCR)
+      , mQuotedLinebreaks(pQuotedLinebreaks)
     {
     }
 
@@ -336,6 +338,11 @@ namespace rapidcsv
      * @brief   specifies whether new documents should use CR/LF instead of LF.
      */
     bool mHasCR;
+
+    /**
+     * @brief   specifies whether to allow line breaks in quoted text.
+     */
+    bool mQuotedLinebreaks;
   };
 
   /**
@@ -1183,16 +1190,30 @@ namespace rapidcsv
           }
           else if (buffer[i] == '\r')
           {
-            ++cr;
+            if (mSeparatorParams.mQuotedLinebreaks && quoted)
+            {
+              cell += buffer[i];
+            }
+            else
+            {
+              ++cr;
+            }
           }
           else if (buffer[i] == '\n')
           {
-            ++lf;
-            row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
-            cell.clear();
-            mData.push_back(row);
-            row.clear();
-            quoted = false; // disallow line breaks in quoted string, by auto-unquote at linebreak
+            if (mSeparatorParams.mQuotedLinebreaks && quoted)
+            {
+              cell += buffer[i];
+            }
+            else
+            {
+              ++lf;
+              row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
+              cell.clear();
+              mData.push_back(row);
+              row.clear();
+              quoted = false;
+            }
           }
           else
           {
