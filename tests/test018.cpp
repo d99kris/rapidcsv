@@ -13,7 +13,7 @@ int main()
     "9,6561\n"
     "16,65536\n"
     "25,390625\n"
-    ;
+  ;
 
   std::string csv =
     "A,B,C,D\n"
@@ -21,7 +21,7 @@ int main()
     "3,9,81,6561\n"
     "4,16,256,65536\n"
     "5,25,625,390625\n"
-    ;
+  ;
 
   std::string path = unittest::TempPath();
   unittest::WriteFile(path, csv);
@@ -39,7 +39,7 @@ int main()
 
     unittest::ExpectEqual(std::string, csvref, csvread);
   }
-  catch(const std::exception& ex)
+  catch (const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;
@@ -49,4 +49,3 @@ int main()
 
   return rv;
 }
-

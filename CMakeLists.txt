@@ -20,6 +20,13 @@ if(HAS_CODECVT)
   add_definitions(-DHAS_CODECVT)
 endif()
 
+# Ccache
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+  message(STATUS "Found ccache")
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+endif()
+
 # Test init
 include(CTest)
 enable_testing()
@@ -106,6 +113,7 @@ if(1)
   endif()
   add_unit_test(test061)
   add_unit_test(test062)
+  add_unit_test(test063)
   add_unit_test(test064)
 endif()
   
@@ -121,4 +129,6 @@ add_executable(ex004 examples/ex004.cpp)
 add_executable(ex005 examples/ex005.cpp)
 add_executable(ex006 examples/ex006.cpp)
 add_executable(ex007 examples/ex007.cpp)
+add_executable(ex008 examples/ex008.cpp)
+add_executable(ex009 examples/ex009.cpp)
 

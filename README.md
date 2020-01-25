@@ -3,7 +3,7 @@ Rapidcsv
 
 | **Linux + Mac** | **Windows** |
 |-----------------|-------------|
-| [![Build status](https://travis-ci.org/d99kris/rapidcsv.svg?branch=master)](https://travis-ci.org/d99kris/rapidcsv) | [![Build status](https://ci.appveyor.com/api/projects/status/yyc65as5ln6m6i8l/branch/master?svg=true)](https://ci.appveyor.com/project/d99kris/rapidcsv/branch/master) |
+| [![Build status](https://travis-ci.com/d99kris/rapidcsv.svg?branch=master)](https://travis-ci.com/d99kris/rapidcsv) | [![Build status](https://ci.appveyor.com/api/projects/status/yyc65as5ln6m6i8l/branch/master?svg=true)](https://ci.appveyor.com/project/d99kris/rapidcsv/branch/master) |
 
 Rapidcsv is a C++ header-only library for CSV parsing. While the name
 admittedly was inspired by the rapidjson project, the objectives are not the
@@ -197,13 +197,13 @@ semi-colon as separator.
     }
 ```
 
-Supported Get/Set Datatypes
----------------------------
+Supported Get/Set Data Types
+----------------------------
 The internal cell representation in the Document class is using std::string
 and when other types are requested, standard conversion routines are used.
 All standard conversions are relatively straight-forward, with the
 exception of `char` for which rapidcsv interprets the cell's (first) byte
-as a character. The following example illustrates the supported datatypes.
+as a character. The following example illustrates the supported data types.
 
 [colrowhdr.csv](examples/colrowhdr.csv) content:
 ```
@@ -240,15 +240,20 @@ as a character. The following example illustrates the supported datatypes.
 
 ```
 
-Custom Data Conversion
-----------------------
+Global Custom Data Type Conversion
+----------------------------------
 One may override conversion routines (or add new ones) by implementing ToVal()
-and ToStr(). Here is an example overriding int conversion, to instead provide
-two decimal fixed-point numbers. See
+and/or ToStr(). Below is an example overriding int conversion, to instead provide
+two decimal fixed-point numbers. Also see 
 [tests/test035.cpp](https://github.com/d99kris/rapidcsv/blob/master/tests/test035.cpp)
-for a complete program example.
+for a test overriding ToVal() and ToStr().
 
+[ex008.cpp](examples/ex008.cpp) content:
 ```cpp
+    #include <iostream>
+    #include <vector>
+    #include "rapidcsv.h"
+
     namespace rapidcsv
     {
       template<>
@@ -256,14 +261,57 @@ for a complete program example.
       {
         pVal = roundf(100.0 * stof(pStr));
       }
-    
-      template<>
-      void Converter<int>::ToStr(const int& pVal, std::string& pStr) const
-      {
-        std::ostringstream out;
-        out << std::fixed << std::setprecision(2) << static_cast<float>(pVal) / 100.0f;
-        pStr = out.str();
-      }
+    }
+
+    int main()
+    {
+      rapidcsv::Document doc("examples/colrowhdr.csv");
+
+      std::vector<int> close = doc.GetColumn<int>("Close");
+      std::cout << "close[0]  = " << close[0] << std::endl;
+      std::cout << "close[1]  = " << close[1] << std::endl;
+    }
+```
+
+Custom Data Type Conversion Per Call
+------------------------------------
+It is also possible to override conversions on a per-call basis, enabling more
+flexibility. This is illustrated in the following example. Additional conversion
+override usage can be found in the test 
+[tests/test063.cpp](https://github.com/d99kris/rapidcsv/blob/master/tests/test063.cpp)
+
+[ex009.cpp](examples/ex009.cpp) content:
+```cpp
+    #include <iostream>
+    #include <vector>
+    #include "rapidcsv.h"
+
+    void ConvFixPoint(const std::string& pStr, int& pVal)
+    {
+      pVal = roundf(100.0 * stof(pStr));
+    }
+
+    struct MyStruct
+    {
+      int val = 0;
+    };
+
+    void ConvMyStruct(const std::string& pStr, MyStruct& pVal)
+    {
+      pVal.val = roundf(100.0 * stof(pStr));
+    }
+
+    int main()
+    {
+      rapidcsv::Document doc("examples/colrowhdr.csv");
+
+      std::cout << "regular         = " << doc.GetCell<int>("Close", "2017-02-21") << "\n";
+      std::cout << "fixpointfunc    = " << doc.GetCell<int>("Close", "2017-02-21", ConvFixPoint) << "\n";
+
+      auto convFixLambda = [](const std::string& pStr, int& pVal) { pVal = roundf(100.0 * stof(pStr)); };
+      std::cout << "fixpointlambda  = " << doc.GetCell<int>("Close", "2017-02-21", convFixLambda) << "\n";
+
+      std::cout << "mystruct        = " << doc.GetCell<MyStruct>("Close", "2017-02-21", ConvMyStruct).val << "\n";
     }
 ```
 
@@ -304,11 +352,11 @@ simple example reading CSV data from a string:
 Reading a File with Invalid Numbers (e.g. Empty Cells) as Numeric Data
 -----------------------------------------------------------------------
 By default rapidcsv throws an exception if one tries to access non-numeric
-data as a numeric datatype, as it basically propagates the underlying
+data as a numeric data type, as it basically propagates the underlying
 conversion routines' exceptions to the calling application.
 
 The reason for this is to ensure data correctness. If one wants to be able
-to read data with invalid numbers as numeric datatypes, one can use
+to read data with invalid numbers as numeric data types, one can use
 ConverterParams to configure the converter to default to a numeric value.
 The value is configurable and by default it's
 std::numeric_limits<long double>::signaling_NaN() for float types, and 0 for

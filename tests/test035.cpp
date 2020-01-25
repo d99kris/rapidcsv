@@ -30,7 +30,7 @@ int main()
   std::string csv =
     "1,10,100,1000\n"
     "0.1,0.01,0.001,0.006\n"
-    ;
+  ;
 
   std::string path = unittest::TempPath();
   unittest::WriteFile(path, csv);
@@ -52,7 +52,7 @@ int main()
     doc.SetCell<int>(0, 0, 12345);
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(0, 0), "123.45");
   }
-  catch(const std::exception& ex)
+  catch (const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;
@@ -62,4 +62,3 @@ int main()
 
   return rv;
 }
-

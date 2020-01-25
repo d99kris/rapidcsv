@@ -11,7 +11,7 @@ int main()
     "-,A,B,C\n"
     "1,3,9,81\n"
     "2,4,16,256\n"
-    ;
+  ;
 
   std::string path = unittest::TempPath();
   unittest::WriteFile(path, csv);
@@ -23,7 +23,7 @@ int main()
     unittest::ExpectEqual(std::string, doc.GetColumnName(1), "B");
     unittest::ExpectEqual(std::string, doc.GetColumnName(2), "C");
     ExpectException(doc.GetColumnName(3), std::out_of_range);
-    
+
     rapidcsv::Document doc2(path, rapidcsv::LabelParams(-1, -1));
     ExpectException(doc2.GetColumnName(0), std::out_of_range);
 
@@ -34,7 +34,7 @@ int main()
     unittest::ExpectEqual(std::string, doc3.GetColumnName(3), "C");
     ExpectException(doc3.GetColumnName(4), std::out_of_range);
   }
-  catch(const std::exception& ex)
+  catch (const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;
@@ -44,4 +44,3 @@ int main()
 
   return rv;
 }
-

@@ -11,7 +11,7 @@ int main()
     "-,A,B,C\n"
     "1,,x,#\n"
     "2,,y,$\n"
-    ;
+  ;
 
   std::string path = unittest::TempPath();
   unittest::WriteFile(path, csv);
@@ -20,15 +20,15 @@ int main()
   {
     rapidcsv::Document doc(path);
 
-    ExpectException(doc.GetCell<int>(0,0), std::invalid_argument);
-    ExpectException(doc.GetCell<int>(1,0), std::invalid_argument);
-    ExpectException(doc.GetCell<int>(2,0), std::invalid_argument);
+    ExpectException(doc.GetCell<int>(0, 0), std::invalid_argument);
+    ExpectException(doc.GetCell<int>(1, 0), std::invalid_argument);
+    ExpectException(doc.GetCell<int>(2, 0), std::invalid_argument);
 
-    ExpectException(doc.GetCell<double>(0,1), std::invalid_argument);
-    ExpectException(doc.GetCell<double>(1,1), std::invalid_argument);
-    ExpectException(doc.GetCell<double>(2,1), std::invalid_argument);
+    ExpectException(doc.GetCell<double>(0, 1), std::invalid_argument);
+    ExpectException(doc.GetCell<double>(1, 1), std::invalid_argument);
+    ExpectException(doc.GetCell<double>(2, 1), std::invalid_argument);
   }
-  catch(const std::exception& ex)
+  catch (const std::exception& ex)
   {
     std::cout << ex.what() << std::endl;
     rv = 1;
@@ -38,4 +38,3 @@ int main()
 
   return rv;
 }
-
