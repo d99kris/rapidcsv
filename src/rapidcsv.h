@@ -769,11 +769,12 @@ namespace rapidcsv
 
     /**
      * @brief   Get number of data rows.
-     * @returns row count.
+     * @returns row count (not including the column-name header)
      */
     size_t GetRowCount() const
     {
-      return mData.size() - (mLabelParams.mColumnNameIdx + 1);
+      size_t n = mData.size();
+      return n ? n - (mLabelParams.mColumnNameIdx + 1) : 0;
     }
 
     /**
