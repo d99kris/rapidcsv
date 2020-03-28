@@ -1240,7 +1240,7 @@ namespace rapidcsv
 
       // Set up column labels
       if ((mLabelParams.mColumnNameIdx >= 0) &&
-          (mData.size() > 0))
+          (static_cast<ssize_t>(mData.size()) > mLabelParams.mColumnNameIdx))
       {
         int i = 0;
         for (auto& columnName : mData[mLabelParams.mColumnNameIdx])
@@ -1257,7 +1257,10 @@ namespace rapidcsv
         int i = 0;
         for (auto& dataRow : mData)
         {
-          mRowNames[dataRow[mLabelParams.mRowNameIdx]] = i++;
+          if (static_cast<ssize_t>(dataRow.size()) > mLabelParams.mRowNameIdx)
+          {
+            mRowNames[dataRow[mLabelParams.mRowNameIdx]] = i++;
+          }
         }
       }
     }
