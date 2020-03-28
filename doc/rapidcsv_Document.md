@@ -213,7 +213,7 @@ Get column by name.
 ```c++
 size_t GetColumnCount ()
 ```
-Get number of data columns. 
+Get number of data columns (excluding label columns). 
 
 **Returns:**
 - column count. 
@@ -300,7 +300,7 @@ Get row by name.
 ```c++
 size_t GetRowCount ()
 ```
-Get number of data rows. 
+Get number of data rows (excluding label rows). 
 
 **Returns:**
 - row count. 

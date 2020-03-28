@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  6.10
+ * Version:  6.11
  *
  * Copyright (C) 2017-2020 Kristofer Berggren
  * All rights reserved.
@@ -604,12 +604,14 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   Get number of data columns.
+     * @brief   Get number of data columns (excluding label columns).
      * @returns column count.
      */
     size_t GetColumnCount() const
     {
-      return (mData.size() > 0) ? (mData.at(0).size() - (mLabelParams.mRowNameIdx + 1)) : 0;
+      const ssize_t count = static_cast<ssize_t>((mData.size() > 0) ? mData.at(0).size() : 0) -
+        (mLabelParams.mRowNameIdx + 1);
+      return (count >= 0) ? count : 0;
     }
 
     /**
@@ -768,13 +770,13 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   Get number of data rows.
-     * @returns row count (not including the column-name header)
+     * @brief   Get number of data rows (excluding label rows).
+     * @returns row count.
      */
     size_t GetRowCount() const
     {
-      size_t n = mData.size();
-      return n ? n - (mLabelParams.mColumnNameIdx + 1) : 0;
+      const ssize_t count = static_cast<ssize_t>(mData.size()) - (mLabelParams.mColumnNameIdx + 1);
+      return (count >= 0) ? count : 0;
     }
 
     /**
