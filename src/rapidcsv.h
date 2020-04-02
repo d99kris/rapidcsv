@@ -1165,6 +1165,22 @@ namespace rapidcsv
       int cr = 0;
       int lf = 0;
 
+      // check for UTF-8 Byte order mark and skip it when found
+      if(std::min(fileLength, bufLength) >= 3)
+      {
+        pStream.read(buffer.data(), 3);
+        if(!std::equal(buffer.begin(), buffer.begin() + 3, "\xEF\xBB\xBF"))
+        {
+          // file does not start with a UTF-8 Byte order mark
+          pStream.seekg(0, std::ios::beg);
+        }
+        else
+        {
+          // file did start with a UTF-8 Byte order mark
+          fileLength -= 3;
+        }
+      }
+
       while (fileLength > 0)
       {
         std::streamsize readLength = std::min(fileLength, bufLength);
