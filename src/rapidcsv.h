@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  6.11
+ * Version:  6.20
  *
  * Copyright (C) 2017-2020 Kristofer Berggren
  * All rights reserved.
@@ -1166,10 +1166,10 @@ namespace rapidcsv
       int lf = 0;
 
       // check for UTF-8 Byte order mark and skip it when found
-      if(std::min(fileLength, bufLength) >= 3)
+      if (std::min(fileLength, bufLength) >= 3)
       {
         pStream.read(buffer.data(), 3);
-        if(!std::equal(buffer.begin(), buffer.begin() + 3, "\xEF\xBB\xBF"))
+        if (!std::equal(buffer.begin(), buffer.begin() + 3, "\xEF\xBB\xBF"))
         {
           // file does not start with a UTF-8 Byte order mark
           pStream.seekg(0, std::ios::beg);
