@@ -22,7 +22,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc1(path);
+    rapidcsv::Document doc1(path, rapidcsv::LabelParams(0, 0));
 
     doc1.SetCell<double>("A", "1", 1.2e10);
     doc1.SetCell<double>("B", "1", 2.00E-07);
@@ -30,7 +30,7 @@ int main()
 
     doc1.Save();
 
-    rapidcsv::Document doc2(path);
+    rapidcsv::Document doc2(path, rapidcsv::LabelParams(0, 0));
 
     double eps1 = 1.0e7;
     double exp1 = 1.2e10;

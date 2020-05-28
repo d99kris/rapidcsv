@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  6.20
+ * Version:  7.00
  *
  * Copyright (C) 2017-2020 Kristofer Berggren
  * All rights reserved.
@@ -278,12 +278,12 @@ namespace rapidcsv
      * @brief   Constructor
      * @param   pColumnNameIdx        specifies the zero-based row index of the column labels, setting
      *                                it to -1 prevents column lookup by label name, and gives access
-     *                                to all rows as document data.
+     *                                to all rows as document data. Default: 0
      * @param   pRowNameIdx           specifies the zero-based column index of the row labels, setting
      *                                it to -1 prevents row lookup by label name, and gives access
-     *                                to all columns as document data.
+     *                                to all columns as document data. Default: -1
      */
-    explicit LabelParams(const int pColumnNameIdx = 0, const int pRowNameIdx = 0)
+    explicit LabelParams(const int pColumnNameIdx = 0, const int pRowNameIdx = -1)
       : mColumnNameIdx(pColumnNameIdx)
       , mRowNameIdx(pRowNameIdx)
     {

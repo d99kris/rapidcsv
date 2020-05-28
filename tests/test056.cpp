@@ -19,7 +19,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(path);
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(0, 0));
     doc.SetCell<std::string>("C", "2", "256,8");
     doc.Save(outpath);
     std::string csvread = unittest::ReadFile(outpath);

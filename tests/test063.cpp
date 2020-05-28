@@ -36,7 +36,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(path);
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(0, 0));
 
     // ToVal
     unittest::ExpectEqual(int, doc.GetCell<int>(0, 0, ToVal), 100);

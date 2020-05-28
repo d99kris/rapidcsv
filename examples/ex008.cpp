@@ -20,7 +20,7 @@ namespace rapidcsv
 
 int main()
 {
-  rapidcsv::Document doc("examples/colrowhdr.csv");
+  rapidcsv::Document doc("examples/colrowhdr.csv", rapidcsv::LabelParams(0, 0));
 
   std::vector<int> close = doc.GetColumn<int>("Close");
   std::cout << "close[0]  = " << close[0] << std::endl;

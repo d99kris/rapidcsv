@@ -14,16 +14,16 @@ implemented for the specific use-case is likely to be more performant.
 Example Usage
 =============
 Here is a simple example reading a CSV file and getting 'Close' column as a
-vector of floats, and an example of getting a specific cell as well.
+vector of floats.
 
-[colrowhdr.csv](examples/colrowhdr.csv) content:
+[colhdr.csv](examples/colhdr.csv) content:
 ```
-    Date,Open,High,Low,Close,Volume,Adj Close
-    2017-02-24,64.529999,64.800003,64.139999,64.620003,21705200,64.620003
-    2017-02-23,64.419998,64.730003,64.190002,64.620003,20235200,64.620003
-    2017-02-22,64.330002,64.389999,64.050003,64.360001,19259700,64.360001
-    2017-02-21,64.610001,64.949997,64.449997,64.489998,19384900,64.489998
-    2017-02-17,64.470001,64.690002,64.300003,64.620003,21234600,64.620003
+    Open,High,Low,Close,Volume,Adj Close
+    64.529999,64.800003,64.139999,64.620003,21705200,64.620003
+    64.419998,64.730003,64.190002,64.620003,20235200,64.620003
+    64.330002,64.389999,64.050003,64.360001,19259700,64.360001
+    64.610001,64.949997,64.449997,64.489998,19384900,64.489998
+    64.470001,64.690002,64.300003,64.620003,21234600,64.620003
 ```
 
 [ex001.cpp](examples/ex001.cpp) content:
@@ -34,13 +34,10 @@ vector of floats, and an example of getting a specific cell as well.
 
     int main()
     {
-      rapidcsv::Document doc("examples/colrowhdr.csv");
+      rapidcsv::Document doc("examples/colhdr.csv");
 
-      std::vector<float> close = doc.GetColumn<float>("Close");
-      std::cout << "Read " << close.size() << " values." << std::endl;
-
-      long long volume = doc.GetCell<long long>("Volume", "2017-02-22");
-      std::cout << "Volume " << volume << " on 2017-02-22." << std::endl;
+      std::vector<float> col = doc.GetColumn<float>("Close");
+      std::cout << "Read " << col.size() << " values." << std::endl;
     }
 ```
 
@@ -51,9 +48,9 @@ Supported Platforms
 ===================
 Rapidcsv is implemented using C++11 with the intention of being portable. It's
 been tested on:
-- macOS Mojave 10.14
-- Ubuntu 18.04 LTS
-- Windows 7 / Visual Studio 2015
+- macOS Catalina 10.15
+- Ubuntu 20.04 LTS
+- Windows 10 / Visual Studio 2015
 
 Installation
 ============
@@ -65,33 +62,30 @@ More Examples
 =============
 
 Several of the following examples are also provided in the `examples/`
-directory and can be executed directly under Linux and macOS thanks to a
-shebang-hack. Example running ex001.cpp:
+directory and can be executed directly under Linux and macOS. Example running
+ex001.cpp:
 
 ```
     ./examples/ex001.cpp
 ```
 
 
-Reading a File without Headers
-------------------------------
+Reading a File with Column and Row Headers
+------------------------------------------
 By default rapidcsv treats the first row as column headers, and the first
-column as row headers. This allows accessing rows/columns/cells using their
-labels, for example `GetCell<float>("Close", "2017-02-22")` to get the cell
-from column labelled "Close", at row labelled "2017-02-22". Sometimes one may
-prefer to be able to access first row and/or column as data, and only access
-cells by their row and column index. In order to do so one need use
-LabelParams and set pColumnNameIdx and/or pRowNameIdx to -1 (disabled).
+column is treated as data. This allows accessing columns using their labels,
+but not rows or cells (only using indices). In order to treat the first column
+as row headers one needs to use LabelParams and set pRowNameIdx to 0.
 
-### Column Headers Only
-[colhdr.csv](examples/colhdr.csv) content:
+### Column and Row Headers
+[colrowhdr.csv](examples/colrowhdr.csv) content:
 ```
-    Open,High,Low,Close,Volume,Adj Close
-    64.529999,64.800003,64.139999,64.620003,21705200,64.620003
-    64.419998,64.730003,64.190002,64.620003,20235200,64.620003
-    64.330002,64.389999,64.050003,64.360001,19259700,64.360001
-    64.610001,64.949997,64.449997,64.489998,19384900,64.489998
-    64.470001,64.690002,64.300003,64.620003,21234600,64.620003
+    Date,Open,High,Low,Close,Volume,Adj Close
+    2017-02-24,64.529999,64.800003,64.139999,64.620003,21705200,64.620003
+    2017-02-23,64.419998,64.730003,64.190002,64.620003,20235200,64.620003
+    2017-02-22,64.330002,64.389999,64.050003,64.360001,19259700,64.360001
+    2017-02-21,64.610001,64.949997,64.449997,64.489998,19384900,64.489998
+    2017-02-17,64.470001,64.690002,64.300003,64.620003,21234600,64.620003
 ```
 
 [ex002.cpp](examples/ex002.cpp) content:
@@ -102,10 +96,13 @@ LabelParams and set pColumnNameIdx and/or pRowNameIdx to -1 (disabled).
 
     int main()
     {
-      rapidcsv::Document doc("examples/colhdr.csv", rapidcsv::LabelParams(0, -1));
+      rapidcsv::Document doc("examples/colrowhdr.csv", rapidcsv::LabelParams(0, 0));
 
-      std::vector<float> col = doc.GetColumn<float>("Close");
-      std::cout << "Read " << col.size() << " values." << std::endl;
+      std::vector<float> close = doc.GetRow<float>("2017-02-22");
+      std::cout << "Read " << close.size() << " values." << std::endl;
+
+      long long volume = doc.GetCell<long long>("Volume", "2017-02-22");
+      std::cout << "Volume " << volume << " on 2017-02-22." << std::endl;
     }
 ```
 
@@ -186,7 +183,7 @@ semi-colon as separator.
 
     int main()
     {
-      rapidcsv::Document doc("examples/semi.csv", rapidcsv::LabelParams(),
+      rapidcsv::Document doc("examples/semi.csv", rapidcsv::LabelParams(0, 0),
                              rapidcsv::SeparatorParams(';'));
 
       std::vector<float> close = doc.GetColumn<float>("Close");
@@ -223,7 +220,7 @@ as a character. The following example illustrates the supported data types.
 
     int main()
     {
-      rapidcsv::Document doc("examples/colrowhdr.csv");
+      rapidcsv::Document doc("examples/colrowhdr.csv", rapidcsv::LabelParams(0, 0));
 
       std::cout << doc.GetCell<std::string>("Volume", "2017-02-22") << std::endl;
       std::cout << doc.GetCell<int>("Volume", "2017-02-22") << std::endl;
@@ -265,7 +262,7 @@ for a test overriding ToVal() and ToStr().
 
     int main()
     {
-      rapidcsv::Document doc("examples/colrowhdr.csv");
+      rapidcsv::Document doc("examples/colrowhdr.csv", rapidcsv::LabelParams(0, 0));
 
       std::vector<int> close = doc.GetColumn<int>("Close");
       std::cout << "close[0]  = " << close[0] << std::endl;
@@ -303,7 +300,7 @@ override usage can be found in the test
 
     int main()
     {
-      rapidcsv::Document doc("examples/colrowhdr.csv");
+      rapidcsv::Document doc("examples/colrowhdr.csv", rapidcsv::LabelParams(0, 0));
 
       std::cout << "regular         = " << doc.GetCell<int>("Close", "2017-02-21") << "\n";
       std::cout << "fixpointfunc    = " << doc.GetCell<int>("Close", "2017-02-21", ConvFixPoint) << "\n";
@@ -339,7 +336,7 @@ simple example reading CSV data from a string:
         ;
 
       std::stringstream sstream(csv);
-      rapidcsv::Document doc(sstream);
+      rapidcsv::Document doc(sstream, rapidcsv::LabelParams(0, 0));
 
       std::vector<float> close = doc.GetColumn<float>("Close");
       std::cout << "Read " << close.size() << " values." << std::endl;
@@ -377,7 +374,7 @@ one can for example do:
 ```cpp
     rapidcsv::Document doc("file.csv");
     std::vector<std::string> columnNames = doc.GetColumnNames();
-    bool column_A_exists =
+    bool columnExists =
       (std::find(columnNames.begin(), columnNames.end(), "A") != columnNames.end());
 ```
 

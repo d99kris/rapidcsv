@@ -20,7 +20,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(path);
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(0, 0));
 
     rapidcsv::Document doccopy(doc);
 

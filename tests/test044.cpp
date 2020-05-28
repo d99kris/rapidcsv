@@ -24,7 +24,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(path);
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(0, 0));
 
     doc.SetColumn<char>(0, std::vector<char>({ 'a', 'x' }));
     doc.SetColumn<char>(1, std::vector<char>({ 'b', 'y' }));

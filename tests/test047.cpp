@@ -18,7 +18,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(path);
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(0, 0));
 
     ExpectException(doc.GetCell<int>(0, 0), std::invalid_argument);
     ExpectException(doc.GetCell<int>(1, 0), std::invalid_argument);

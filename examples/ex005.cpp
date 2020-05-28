@@ -11,7 +11,7 @@ exit ${RV}
 
 int main()
 {
-  rapidcsv::Document doc("examples/semi.csv", rapidcsv::LabelParams(),
+  rapidcsv::Document doc("examples/semi.csv", rapidcsv::LabelParams(0, 0),
                          rapidcsv::SeparatorParams(';'));
 
   std::vector<float> close = doc.GetColumn<float>("Close");

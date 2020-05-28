@@ -18,7 +18,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(path);
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(0, 0));
 
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(0, 0), "3");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(1, 0), "9");
