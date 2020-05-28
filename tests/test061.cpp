@@ -18,7 +18,7 @@ int main()
 
   try
   {
-    rapidcsv::Document doc(path, rapidcsv::LabelParams(), rapidcsv::SeparatorParams(',', true));
+    rapidcsv::Document doc(path, rapidcsv::LabelParams(0, 0), rapidcsv::SeparatorParams(',', true));
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>("A", "1"), "3");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>("B", "1"), "9");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>("C", "1"), "81");

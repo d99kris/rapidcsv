@@ -11,7 +11,7 @@ exit ${RV}
 
 int main()
 {
-  rapidcsv::Document doc("examples/colrowhdr.csv");
+  rapidcsv::Document doc("examples/colrowhdr.csv", rapidcsv::LabelParams(0, 0));
 
   std::cout << doc.GetCell<std::string>("Volume", "2017-02-22") << std::endl;
   std::cout << doc.GetCell<int>("Volume", "2017-02-22") << std::endl;
