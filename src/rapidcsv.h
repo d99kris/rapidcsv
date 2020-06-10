@@ -27,6 +27,7 @@
 #include <string>
 #include <typeinfo>
 #include <vector>
+#include <iomanip>
 
 #if defined(_MSC_VER)
 #include <BaseTsd.h>
@@ -420,6 +421,27 @@ namespace rapidcsv
     {
       mPath = pPath;
       ReadCsv();
+    }
+
+    /**
+     * @brief Show all data of document
+     * 
+     * @param os Parameter of output - Default: std::cout
+     */
+    void Print(std::ostream& os = std::cout)
+    {
+      int num_col = 0;
+      for (auto &&row : mData)
+      {
+        os << "   " << std::setw(mColumnNames.size() * 15) << std::setfill('-') << "\n";
+        os << num_col++ << "- ";
+        for (auto &&d : row)
+        {
+          os << "|" << std::setw(12-d.length()+d.length()) << std::setfill(' ') << d << "  ";
+        }
+        os << "|\n";
+      }
+      os << "   " << std::setw(mColumnNames.size() * 15) << std::setfill('-') << "\n";
     }
 
     /**
