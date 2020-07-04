@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  7.00
+ * Version:  7.10
  *
  * Copyright (C) 2017-2020 Kristofer Berggren
  * All rights reserved.
@@ -1103,24 +1103,29 @@ namespace rapidcsv
       std::ifstream stream;
       stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
       stream.open(mPath, std::ios::binary);
+      ReadCsv(stream);
+    }
+
+    void ReadCsv(std::istream& pStream)
+    {
+      pStream.seekg(0, std::ios::end);
+      std::streamsize length = pStream.tellg();
+      pStream.seekg(0, std::ios::beg);
 
 #ifdef HAS_CODECVT
-      stream.seekg(0, std::ios::end);
-      std::streamsize length = stream.tellg();
-      stream.seekg(0, std::ios::beg);
-
-      std::vector<char> bom(2, '\0');
+      std::vector<char> bom2b(2, '\0');
       if (length >= 2)
       {
-        stream.read(bom.data(), 2);
+        pStream.read(bom2b.data(), 2);
+        pStream.seekg(0, std::ios::beg);
       }
 
       static const std::vector<char> bomU16le = { '\xff', '\xfe' };
       static const std::vector<char> bomU16be = { '\xfe', '\xff' };
-      if ((bom == bomU16le) || (bom == bomU16be))
+      if ((bom2b == bomU16le) || (bom2b == bomU16be))
       {
         mIsUtf16 = true;
-        mIsLE = (bom == bomU16le);
+        mIsLE = (bom2b == bomU16le);
 
         std::wifstream wstream;
         wstream.exceptions(std::wifstream::failbit | std::wifstream::badbit);
@@ -1142,21 +1147,35 @@ namespace rapidcsv
         wss << wstream.rdbuf();
         std::string utf8 = ToString(wss.str());
         std::stringstream ss(utf8);
-        ReadCsv(ss);
+        ParseCsv(ss, utf8.size());
       }
       else
 #endif
       {
-        stream.seekg(0, std::ios::beg);
-        ReadCsv(stream);
+        // check for UTF-8 Byte order mark and skip it when found
+        if (length >= 3)
+        {
+          std::vector<char> bom3b(3, '\0');
+          pStream.read(bom3b.data(), 3);
+          static const std::vector<char> bomU8 = { '\xef', '\xbb', '\xbf' };
+          if (bom3b != bomU8)
+          {
+            // file does not start with a UTF-8 Byte order mark
+            pStream.seekg(0, std::ios::beg);
+          }
+          else
+          {
+            // file did start with a UTF-8 Byte order mark, simply skip it
+            length -= 3;
+          }
+        }
+
+        ParseCsv(pStream, length);
       }
     }
 
-    void ReadCsv(std::istream& pStream)
+    void ParseCsv(std::istream& pStream, std::streamsize p_FileLength)
     {
-      pStream.seekg(0, std::ios::end);
-      std::streamsize fileLength = pStream.tellg();
-      pStream.seekg(0, std::ios::beg);
       const std::streamsize bufLength = 64 * 1024;
       std::vector<char> buffer(bufLength);
       std::vector<std::string> row;
@@ -1165,25 +1184,9 @@ namespace rapidcsv
       int cr = 0;
       int lf = 0;
 
-      // check for UTF-8 Byte order mark and skip it when found
-      if (std::min(fileLength, bufLength) >= 3)
+      while (p_FileLength > 0)
       {
-        pStream.read(buffer.data(), 3);
-        if (!std::equal(buffer.begin(), buffer.begin() + 3, "\xEF\xBB\xBF"))
-        {
-          // file does not start with a UTF-8 Byte order mark
-          pStream.seekg(0, std::ios::beg);
-        }
-        else
-        {
-          // file did start with a UTF-8 Byte order mark
-          fileLength -= 3;
-        }
-      }
-
-      while (fileLength > 0)
-      {
-        std::streamsize readLength = std::min(fileLength, bufLength);
+        std::streamsize readLength = std::min(p_FileLength, bufLength);
         pStream.read(buffer.data(), readLength);
         for (int i = 0; i < readLength; ++i)
         {
@@ -1239,7 +1242,7 @@ namespace rapidcsv
             cell += buffer[i];
           }
         }
-        fileLength -= readLength;
+        p_FileLength -= readLength;
       }
 
       // Handle last line without linebreak
