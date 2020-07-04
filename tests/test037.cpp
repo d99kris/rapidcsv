@@ -1,4 +1,4 @@
-// test036.cpp - double quote handling
+// test037.cpp - double quote handling
 
 #include <rapidcsv.h>
 #include "unittest.h"
@@ -42,20 +42,20 @@ int main()
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(2, 2), " E350 ");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(3, 2), " Truck ");
 
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(0, 3), "\"1997\"");
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(1, 3), "\"Ford\"");
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(2, 3), "\"E350\"");
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(3, 3), "\"Truck\"");
+    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(0, 3), "1997");
+    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(1, 3), "Ford");
+    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(2, 3), "E350");
+    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(3, 3), "Truck");
 
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(0, 4), "1997");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(1, 4), "Ford");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(2, 4), "E350");
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(3, 4), "\"Super, luxurious truck\"");
+    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(3, 4), "Super, luxurious truck");
 
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(0, 5), "1997");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(1, 5), "Ford");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(2, 5), "E350");
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(3, 5), "\"Super, \"\"luxurious, fast\"\" truck\"");
+    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(3, 5), "Super, \"luxurious, fast\" truck");
 
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(0, 6), "Los Angeles");
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(1, 6), "34°03'N");

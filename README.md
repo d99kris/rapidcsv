@@ -378,6 +378,21 @@ one can for example do:
       (std::find(columnNames.begin(), columnNames.end(), "A") != columnNames.end());
 ```
 
+Handling Quoted Cells
+---------------------
+By default rapidcsv automatically dequotes quoted cells (i.e. removes the encapsulating
+`"` characters from `"example quoted cell"`). This functionality may be disabled by
+passing `pAutoQuote = false` in `SeparatorParams`, example:
+
+```cpp
+    rapidcsv::Document doc("file.csv", rapidcsv::LabelParams(),
+                           rapidcsv::SeparatorParams(',' /* pSeparator */, 
+                                                     false /* pTrim */, 
+                                                     rapidcsv::sPlatformHasCR /* pHasCR */,
+                                                     false /* pQuotedLinebreaks */, 
+                                                     false /* pAutoQuote */));
+```
+
 UTF-16 and UTF-8
 ----------------
 Rapidcsv's preferred encoding for non-ASCII text is UTF-8. UTF-16 LE and

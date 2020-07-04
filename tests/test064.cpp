@@ -42,9 +42,9 @@ int main()
     unittest::ExpectEqual(unsigned int, doc.GetCell<unsigned int>(3, 2), 256);
 
     unittest::ExpectEqual(std::string, doc.GetCell<std::string>(0, 3), "text");
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(1, 3), "\"quoted text\"");
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(2, 3), "\"quoted\ntext\nwith\nlinebreaks\"");
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(3, 3), "\"\"");
+    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(1, 3), "quoted text");
+    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(2, 3), "quoted\ntext\nwith\nlinebreaks");
+    unittest::ExpectEqual(std::string, doc.GetCell<std::string>(3, 3), "");
   }
   catch (const std::exception& ex)
   {

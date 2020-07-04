@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  7.10
+ * Version:  8.00
  *
  * Copyright (C) 2017-2020 Kristofer Berggren
  * All rights reserved.
@@ -309,18 +309,22 @@ namespace rapidcsv
      * @brief   Constructor
      * @param   pSeparator            specifies the column separator (default ',').
      * @param   pTrim                 specifies whether to trim leading and trailing spaces from
-     *                                cells read.
+     *                                cells read (default false).
      * @param   pHasCR                specifies whether a new document (i.e. not an existing document read)
      *                                should use CR/LF instead of only LF (default is to use standard
      *                                behavior of underlying platforms - CR/LF for Win, and LF for others).
-     * @param   pQuotedLinebreaks     specifies whether to allow line breaks in quoted text.
+     * @param   pQuotedLinebreaks     specifies whether to allow line breaks in quoted text (default false)
+     * @param   pAutoQuote            specifies whether to automatically dequote data during read, and add
+     *                                quotes during write (default true).
      */
     explicit SeparatorParams(const char pSeparator = ',', const bool pTrim = false,
-                             const bool pHasCR = sPlatformHasCR, const bool pQuotedLinebreaks = false)
+                             const bool pHasCR = sPlatformHasCR, const bool pQuotedLinebreaks = false,
+                             const bool pAutoQuote = true)
       : mSeparator(pSeparator)
       , mTrim(pTrim)
       , mHasCR(pHasCR)
       , mQuotedLinebreaks(pQuotedLinebreaks)
+      , mAutoQuote(pAutoQuote)
     {
     }
 
@@ -343,6 +347,11 @@ namespace rapidcsv
      * @brief   specifies whether to allow line breaks in quoted text.
      */
     bool mQuotedLinebreaks;
+
+    /**
+     * @brief   specifies whether to automatically dequote cell data.
+     */
+    bool mAutoQuote;
   };
 
   /**
@@ -1202,7 +1211,7 @@ namespace rapidcsv
           {
             if (!quoted)
             {
-              row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
+              row.push_back(Unquote(Trim(cell)));
               cell.clear();
             }
             else
@@ -1230,7 +1239,7 @@ namespace rapidcsv
             else
             {
               ++lf;
-              row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
+              row.push_back(Unquote(Trim(cell)));
               cell.clear();
               mData.push_back(row);
               row.clear();
@@ -1248,7 +1257,7 @@ namespace rapidcsv
       // Handle last line without linebreak
       if (!cell.empty() || !row.empty())
       {
-        row.push_back(mSeparatorParams.mTrim ? Trim(cell) : cell);
+        row.push_back(Unquote(Trim(cell)));
         cell.clear();
         mData.push_back(row);
         row.clear();
@@ -1329,14 +1338,19 @@ namespace rapidcsv
       {
         for (auto itc = itr->begin(); itc != itr->end(); ++itc)
         {
-          if ((std::string::npos == itc->find(mSeparatorParams.mSeparator)) ||
-              ((itc->length() >= 2) && ((*itc)[0] == '\"') && ((*itc)[itc->length() - 1] == '\"')))
+          if (mSeparatorParams.mAutoQuote &&
+              ((itc->find(mSeparatorParams.mSeparator) != std::string::npos) ||
+               (itc->find(' ') != std::string::npos)))
           {
-            pStream << *itc;
+            // escape quotes in string
+            std::string str = *itc;
+            ReplaceString(str, "\"", "\"\"");
+
+            pStream << "\"" << str << "\"";
           }
           else
           {
-            pStream << '"' << *itc << '"';
+            pStream << *itc;
           }
 
           if (std::distance(itc, itr->end()) > 1)
@@ -1382,6 +1396,44 @@ namespace rapidcsv
       return (mData.size() > 0) ? mData.at(0).size() : 0;
     }
 
+    std::string Trim(const std::string& pStr)
+    {
+      if (mSeparatorParams.mTrim)
+      {
+        std::string str = pStr;
+
+        // ltrim
+        str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](int ch) { return !isspace(ch); }));
+
+        // rtrim
+        str.erase(std::find_if(str.rbegin(), str.rend(), [](int ch) { return !isspace(ch); }).base(), str.end());
+
+        return str;
+      }
+      else
+      {
+        return pStr;
+      }
+    }
+
+    std::string Unquote(const std::string& pStr)
+    {
+      if (mSeparatorParams.mAutoQuote && (pStr.size() >= 2) && (pStr.front() == '"') && (pStr.back() == '"'))
+      {
+        // remove start/end quotes
+        std::string str = pStr.substr(1, pStr.size() - 2);
+
+        // unescape quotes in string
+        ReplaceString(str, "\"\"", "\"");
+
+        return str;
+      }
+      else
+      {
+        return pStr;
+      }
+    }
+
 #ifdef HAS_CODECVT
 #if defined(_MSC_VER)
 #pragma warning (disable: 4996)
@@ -1410,17 +1462,15 @@ namespace rapidcsv
 #endif
 #endif
 
-    static std::string Trim(const std::string& pStr)
+    static void ReplaceString(std::string& pStr, const std::string& pSearch, const std::string& pReplace)
     {
-      std::string str = pStr;
+      size_t pos = 0;
 
-      // ltrim
-      str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](int ch) { return !isspace(ch); }));
-
-      // rtrim
-      str.erase(std::find_if(str.rbegin(), str.rend(), [](int ch) { return !isspace(ch); }).base(), str.end());
-
-      return str;
+      while ((pos = pStr.find(pSearch, pos)) != std::string::npos)
+      {
+        pStr.replace(pos, pSearch.size(), pReplace);
+        pos += pReplace.size();
+      }
     }
 
   private:
