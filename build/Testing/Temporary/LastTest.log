@@ -1,0 +1,35 @@
+Start testing: Jul 23 02:31 JST
+----------------------------------------------------------
+1/2 Testing: ptest001
+1/2 Test: ptest001
+Command: "/Users/akira/Documents/github/C++/rapidcsv/build/ptest001"
+Directory: /Users/akira/Documents/github/C++/rapidcsv/build
+"ptest001" start time: Jul 23 02:31 JST
+Output:
+----------------------------------------------------------
+Test median duration                           Elapsed   42865 us
+<end of output>
+Test time =   0.47 sec
+----------------------------------------------------------
+Test Passed.
+"ptest001" end time: Jul 23 02:31 JST
+"ptest001" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/2 Testing: ptest002
+2/2 Test: ptest002
+Command: "/Users/akira/Documents/github/C++/rapidcsv/build/ptest002"
+Directory: /Users/akira/Documents/github/C++/rapidcsv/build
+"ptest002" start time: Jul 23 02:31 JST
+Output:
+----------------------------------------------------------
+Test median duration                           Elapsed   22845 us
+<end of output>
+Test time =   0.25 sec
+----------------------------------------------------------
+Test Passed.
+"ptest002" end time: Jul 23 02:31 JST
+"ptest002" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Jul 23 02:31 JST

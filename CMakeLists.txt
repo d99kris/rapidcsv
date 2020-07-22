@@ -120,6 +120,11 @@ if(1)
   add_unit_test(test067)
   add_unit_test(test068)
 endif()
+add_unit_test(test069)
+add_unit_test(test070)
+add_unit_test(test071)
+add_unit_test(test072)
+add_unit_test(test073)
   
 # perf tests
 add_perf_test(ptest001)
