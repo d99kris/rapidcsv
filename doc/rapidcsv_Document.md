@@ -244,6 +244,19 @@ Get column names.
 ---
 
 ```c++
+ssize_t GetColumnIdx (const std::string & pColumnName)
+```
+Get column index by corresponding column name. 
+
+**Parameters**
+- `pColumnName` column label name. 
+
+**Returns**
+zero-based column index. 
+
+---
+
+```c++
 template<typename T > std::vector<T> GetRow (const size_t pRowIdx)
 ```
 Get row by index. 
@@ -327,6 +340,20 @@ Get row names.
 
 **Returns:**
 - vector of row names. 
+
+---
+
+```c++
+ssize_t GetRowIdx (const std::string & pRowName)
+```
+Get row index by corresponding row name. 
+
+**Parameters**
+- `pRowName` row label name. 
+
+**Returns:**
+- zero-based row index. 
+
 
 ---
 
