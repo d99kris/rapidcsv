@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.00
+ * Version:  8.10
  *
  * Copyright (C) 2017-2020 Kristofer Berggren
  * All rights reserved.
@@ -456,8 +456,8 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   Get column index by corresponding column name.
-     * @param   pColumnName column label name.
+     * @brief   Get column index by name.
+     * @param   pColumnName           column label name.
      * @returns zero-based column index.
      */
     ssize_t GetColumnIdx(const std::string& pColumnName) const
@@ -641,8 +641,8 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   Get row index by corresponding row name.
-     * @param   pRowName row label name.
+     * @brief   Get row index by name.
+     * @param   pRowName              row label name.
      * @returns zero-based row index.
      */
     ssize_t GetRowIdx(const std::string& pRowName) const
@@ -656,7 +656,6 @@ namespace rapidcsv
       }
       return -1;
     }
-
 
     /**
      * @brief   Get row by index.

@@ -221,6 +221,19 @@ Get number of data columns (excluding label columns).
 ---
 
 ```c++
+ssize_t GetColumnIdx (const std::string & pColumnName)
+```
+Get column index by name. 
+
+**Parameters**
+- `pColumnName` column label name. 
+
+**Returns:**
+- zero-based column index. 
+
+---
+
+```c++
 std::string GetColumnName (const ssize_t pColumnIdx)
 ```
 Get column name. 
@@ -240,19 +253,6 @@ Get column names.
 
 **Returns:**
 - vector of column names. 
-
----
-
-```c++
-ssize_t GetColumnIdx (const std::string & pColumnName)
-```
-Get column index by corresponding column name. 
-
-**Parameters**
-- `pColumnName` column label name. 
-
-**Returns**
-zero-based column index. 
 
 ---
 
@@ -321,6 +321,19 @@ Get number of data rows (excluding label rows).
 ---
 
 ```c++
+ssize_t GetRowIdx (const std::string & pRowName)
+```
+Get row index by name. 
+
+**Parameters**
+- `pRowName` row label name. 
+
+**Returns:**
+- zero-based row index. 
+
+---
+
+```c++
 std::string GetRowName (const ssize_t pRowIdx)
 ```
 Get row name. 
@@ -340,20 +353,6 @@ Get row names.
 
 **Returns:**
 - vector of row names. 
-
----
-
-```c++
-ssize_t GetRowIdx (const std::string & pRowName)
-```
-Get row index by corresponding row name. 
-
-**Parameters**
-- `pRowName` row label name. 
-
-**Returns:**
-- zero-based row index. 
-
 
 ---
 
