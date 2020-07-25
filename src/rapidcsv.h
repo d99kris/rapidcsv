@@ -456,6 +456,23 @@ namespace rapidcsv
     }
 
     /**
+     * @brief   Get column index by corresponding column name.
+     * @param   pColumnName column label name.
+     * @returns zero-based column index.
+     */
+    ssize_t GetColumnIdx(const std::string& pColumnName) const
+    {
+      if (mLabelParams.mColumnNameIdx >= 0)
+      {
+        if (mColumnNames.find(pColumnName) != mColumnNames.end())
+        {
+          return mColumnNames.at(pColumnName) - (mLabelParams.mRowNameIdx + 1);
+        }
+      }
+      return -1;
+    }
+
+    /**
      * @brief   Get column by index.
      * @param   pColumnIdx            zero-based column index.
      * @returns vector of column data.
@@ -622,6 +639,24 @@ namespace rapidcsv
         (mLabelParams.mRowNameIdx + 1);
       return (count >= 0) ? count : 0;
     }
+
+    /**
+     * @brief   Get row index by corresponding row name.
+     * @param   pRowName row label name.
+     * @returns zero-based row index.
+     */
+    ssize_t GetRowIdx(const std::string& pRowName) const
+    {
+      if (mLabelParams.mRowNameIdx >= 0)
+      {
+        if (mRowNames.find(pRowName) != mRowNames.end())
+        {
+          return mRowNames.at(pRowName) - (mLabelParams.mColumnNameIdx + 1);
+        }
+      }
+      return -1;
+    }
+
 
     /**
      * @brief   Get row by index.
@@ -1360,30 +1395,6 @@ namespace rapidcsv
         }
         pStream << (mSeparatorParams.mHasCR ? "\r\n" : "\n");
       }
-    }
-
-    ssize_t GetColumnIdx(const std::string& pColumnName) const
-    {
-      if (mLabelParams.mColumnNameIdx >= 0)
-      {
-        if (mColumnNames.find(pColumnName) != mColumnNames.end())
-        {
-          return mColumnNames.at(pColumnName) - (mLabelParams.mRowNameIdx + 1);
-        }
-      }
-      return -1;
-    }
-
-    ssize_t GetRowIdx(const std::string& pRowName) const
-    {
-      if (mLabelParams.mRowNameIdx >= 0)
-      {
-        if (mRowNames.find(pRowName) != mRowNames.end())
-        {
-          return mRowNames.at(pRowName) - (mLabelParams.mColumnNameIdx + 1);
-        }
-      }
-      return -1;
     }
 
     size_t GetDataRowCount() const
