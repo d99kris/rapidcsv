@@ -1068,6 +1068,12 @@ namespace rapidcsv
         throw std::out_of_range("column name row index < 0: " + std::to_string(mLabelParams.mColumnNameIdx));
       }
 
+      // increase table size if necessary:
+      int rowIdx = mLabelParams.mColumnNameIdx;
+      if ((int)mData.size() <= rowIdx) mData.resize(rowIdx + 1);
+      auto& row = mData[rowIdx];
+      if ((int)row.size() <= columnIdx) row.resize(columnIdx + 1);
+
       mData.at(mLabelParams.mColumnNameIdx).at(columnIdx) = pColumnName;
     }
 
