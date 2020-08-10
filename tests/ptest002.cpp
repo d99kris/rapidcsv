@@ -16,7 +16,7 @@ int main()
     {
       timer.Start();
 
-      rapidcsv::Document doc("../tests/msft.csv");
+      rapidcsv::Document doc("msft.csv");
 
       timer.Stop();
     }
