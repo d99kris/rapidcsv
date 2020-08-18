@@ -1069,10 +1069,16 @@ namespace rapidcsv
       }
 
       // increase table size if necessary:
-      int rowIdx = mLabelParams.mColumnNameIdx;
-      if ((int)mData.size() <= rowIdx) mData.resize(rowIdx + 1);
+      const int rowIdx = mLabelParams.mColumnNameIdx;
+      if (rowIdx >= (int)mData.size())
+      {
+        mData.resize(rowIdx + 1);
+      }
       auto& row = mData[rowIdx];
-      if ((int)row.size() <= columnIdx) row.resize(columnIdx + 1);
+      if (columnIdx >= (int)row.size())
+      {
+        row.resize(columnIdx + 1);
+      }
 
       mData.at(mLabelParams.mColumnNameIdx).at(columnIdx) = pColumnName;
     }
