@@ -1068,6 +1068,18 @@ namespace rapidcsv
         throw std::out_of_range("column name row index < 0: " + std::to_string(mLabelParams.mColumnNameIdx));
       }
 
+      // increase table size if necessary:
+      const int rowIdx = mLabelParams.mColumnNameIdx;
+      if (rowIdx >= (int)mData.size())
+      {
+        mData.resize(rowIdx + 1);
+      }
+      auto& row = mData[rowIdx];
+      if (columnIdx >= (int)row.size())
+      {
+        row.resize(columnIdx + 1);
+      }
+
       mData.at(mLabelParams.mColumnNameIdx).at(columnIdx) = pColumnName;
     }
 
@@ -1115,6 +1127,17 @@ namespace rapidcsv
       if (mLabelParams.mRowNameIdx < 0)
       {
         throw std::out_of_range("row name column index < 0: " + std::to_string(mLabelParams.mRowNameIdx));
+      }
+
+      // increase table size if necessary:
+      if (rowIdx >= (int)mData.size())
+      {
+        mData.resize(rowIdx + 1);
+      }
+      auto& row = mData[rowIdx];
+      if (mLabelParams.mRowNameIdx >= (int)row.size())
+      {
+        row.resize(mLabelParams.mRowNameIdx + 1);
       }
 
       mData.at(rowIdx).at(mLabelParams.mRowNameIdx) = pRowName;
