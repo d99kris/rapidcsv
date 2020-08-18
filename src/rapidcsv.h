@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.10
+ * Version:  8.20
  *
  * Copyright (C) 2017-2020 Kristofer Berggren
  * All rights reserved.
@@ -1070,12 +1070,12 @@ namespace rapidcsv
 
       // increase table size if necessary:
       const int rowIdx = mLabelParams.mColumnNameIdx;
-      if (rowIdx >= (int)mData.size())
+      if (rowIdx >= (int) mData.size())
       {
         mData.resize(rowIdx + 1);
       }
       auto& row = mData[rowIdx];
-      if (columnIdx >= (int)row.size())
+      if (columnIdx >= (int) row.size())
       {
         row.resize(columnIdx + 1);
       }
@@ -1130,12 +1130,12 @@ namespace rapidcsv
       }
 
       // increase table size if necessary:
-      if (rowIdx >= (int)mData.size())
+      if (rowIdx >= (int) mData.size())
       {
         mData.resize(rowIdx + 1);
       }
       auto& row = mData[rowIdx];
-      if (mLabelParams.mRowNameIdx >= (int)row.size())
+      if (mLabelParams.mRowNameIdx >= (int) row.size())
       {
         row.resize(mLabelParams.mRowNameIdx + 1);
       }
