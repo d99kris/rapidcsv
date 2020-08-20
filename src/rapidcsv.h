@@ -27,6 +27,7 @@
 #include <string>
 #include <typeinfo>
 #include <vector>
+#include <filesystem>
 
 #if defined(_MSC_VER)
 #include <BaseTsd.h>
@@ -369,7 +370,7 @@ namespace rapidcsv
      * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
      *                                handled.
      */
-    explicit Document(const std::string& pPath = std::string(),
+    explicit Document(const std::filesystem::path& pPath = std::filesystem::path(),
                       const LabelParams& pLabelParams = LabelParams(),
                       const SeparatorParams& pSeparatorParams = SeparatorParams(),
                       const ConverterParams& pConverterParams = ConverterParams())
@@ -425,7 +426,7 @@ namespace rapidcsv
      * @param   pPath                 specifies the path of an existing CSV-file to populate the Document
      *                                data with.
      */
-    void Load(const std::string& pPath)
+    void Load(const std::filesystem::path& pPath)
     {
       mPath = pPath;
       ReadCsv();
@@ -437,7 +438,7 @@ namespace rapidcsv
      *                                (if not specified, the original path provided when creating or
      *                                loading the Document data will be used).
      */
-    void Save(const std::string& pPath = std::string())
+    void Save(const std::filesystem::path& pPath = std::filesystem::path())
     {
       if (!pPath.empty())
       {
@@ -1507,7 +1508,7 @@ namespace rapidcsv
     }
 
   private:
-    std::string mPath;
+    std::filesystem::path mPath;
     LabelParams mLabelParams;
     SeparatorParams mSeparatorParams;
     ConverterParams mConverterParams;
