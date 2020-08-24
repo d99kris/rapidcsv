@@ -432,6 +432,16 @@ namespace rapidcsv
     }
 
     /**
+     * @brief   Read Document data from stream.
+     * @param   pStream               specifies an input stream to read CSV data from.
+     */
+    void Load(std::istream& pStream)
+    {
+      mPath = "";
+      ReadCsv(pStream);
+    }
+
+    /**
      * @brief   Write Document data to file.
      * @param   pPath                 optionally specifies the path where the CSV-file will be created
      *                                (if not specified, the original path provided when creating or
