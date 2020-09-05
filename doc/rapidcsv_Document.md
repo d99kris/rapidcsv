@@ -367,6 +367,16 @@ Read Document data from file.
 ---
 
 ```c++
+void Load (std::istream & pStream)
+```
+Read Document data from stream. 
+
+**Parameters**
+- `pStream` specifies an input stream to read CSV data from.
+
+---
+
+```c++
 void RemoveColumn (const size_t pColumnIdx)
 ```
 Remove column by index. 
