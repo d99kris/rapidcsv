@@ -128,6 +128,7 @@ add_unit_test(test073)
 add_unit_test(test074)
 add_unit_test(test075)
 add_unit_test(test076)
+add_unit_test(test077)
   
 # perf tests
 add_perf_test(ptest001)

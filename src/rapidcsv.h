@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.30
+ * Version:  8.40
  *
  * Copyright (C) 2017-2020 Kristofer Berggren
  * All rights reserved.
@@ -402,22 +402,6 @@ namespace rapidcsv
       , mConverterParams(pConverterParams)
     {
       ReadCsv(pStream);
-    }
-
-
-    /**
-     * @brief   Copy constructor
-     * @param   pDocument             specifies the Document instance to copy.
-     */
-    explicit Document(const Document& pDocument)
-      : mPath(pDocument.mPath)
-      , mLabelParams(pDocument.mLabelParams)
-      , mSeparatorParams(pDocument.mSeparatorParams)
-      , mConverterParams(pDocument.mConverterParams)
-      , mData(pDocument.mData)
-      , mColumnNames(pDocument.mColumnNames)
-      , mRowNames(pDocument.mRowNames)
-    {
     }
 
     /**
