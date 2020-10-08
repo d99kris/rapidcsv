@@ -77,7 +77,7 @@ if [[ "${EXAMPLES}" == "1" ]]; then
 fi
 
 if [[ "${DOC}" == "1" ]]; then
-    doxyman2md src doc
+    doxygenmd src doc
     if [[ "${?}" != "0" ]]; then
         echo "doc failed, exiting."
         exit 1

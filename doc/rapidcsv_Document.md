@@ -31,16 +31,6 @@ Constructor.
 ---
 
 ```c++
-Document (const Document & pDocument)
-```
-Copy constructor. 
-
-**Parameters**
-- `pDocument` specifies the Document instance to copy. 
-
----
-
-```c++
 template<typename T > T GetCell (const size_t pColumnIdx, const size_t pRowIdx)
 ```
 Get cell by index. 
@@ -372,7 +362,7 @@ void Load (std::istream & pStream)
 Read Document data from stream. 
 
 **Parameters**
-- `pStream` specifies an input stream to read CSV data from.
+- `pStream` specifies an input stream to read CSV data from. 
 
 ---
 
@@ -526,5 +516,5 @@ Set row name.
 
 ---
 
-###### API documentation generated using [Doxyman2md](https://github.com/d99kris/doxyman2md)
+###### API documentation generated using [Doxygenmd](https://github.com/d99kris/doxygenmd)
 

@@ -4,5 +4,5 @@ Exception thrown when attempting to access Document data in a datatype which is 
 
 ---
 
-###### API documentation generated using [Doxyman2md](https://github.com/d99kris/doxyman2md)
+###### API documentation generated using [Doxygenmd](https://github.com/d99kris/doxygenmd)
 
