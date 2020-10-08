@@ -19,10 +19,10 @@ int main()
   try
   {
     rapidcsv::Document doc(path);
-    unittest::ExpectEqual(int, doc.GetRowIdx("-"), -1);
-    unittest::ExpectEqual(int, doc.GetRowIdx("1"), -1);
-    unittest::ExpectEqual(int, doc.GetRowIdx("2"), -1);
-    unittest::ExpectEqual(int, doc.GetRowIdx("3"), -1);
+    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("-"), -1);
+    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("1"), -1);
+    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("2"), -1);
+    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("3"), -1);
   }
   catch (const std::exception& ex)
   {
