@@ -419,10 +419,10 @@ Rapidcsv uses cmake for its tests. Commands to build and execute the test suite:
 
     mkdir -p build && cd build && cmake .. && make && ctest -C unit --output-on-failure && ctest -C perf --verbose ; cd -
 
-Rapidcsv uses [doxyman2md](https://github.com/d99kris/doxyman2md) to generate
-its API documentation:
+Rapidcsv uses [doxygenmd](https://github.com/d99kris/doxygenmd) to generate
+its Markdown API documentation:
 
-    doxyman2md src doc
+    doxygenmd src doc
 
 Rapidcsv uses Uncrustify to ensure consistent code formatting:
 
@@ -431,8 +431,6 @@ Rapidcsv uses Uncrustify to ensure consistent code formatting:
 Alternatives
 ============
 There are many CSV parsers for C++, for example:
-- [CSV Parser](https://github.com/AriaFallah/csv-parser)
-- [CSVparser](https://github.com/MyBoon/CSVparser)
 - [Fast C++ CSV Parser](https://github.com/ben-strasser/fast-cpp-csv-parser)
 - [Vince's CSV Parser](https://github.com/vincentlaucsb/csv-parser)
 
