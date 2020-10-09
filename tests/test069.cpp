@@ -19,6 +19,7 @@ int main()
   try
   {
     rapidcsv::Document doc(path);
+
     unittest::ExpectEqual(ssize_t, doc.GetRowIdx("-"), -1);
     unittest::ExpectEqual(ssize_t, doc.GetRowIdx("1"), -1);
     unittest::ExpectEqual(ssize_t, doc.GetRowIdx("2"), -1);

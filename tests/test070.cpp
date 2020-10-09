@@ -24,6 +24,7 @@ int main()
     // 1,  3,  9,  81
     // 2,  4,  16, 256
     rapidcsv::Document doc(path, rapidcsv::LabelParams(0, 0));
+
     unittest::ExpectEqual(ssize_t, doc.GetRowIdx("-"), -1);
     unittest::ExpectEqual(ssize_t, doc.GetRowIdx("1"), 0);
     unittest::ExpectEqual(ssize_t, doc.GetRowIdx("2"), 1);
