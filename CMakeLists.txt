@@ -144,15 +144,21 @@ add_perf_test(ptest001)
 add_perf_test(ptest002)
 
 # Examples
-add_executable(ex001 examples/ex001.cpp)
-add_executable(ex002 examples/ex002.cpp)
-add_executable(ex003 examples/ex003.cpp)
-add_executable(ex004 examples/ex004.cpp)
-add_executable(ex005 examples/ex005.cpp)
-add_executable(ex006 examples/ex006.cpp)
-add_executable(ex007 examples/ex007.cpp)
-add_executable(ex008 examples/ex008.cpp)
-add_executable(ex009 examples/ex009.cpp)
+# Test macro add_example
+macro (add_example testname)
+  add_executable(${testname} examples/${testname}.cpp)
+  target_link_libraries(${testname} PUBLIC rapidcsv)
+endmacro (add_example)
+
+add_example(ex001 examples/ex001.cpp)
+add_example(ex002 examples/ex002.cpp)
+add_example(ex003 examples/ex003.cpp)
+add_example(ex004 examples/ex004.cpp)
+add_example(ex005 examples/ex005.cpp)
+add_example(ex006 examples/ex006.cpp)
+add_example(ex007 examples/ex007.cpp)
+add_example(ex008 examples/ex008.cpp)
+add_example(ex009 examples/ex009.cpp)
 
 endif() #RAPIDCSV_BUILD_TESTS
 
