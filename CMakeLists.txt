@@ -145,3 +145,5 @@ add_executable(ex007 examples/ex007.cpp)
 add_executable(ex008 examples/ex008.cpp)
 add_executable(ex009 examples/ex009.cpp)
 
+# Install
+install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/rapidcsv.h DESTINATION lib)
