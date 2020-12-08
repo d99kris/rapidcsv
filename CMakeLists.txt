@@ -14,10 +14,16 @@ else()
                        -Wundef -Wuninitialized -Wold-style-cast")
 endif()
 
+option(RAPIDCSV_BUILD_TESTS "Build tests" OFF)
+
+# Build library for external linkage
+add_library(rapidcsv INTERFACE)
+target_include_directories(rapidcsv INTERFACE ./src/)
+
 include(CheckIncludeFileCXX)
 check_include_file_cxx(codecvt HAS_CODECVT)
 if(HAS_CODECVT)
-  add_definitions(-DHAS_CODECVT)
+  target_compile_definitions(rapidcsv INTERFACE HAS_CODECVT)
 endif()
 
 # Ccache
@@ -26,6 +32,9 @@ if(CCACHE_PROGRAM)
   message(STATUS "Found ccache")
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
+
+# Build tests
+if (RAPIDCSV_BUILD_TESTS)
 
 # Test init
 include(CTest)
@@ -38,12 +47,14 @@ set(TEST_HEADERS "tests/unittest.h")
 macro (add_perf_test testname)
   add_executable(${testname} tests/${testname}.cpp)
   add_test(NAME ${testname} CONFIGURATIONS perf Release COMMAND "${PROJECT_BINARY_DIR}/${testname}")
+  target_link_libraries(${testname} PUBLIC rapidcsv)
 endmacro (add_perf_test)
 
 # Test macro add_unit_test
 macro (add_unit_test testname)
   add_executable(${testname} tests/${testname}.cpp)
   add_test(NAME ${testname} CONFIGURATIONS unit Debug COMMAND "${PROJECT_BINARY_DIR}/${testname}")
+  target_link_libraries(${testname} PUBLIC rapidcsv)
 endmacro (add_unit_test)
 
 # Unit tests
@@ -144,6 +155,8 @@ add_executable(ex006 examples/ex006.cpp)
 add_executable(ex007 examples/ex007.cpp)
 add_executable(ex008 examples/ex008.cpp)
 add_executable(ex009 examples/ex009.cpp)
+
+endif()
 
 # Install
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/rapidcsv.h DESTINATION lib)
