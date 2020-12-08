@@ -14,7 +14,8 @@ else()
                        -Wundef -Wuninitialized -Wold-style-cast")
 endif()
 
-option(RAPIDCSV_BUILD_TESTS "Build tests" OFF)
+option(RAPIDCSV_BUILD_TESTS "Build tests" ON)
+message(STATUS "RAPIDCSV_BUILD_TESTS: ${RAPIDCSV_BUILD_TESTS}")
 
 # Build library for external linkage
 add_library(rapidcsv INTERFACE)
@@ -39,9 +40,6 @@ if (RAPIDCSV_BUILD_TESTS)
 # Test init
 include(CTest)
 enable_testing()
-include_directories("src")
-set(LIB_HEADERS "src/rapidcsv.h")
-set(TEST_HEADERS "tests/unittest.h")
 
 # Test macro add_perf_test
 macro (add_perf_test testname)
@@ -156,7 +154,7 @@ add_executable(ex007 examples/ex007.cpp)
 add_executable(ex008 examples/ex008.cpp)
 add_executable(ex009 examples/ex009.cpp)
 
-endif()
+endif() #RAPIDCSV_BUILD_TESTS
 
 # Install
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/rapidcsv.h DESTINATION lib)
