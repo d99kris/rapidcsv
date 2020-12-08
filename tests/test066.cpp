@@ -1,6 +1,6 @@
 // test066.cpp - test UTF-8 Byte order mark skipping
 
-#include "rapidcsv.h"
+#include <rapidcsv.h>
 #include "unittest.h"
 
 int main()

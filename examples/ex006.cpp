@@ -7,7 +7,7 @@ exit ${RV}
 
 #include <iostream>
 #include <vector>
-#include "rapidcsv.h"
+#include <rapidcsv.h>
 
 int main()
 {
