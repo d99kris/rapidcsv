@@ -1,8 +1,6 @@
 name: Linux
 
-on:
-  pull_request
-  push
+on: [push, pull_request]
 
 jobs:
   linux-build:
