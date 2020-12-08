@@ -24,7 +24,7 @@ target_include_directories(rapidcsv INTERFACE ./src/)
 include(CheckIncludeFileCXX)
 check_include_file_cxx(codecvt HAS_CODECVT)
 if(HAS_CODECVT)
-  target_compile_definitions(rapidcsv INTERFACE HAS_CODECVT)
+  target_compile_definitions(rapidcsv INTERFACE RAPIDCSV_HAS_CODECVT)
 endif()
 
 # Ccache

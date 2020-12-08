@@ -16,7 +16,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#ifdef HAS_CODECVT
+#ifdef RAPIDCSV_HAS_CODECVT
 #include <codecvt>
 #endif
 #include <fstream>
@@ -1172,7 +1172,7 @@ namespace rapidcsv
       std::streamsize length = pStream.tellg();
       pStream.seekg(0, std::ios::beg);
 
-#ifdef HAS_CODECVT
+#ifdef RAPIDCSV_HAS_CODECVT
       std::vector<char> bom2b(2, '\0');
       if (length >= 2)
       {
@@ -1346,7 +1346,7 @@ namespace rapidcsv
 
     void WriteCsv() const
     {
-#ifdef HAS_CODECVT
+#ifdef RAPIDCSV_HAS_CODECVT
       if (mIsUtf16)
       {
         std::stringstream ss;
@@ -1461,7 +1461,7 @@ namespace rapidcsv
       }
     }
 
-#ifdef HAS_CODECVT
+#ifdef RAPIDCSV_HAS_CODECVT
 #if defined(_MSC_VER)
 #pragma warning (disable: 4996)
 #endif
@@ -1508,7 +1508,7 @@ namespace rapidcsv
     std::vector<std::vector<std::string>> mData;
     std::map<std::string, size_t> mColumnNames;
     std::map<std::string, size_t> mRowNames;
-#ifdef HAS_CODECVT
+#ifdef RAPIDCSV_HAS_CODECVT
     bool mIsUtf16 = false;
     bool mIsLE = false;
 #endif
