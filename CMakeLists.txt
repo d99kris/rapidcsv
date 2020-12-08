@@ -11,7 +11,7 @@ if(MSVC)
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Wpedantic -Wshadow -Wpointer-arith \
                        -Wcast-qual -Wno-missing-braces -Wswitch-default -Wcast-align -Wunreachable-code \
-                       -Wundef -Wuninitialized")
+                       -Wundef -Wuninitialized -Wold-style-cast")
 endif()
 
 include(CheckIncludeFileCXX)

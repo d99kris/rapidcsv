@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.41
+ * Version:  8.42
  *
  * Copyright (C) 2017-2020 Kristofer Berggren
  * All rights reserved.
@@ -1064,12 +1064,12 @@ namespace rapidcsv
 
       // increase table size if necessary:
       const int rowIdx = mLabelParams.mColumnNameIdx;
-      if (rowIdx >= (int) mData.size())
+      if (rowIdx >= static_cast<int>(mData.size()))
       {
         mData.resize(rowIdx + 1);
       }
       auto& row = mData[rowIdx];
-      if (columnIdx >= (int) row.size())
+      if (columnIdx >= static_cast<int>(row.size()))
       {
         row.resize(columnIdx + 1);
       }
@@ -1124,12 +1124,12 @@ namespace rapidcsv
       }
 
       // increase table size if necessary:
-      if (rowIdx >= (int) mData.size())
+      if (rowIdx >= static_cast<int>(mData.size()))
       {
         mData.resize(rowIdx + 1);
       }
       auto& row = mData[rowIdx];
-      if (mLabelParams.mRowNameIdx >= (int) row.size())
+      if (mLabelParams.mRowNameIdx >= static_cast<int>(row.size()))
       {
         row.resize(mLabelParams.mRowNameIdx + 1);
       }
@@ -1370,7 +1370,7 @@ namespace rapidcsv
                                     new std::codecvt_utf16<wchar_t, 0x10ffff>));
         }
 
-        wstream << (wchar_t) 0xfeff;
+        wstream << static_cast<wchar_t>(0xfeff);
         wstream << wstr;
       }
       else
