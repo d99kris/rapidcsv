@@ -417,7 +417,7 @@ Technical Details
 =================
 Rapidcsv uses cmake for its tests. Commands to build and execute the test suite:
 
-    mkdir -p build && cd build && cmake .. && make && ctest -C unit --output-on-failure && ctest -C perf --verbose ; cd -
+    mkdir -p build && cd build && cmake -DRAPIDCSV_BUILD_TESTS=ON .. && make && ctest -C unit --output-on-failure && ctest -C perf --verbose ; cd -
 
 Rapidcsv uses [doxygenmd](https://github.com/d99kris/doxygenmd) to generate
 its Markdown API documentation:
