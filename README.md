@@ -406,7 +406,7 @@ automatically detected.
 CMake FetchContent
 ------------------
 Rapidcsv may be included in a CMake project using FetchContent. Refer to the
-[CMake FetchContent Example Project](examples/cmake-fetchcontent/README.md) and in
+[CMake FetchContent Example Project](examples/cmake-fetchcontent) and in
 particular its [CMakeLists.txt](examples/cmake-fetchcontent/CMakeLists.txt).
 
 API Documentation
