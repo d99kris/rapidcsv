@@ -403,6 +403,12 @@ codecvt and sets HAS_CODECVT as needed, see [CMakeLists.txt](CMakeLists.txt)
 for reference. When enabled, the UTF-16 encoding of any loaded file is
 automatically detected.
 
+CMake FetchContent
+------------------
+Rapidcsv may be included in a CMake project using FetchContent. Refer to the
+[CMake FetchContent Example Project](examples/cmake-fetchcontent/README.md) and in
+particular its [CMakeLists.txt](examples/cmake-fetchcontent/CMakeLists.txt).
+
 API Documentation
 =================
 The following classes makes up the Rapidcsv interface:
