@@ -27,7 +27,7 @@ endif()
 
 # Tests
 option(RAPIDCSV_BUILD_TESTS "Build tests" OFF)
-message(STATUS "RAPIDCSV_BUILD_TESTS: ${RAPIDCSV_BUILD_TESTS}")
+message(STATUS "Build tests: ${RAPIDCSV_BUILD_TESTS}")
 if (RAPIDCSV_BUILD_TESTS)
 
   # Test init
