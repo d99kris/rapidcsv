@@ -131,12 +131,19 @@ if [[ "${BUILD}" == "1" ]]; then
   elif [ "${OS}" == "Darwin" ]; then
     MAKEARGS="-j$(sysctl -n hw.ncpu)"
   fi
-  mkdir -p build && cd build && cmake .. && make ${MAKEARGS} && cd .. || exiterr "build failed, exiting."
+  mkdir -p build && cd build && cmake -DRAPIDCSV_BUILD_TESTS=ON .. && make ${MAKEARGS} && cd .. || exiterr "build failed, exiting."
 fi
 
 # tests
 if [[ "${TESTS}" == "1" ]]; then
-  cd build && ctest -C unit --output-on-failure && ctest -C perf --verbose && cd .. || exiterr "tests failed, exiting."
+  OS="$(uname)"
+  CTESTARGS=""
+  if [ "${OS}" == "Linux" ]; then
+    CTESTARGS="-j$(nproc)"
+  elif [ "${OS}" == "Darwin" ]; then
+    CTESTARGS="-j$(sysctl -n hw.ncpu)"
+  fi
+  cd build && ctest -C unit --output-on-failure ${CTESTARGS} && ctest -C perf --verbose && cd .. || exiterr "tests failed, exiting."
 fi
 
 # doc

@@ -10,15 +10,13 @@ if(MSVC)
   endif()
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Wpedantic -Wshadow -Wpointer-arith \
-                       -Wcast-qual -Wno-missing-braces -Wswitch-default -Wcast-align -Wunreachable-code \
-                       -Wundef -Wuninitialized -Wold-style-cast")
+                       -Wcast-qual -Wno-missing-braces -Wswitch-default -Wcast-align \
+                       -Wunreachable-code -Wundef -Wuninitialized -Wold-style-cast")
 endif()
 
-include(CheckIncludeFileCXX)
-check_include_file_cxx(codecvt HAS_CODECVT)
-if(HAS_CODECVT)
-  add_definitions(-DHAS_CODECVT)
-endif()
+# Library
+add_library(rapidcsv INTERFACE)
+target_include_directories(rapidcsv INTERFACE src)
 
 # Ccache
 find_program(CCACHE_PROGRAM ccache)
@@ -27,27 +25,39 @@ if(CCACHE_PROGRAM)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
-# Test init
-include(CTest)
-enable_testing()
-include_directories("src")
-set(LIB_HEADERS "src/rapidcsv.h")
-set(TEST_HEADERS "tests/unittest.h")
+# Tests
+option(RAPIDCSV_BUILD_TESTS "Build tests" OFF)
+message(STATUS "Build tests: ${RAPIDCSV_BUILD_TESTS}")
+if (RAPIDCSV_BUILD_TESTS)
 
-# Test macro add_perf_test
-macro (add_perf_test testname)
-  add_executable(${testname} tests/${testname}.cpp)
-  add_test(NAME ${testname} CONFIGURATIONS perf Release COMMAND "${PROJECT_BINARY_DIR}/${testname}")
-endmacro (add_perf_test)
+  # Test init
+  include(CTest)
+  enable_testing()
 
-# Test macro add_unit_test
-macro (add_unit_test testname)
-  add_executable(${testname} tests/${testname}.cpp)
-  add_test(NAME ${testname} CONFIGURATIONS unit Debug COMMAND "${PROJECT_BINARY_DIR}/${testname}")
-endmacro (add_unit_test)
+  # Enable codecvt tests if supported
+  include(CheckIncludeFileCXX)
+  check_include_file_cxx(codecvt HAS_CODECVT)
+  if(HAS_CODECVT)
+    target_compile_definitions(rapidcsv INTERFACE HAS_CODECVT)
+  endif()
 
-# Unit tests
-if(1)
+  # Test macro add_perf_test
+  macro (add_perf_test testname)
+    FILE(GLOB sources tests/${testname}*.cpp)
+    add_executable(${testname} ${sources})
+    add_test(NAME ${testname} CONFIGURATIONS perf Release COMMAND "${PROJECT_BINARY_DIR}/${testname}")
+    target_link_libraries(${testname} PUBLIC rapidcsv)
+  endmacro (add_perf_test)
+
+  # Test macro add_unit_test
+  macro (add_unit_test testname)
+    FILE(GLOB sources tests/${testname}*.cpp)
+    add_executable(${testname} ${sources})
+    add_test(NAME ${testname} CONFIGURATIONS unit Debug COMMAND "${PROJECT_BINARY_DIR}/${testname}")
+    target_link_libraries(${testname} PUBLIC rapidcsv)
+  endmacro (add_unit_test)
+
+  # Unit tests
   add_unit_test(test001)
   add_unit_test(test002)
   add_unit_test(test003)
@@ -87,8 +97,7 @@ if(1)
   add_unit_test(test037)
   add_unit_test(test038)
   add_unit_test(test039)
-  add_executable(test040 tests/test040.cpp tests/test040b.cpp)
-  add_test(NAME text040 CONFIGURATIONS unit COMMAND "${PROJECT_BINARY_DIR}/test040")
+  add_unit_test(test040)
   add_unit_test(test041)
   add_unit_test(test042)
   add_unit_test(test043)
@@ -119,31 +128,38 @@ if(1)
   add_unit_test(test066)
   add_unit_test(test067)
   add_unit_test(test068)
-endif()
-add_unit_test(test069)
-add_unit_test(test070)
-add_unit_test(test071)
-add_unit_test(test072)
-add_unit_test(test073)
-add_unit_test(test074)
-add_unit_test(test075)
-add_unit_test(test076)
-add_unit_test(test077)
+  add_unit_test(test069)
+  add_unit_test(test070)
+  add_unit_test(test071)
+  add_unit_test(test072)
+  add_unit_test(test073)
+  add_unit_test(test074)
+  add_unit_test(test075)
+  add_unit_test(test076)
+  add_unit_test(test077)
   
-# perf tests
-add_perf_test(ptest001)
-add_perf_test(ptest002)
+  # perf tests
+  add_perf_test(ptest001)
+  add_perf_test(ptest002)
 
-# Examples
-add_executable(ex001 examples/ex001.cpp)
-add_executable(ex002 examples/ex002.cpp)
-add_executable(ex003 examples/ex003.cpp)
-add_executable(ex004 examples/ex004.cpp)
-add_executable(ex005 examples/ex005.cpp)
-add_executable(ex006 examples/ex006.cpp)
-add_executable(ex007 examples/ex007.cpp)
-add_executable(ex008 examples/ex008.cpp)
-add_executable(ex009 examples/ex009.cpp)
+  # Examples
+  # Test macro add_example
+  macro (add_example testname)
+    add_executable(${testname} examples/${testname}.cpp)
+    target_link_libraries(${testname} PUBLIC rapidcsv)
+  endmacro (add_example)
+
+  add_example(ex001 examples/ex001.cpp)
+  add_example(ex002 examples/ex002.cpp)
+  add_example(ex003 examples/ex003.cpp)
+  add_example(ex004 examples/ex004.cpp)
+  add_example(ex005 examples/ex005.cpp)
+  add_example(ex006 examples/ex006.cpp)
+  add_example(ex007 examples/ex007.cpp)
+  add_example(ex008 examples/ex008.cpp)
+  add_example(ex009 examples/ex009.cpp)
+
+endif()
 
 # Install
 install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/rapidcsv.h DESTINATION lib)
