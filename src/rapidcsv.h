@@ -2,9 +2,9 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.43
+ * Version:  8.45
  *
- * Copyright (C) 2017-2020 Kristofer Berggren
+ * Copyright (C) 2017-2021 Kristofer Berggren
  * All rights reserved.
  *
  * rapidcsv is distributed under the BSD 3-Clause license, see LICENSE for details.
@@ -1246,7 +1246,7 @@ namespace rapidcsv
 
       while (p_FileLength > 0)
       {
-        std::streamsize readLength = std::min(p_FileLength, bufLength);
+        std::streamsize readLength = std::min<std::streamsize>(p_FileLength, bufLength);
         pStream.read(buffer.data(), readLength);
         for (int i = 0; i < readLength; ++i)
         {
