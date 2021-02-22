@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.45
+ * Version:  8.46
  *
  * Copyright (C) 2017-2021 Kristofer Berggren
  * All rights reserved.
@@ -1158,6 +1158,17 @@ namespace rapidcsv
     }
 
   private:
+    void Clear()
+    {
+      mData.clear();
+      mColumnNames.clear();
+      mRowNames.clear();
+#ifdef HAS_CODECVT
+      mIsUtf16 = false;
+      mIsLE = false;
+#endif
+    }
+
     void ReadCsv()
     {
       std::ifstream stream;
@@ -1168,6 +1179,7 @@ namespace rapidcsv
 
     void ReadCsv(std::istream& pStream)
     {
+      Clear();
       pStream.seekg(0, std::ios::end);
       std::streamsize length = pStream.tellg();
       pStream.seekg(0, std::ios::beg);
