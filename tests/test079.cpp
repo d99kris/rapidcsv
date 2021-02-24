@@ -48,6 +48,6 @@ int main()
   }
 
   unittest::DeleteFile(path);
-  
+
   return rv;
 }

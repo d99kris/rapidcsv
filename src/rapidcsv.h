@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.46
+ * Version:  8.47
  *
  * Copyright (C) 2017-2021 Kristofer Berggren
  * All rights reserved.
@@ -408,20 +408,40 @@ namespace rapidcsv
      * @brief   Read Document data from file.
      * @param   pPath                 specifies the path of an existing CSV-file to populate the Document
      *                                data with.
+     * @param   pLabelParams          specifies which row and column should be treated as labels.
+     * @param   pSeparatorParams      specifies which field and row separators should be used.
+     * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
+     *                                handled.
      */
-    void Load(const std::string& pPath)
+    void Load(const std::string& pPath,
+              const LabelParams& pLabelParams = LabelParams(),
+              const SeparatorParams& pSeparatorParams = SeparatorParams(),
+              const ConverterParams& pConverterParams = ConverterParams())
     {
       mPath = pPath;
+      mLabelParams = pLabelParams;
+      mSeparatorParams = pSeparatorParams;
+      mConverterParams = pConverterParams;
       ReadCsv();
     }
 
     /**
      * @brief   Read Document data from stream.
      * @param   pStream               specifies an input stream to read CSV data from.
+     * @param   pLabelParams          specifies which row and column should be treated as labels.
+     * @param   pSeparatorParams      specifies which field and row separators should be used.
+     * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
+     *                                handled.
      */
-    void Load(std::istream& pStream)
+    void Load(std::istream& pStream,
+              const LabelParams& pLabelParams = LabelParams(),
+              const SeparatorParams& pSeparatorParams = SeparatorParams(),
+              const ConverterParams& pConverterParams = ConverterParams())
     {
       mPath = "";
+      mLabelParams = pLabelParams;
+      mSeparatorParams = pSeparatorParams;
+      mConverterParams = pConverterParams;
       ReadCsv(pStream);
     }
 
@@ -447,6 +467,21 @@ namespace rapidcsv
     void Save(std::ostream& pStream)
     {
       WriteCsv(pStream);
+    }
+
+    /**
+     * @brief   Clears loaded Document data.
+     *
+     */
+    void Clear()
+    {
+      mData.clear();
+      mColumnNames.clear();
+      mRowNames.clear();
+#ifdef HAS_CODECVT
+      mIsUtf16 = false;
+      mIsLE = false;
+#endif
     }
 
     /**
@@ -1158,17 +1193,6 @@ namespace rapidcsv
     }
 
   private:
-    void Clear()
-    {
-      mData.clear();
-      mColumnNames.clear();
-      mRowNames.clear();
-#ifdef HAS_CODECVT
-      mIsUtf16 = false;
-      mIsLE = false;
-#endif
-    }
-
     void ReadCsv()
     {
       std::ifstream stream;
