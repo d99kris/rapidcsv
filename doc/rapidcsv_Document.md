@@ -347,22 +347,28 @@ Get row names.
 ---
 
 ```c++
-void Load (const std::string & pPath)
+void Load (const std::string & pPath, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
 ```
 Read Document data from file. 
 
 **Parameters**
 - `pPath` specifies the path of an existing CSV-file to populate the Document data with. 
+- `pLabelParams` specifies which row and column should be treated as labels. 
+- `pSeparatorParams` specifies which field and row separators should be used. 
+- `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
 
 ---
 
 ```c++
-void Load (std::istream & pStream)
+void Load (std::istream & pStream, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
 ```
 Read Document data from stream. 
 
 **Parameters**
 - `pStream` specifies an input stream to read CSV data from. 
+- `pLabelParams` specifies which row and column should be treated as labels. 
+- `pSeparatorParams` specifies which field and row separators should be used. 
+- `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
 
 ---
 
