@@ -471,6 +471,7 @@ namespace rapidcsv
 
     /**
      * @brief   Clears loaded Document data.
+     *
      */
     void Clear()
     {

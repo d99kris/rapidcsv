@@ -31,6 +31,13 @@ Constructor.
 ---
 
 ```c++
+void Clear ()
+```
+Clears loaded Document data. 
+
+---
+
+```c++
 template<typename T > T GetCell (const size_t pColumnIdx, const size_t pRowIdx)
 ```
 Get cell by index. 
