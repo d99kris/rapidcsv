@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.48
+ * Version:  8.49
  *
  * Copyright (C) 2017-2021 Kristofer Berggren
  * All rights reserved.
@@ -659,6 +659,57 @@ namespace rapidcsv
     }
 
     /**
+     * @brief   Insert column at specified index.
+     * @param   pColumnIdx            zero-based column index.
+     * @param   pColumn               vector of column data (optional argument).
+     * @param   pColumnName           column label name (optional argument).
+     */
+    template<typename T>
+    void InsertColumn(const size_t pColumnIdx, const std::vector<T>& pColumn = std::vector<T>(),
+                      const std::string& pColumnName = std::string())
+    {
+      const size_t columnIdx = pColumnIdx + (mLabelParams.mRowNameIdx + 1);
+
+      std::vector<std::string> column;
+      if (pColumn.empty())
+      {
+        column.resize(GetDataRowCount());
+      }
+      else
+      {
+        column.resize(pColumn.size() + (mLabelParams.mColumnNameIdx + 1));
+        Converter<T> converter(mConverterParams);
+        for (auto itRow = pColumn.begin(); itRow != pColumn.end(); ++itRow)
+        {
+          std::string str;
+          converter.ToStr(*itRow, str);
+          const size_t rowIdx = std::distance(pColumn.begin(), itRow) + (mLabelParams.mColumnNameIdx + 1);
+          column.at(rowIdx) = str;
+        }
+      }
+
+      while (column.size() > GetDataRowCount())
+      {
+        std::vector<std::string> row;
+        const size_t columnCount = std::max(static_cast<size_t>(mLabelParams.mColumnNameIdx + 1),
+                                            GetDataColumnCount());
+        row.resize(columnCount);
+        mData.push_back(row);
+      }
+
+      for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
+      {
+        const size_t rowIdx = std::distance(mData.begin(), itRow);
+        itRow->insert(itRow->begin() + columnIdx, column.at(rowIdx));
+      }
+
+      if (!pColumnName.empty())
+      {
+        SetColumnName(pColumnIdx, pColumnName);
+      }
+    }
+
+    /**
      * @brief   Get number of data columns (excluding label columns).
      * @returns column count.
      */
@@ -839,6 +890,50 @@ namespace rapidcsv
       }
 
       RemoveRow(rowIdx);
+    }
+
+    /**
+     * @brief   Insert row at specified index.
+     * @param   pRowIdx               zero-based row index.
+     * @param   pRow                  vector of row data (optional argument).
+     * @param   pRowName              row label name (optional argument).
+     */
+    template<typename T>
+    void InsertRow(const size_t pRowIdx, const std::vector<T>& pRow = std::vector<T>(),
+                   const std::string& pRowName = std::string())
+    {
+      const size_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
+
+      std::vector<std::string> row;
+      if (pRow.empty())
+      {
+        row.resize(GetDataColumnCount());
+      }
+      else
+      {
+        row.resize(pRow.size() + (mLabelParams.mRowNameIdx + 1));
+        Converter<T> converter(mConverterParams);
+        for (auto itCol = pRow.begin(); itCol != pRow.end(); ++itCol)
+        {
+          std::string str;
+          converter.ToStr(*itCol, str);
+          row.at(std::distance(pRow.begin(), itCol) + (mLabelParams.mRowNameIdx + 1)) = str;
+        }
+      }
+
+      while (rowIdx > GetDataRowCount())
+      {
+        std::vector<std::string> tempRow;
+        tempRow.resize(GetDataColumnCount());
+        mData.push_back(tempRow);
+      }
+
+      mData.insert(mData.begin() + rowIdx, row);
+
+      if (!pRowName.empty())
+      {
+        SetRowName(pRowIdx, pRowName);
+      }
     }
 
     /**

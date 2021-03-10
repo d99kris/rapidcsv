@@ -354,6 +354,30 @@ Get row names.
 ---
 
 ```c++
+template<typename T > void InsertColumn (const size_t pColumnIdx, const std::vector< T > & pColumn = std::vector<T>(), const std::string & pColumnName = std::string())
+```
+Insert column at specified index. 
+
+**Parameters**
+- `pColumnIdx` zero-based column index. 
+- `pColumn` vector of column data (optional argument). 
+- `pColumnName` column label name (optional argument). 
+
+---
+
+```c++
+template<typename T > void InsertRow (const size_t pRowIdx, const std::vector< T > & pRow = std::vector<T>(), const std::string & pRowName = std::string())
+```
+Insert row at specified index. 
+
+**Parameters**
+- `pRowIdx` zero-based row index. 
+- `pRow` vector of row data (optional argument). 
+- `pRowName` row label name (optional argument). 
+
+---
+
+```c++
 void Load (const std::string & pPath, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
 ```
 Read Document data from file. 
