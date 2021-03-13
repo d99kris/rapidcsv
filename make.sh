@@ -2,7 +2,7 @@
 
 # make.sh
 #
-# Copyright (C) 2020 Kristofer Berggren
+# Copyright (C) 2020-2021 Kristofer Berggren
 # All rights reserved.
 #
 # See LICENSE for redistribution information.
@@ -131,7 +131,9 @@ if [[ "${BUILD}" == "1" ]]; then
   elif [ "${OS}" == "Darwin" ]; then
     MAKEARGS="-j$(sysctl -n hw.ncpu)"
   fi
-  mkdir -p build && cd build && cmake -DRAPIDCSV_BUILD_TESTS=ON .. && make ${MAKEARGS} && cd .. || exiterr "build failed, exiting."
+  mkdir -p build-debug && cd build-debug && cmake -DRAPIDCSV_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Debug .. && make ${MAKEARGS} && cd .. && \
+  mkdir -p build-release && cd build-release && cmake -DRAPIDCSV_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release .. && make ${MAKEARGS} && cd .. || \
+  exiterr "build failed, exiting."
 fi
 
 # tests
@@ -143,7 +145,9 @@ if [[ "${TESTS}" == "1" ]]; then
   elif [ "${OS}" == "Darwin" ]; then
     CTESTARGS="-j$(sysctl -n hw.ncpu)"
   fi
-  cd build && ctest -C unit --output-on-failure ${CTESTARGS} && ctest -C perf --verbose && cd .. || exiterr "tests failed, exiting."
+  cd build-debug && ctest --output-on-failure ${CTESTARGS} && cd .. && \
+  cd build-release && ctest --verbose && cd .. || \
+  exiterr "tests failed, exiting."
 fi
 
 # doc
@@ -157,9 +161,9 @@ fi
 if [[ "${INSTALL}" == "1" ]]; then
   OS="$(uname)"
   if [ "${OS}" == "Linux" ]; then
-    cd build && sudo make install && cd .. || exiterr "install failed (linux), exiting."
+    cd build-release && sudo make install && cd .. || exiterr "install failed (linux), exiting."
   elif [ "${OS}" == "Darwin" ]; then
-    cd build && make install && cd .. || exiterr "install failed (mac), exiting."
+    cd build-release && make install && cd .. || exiterr "install failed (mac), exiting."
   else
     exiterr "install failed (unsupported os ${OS}), exiting."
   fi
