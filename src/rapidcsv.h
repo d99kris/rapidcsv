@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.50
+ * Version:  8.51
  *
  * Copyright (C) 2017-2021 Kristofer Berggren
  * All rights reserved.
@@ -355,6 +355,45 @@ namespace rapidcsv
   };
 
   /**
+   * @brief     Datastructure holding parameters controlling how special line formats should be
+   *            treated.
+   */
+  struct LineReaderParams
+  {
+    /**
+     * @brief   Constructor
+     * @param   pSkipCommentLines     specifies whether to skip lines prefixed with
+     *                                mCommentPrefix. Default: false
+     * @param   pCommentPrefix        specifies which prefix character to indicate a comment
+     *                                line. Default: #
+     * @param   pSkipEmptyLines       specifies whether to skip empty lines. Default: false
+     */
+    explicit LineReaderParams(const bool pSkipCommentLines = false,
+                              const char pCommentPrefix = '#',
+                              const bool pSkipEmptyLines = false)
+      : mSkipCommentLines(pSkipCommentLines)
+      , mCommentPrefix(pCommentPrefix)
+      , mSkipEmptyLines(pSkipEmptyLines)
+    {
+    }
+
+    /**
+     * @brief   specifies whether to skip lines prefixed with mCommentPrefix.
+     */
+    bool mSkipCommentLines;
+
+    /**
+     * @brief   specifies which prefix character to indicate a comment line.
+     */
+    char mCommentPrefix;
+
+    /**
+     * @brief   specifies whether to skip empty lines.
+     */
+    bool mSkipEmptyLines;
+  };
+
+  /**
    * @brief     Class representing a CSV document.
    */
   class Document
@@ -368,15 +407,18 @@ namespace rapidcsv
      * @param   pSeparatorParams      specifies which field and row separators should be used.
      * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
      *                                handled.
+     * @param   pLineReaderParams     specifies how special line formats should be treated.
      */
     explicit Document(const std::string& pPath = std::string(),
                       const LabelParams& pLabelParams = LabelParams(),
                       const SeparatorParams& pSeparatorParams = SeparatorParams(),
-                      const ConverterParams& pConverterParams = ConverterParams())
+                      const ConverterParams& pConverterParams = ConverterParams(),
+                      const LineReaderParams& pLineReaderParams = LineReaderParams())
       : mPath(pPath)
       , mLabelParams(pLabelParams)
       , mSeparatorParams(pSeparatorParams)
       , mConverterParams(pConverterParams)
+      , mLineReaderParams(pLineReaderParams)
     {
       if (!mPath.empty())
       {
@@ -391,15 +433,18 @@ namespace rapidcsv
      * @param   pSeparatorParams      specifies which field and row separators should be used.
      * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
      *                                handled.
+     * @param   pLineReaderParams     specifies how special line formats should be treated.
      */
     explicit Document(std::istream& pStream,
                       const LabelParams& pLabelParams = LabelParams(),
                       const SeparatorParams& pSeparatorParams = SeparatorParams(),
-                      const ConverterParams& pConverterParams = ConverterParams())
+                      const ConverterParams& pConverterParams = ConverterParams(),
+                      const LineReaderParams& pLineReaderParams = LineReaderParams())
       : mPath()
       , mLabelParams(pLabelParams)
       , mSeparatorParams(pSeparatorParams)
       , mConverterParams(pConverterParams)
+      , mLineReaderParams(pLineReaderParams)
     {
       ReadCsv(pStream);
     }
@@ -412,16 +457,19 @@ namespace rapidcsv
      * @param   pSeparatorParams      specifies which field and row separators should be used.
      * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
      *                                handled.
+     * @param   pLineReaderParams     specifies how special line formats should be treated.
      */
     void Load(const std::string& pPath,
               const LabelParams& pLabelParams = LabelParams(),
               const SeparatorParams& pSeparatorParams = SeparatorParams(),
-              const ConverterParams& pConverterParams = ConverterParams())
+              const ConverterParams& pConverterParams = ConverterParams(),
+              const LineReaderParams& pLineReaderParams = LineReaderParams())
     {
       mPath = pPath;
       mLabelParams = pLabelParams;
       mSeparatorParams = pSeparatorParams;
       mConverterParams = pConverterParams;
+      mLineReaderParams = pLineReaderParams;
       ReadCsv();
     }
 
@@ -436,12 +484,14 @@ namespace rapidcsv
     void Load(std::istream& pStream,
               const LabelParams& pLabelParams = LabelParams(),
               const SeparatorParams& pSeparatorParams = SeparatorParams(),
-              const ConverterParams& pConverterParams = ConverterParams())
+              const ConverterParams& pConverterParams = ConverterParams(),
+              const LineReaderParams& pLineReaderParams = LineReaderParams())
     {
       mPath = "";
       mLabelParams = pLabelParams;
       mSeparatorParams = pSeparatorParams;
       mConverterParams = pConverterParams;
+      mLineReaderParams = pLineReaderParams;
       ReadCsv(pStream);
     }
 
@@ -1421,11 +1471,28 @@ namespace rapidcsv
             else
             {
               ++lf;
-              row.push_back(Unquote(Trim(cell)));
-              cell.clear();
-              mData.push_back(row);
-              row.clear();
-              quoted = false;
+              if (mLineReaderParams.mSkipEmptyLines && row.empty() && cell.empty())
+              {
+                // skip empty line
+              }
+              else
+              {
+                row.push_back(Unquote(Trim(cell)));
+
+                if (mLineReaderParams.mSkipCommentLines && !row.at(0).empty() &&
+                    (row.at(0)[0] == mLineReaderParams.mCommentPrefix))
+                {
+                  // skip comment line
+                }
+                else
+                {
+                  mData.push_back(row);
+                }
+
+                cell.clear();
+                row.clear();
+                quoted = false;
+              }
             }
           }
           else
@@ -1636,6 +1703,7 @@ namespace rapidcsv
     LabelParams mLabelParams;
     SeparatorParams mSeparatorParams;
     ConverterParams mConverterParams;
+    LineReaderParams mLineReaderParams;
     std::vector<std::vector<std::string>> mData;
     std::map<std::string, size_t> mColumnNames;
     std::map<std::string, size_t> mRowNames;

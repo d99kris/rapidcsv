@@ -393,6 +393,28 @@ passing `pAutoQuote = false` in `SeparatorParams`, example:
                                                      false /* pAutoQuote */));
 ```
 
+Skipping Empty and Comment Lines
+--------------------------------
+Rapidcsv reads all lines by default, but may be called to ignore comment lines
+starting with a specific character, example:
+
+```cpp
+    rapidcsv::Document doc("file.csv", rapidcsv::LabelParams(), rapidcsv::SeparatorParams(),
+                           rapidcsv::ConverterParams(),
+                           rapidcsv::LineReaderParams(true /* pSkipCommentLines */,
+                                                      '#' /* pCommentPrefix */));
+```
+
+Using LineReaderParams it is also possible to skip empty lines, example:
+
+```cpp
+    rapidcsv::Document doc("file.csv", rapidcsv::LabelParams(), rapidcsv::SeparatorParams(),
+                           rapidcsv::ConverterParams(),
+                           rapidcsv::LineReaderParams(false /* pSkipCommentLines */,
+                                                      '#' /* pCommentPrefix */,
+                                                      true /* pSkipEmptyLines */));
+```
+
 UTF-16 and UTF-8
 ----------------
 Rapidcsv's preferred encoding for non-ASCII text is UTF-8. UTF-16 LE and
