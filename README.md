@@ -435,9 +435,10 @@ API Documentation
 =================
 The following classes makes up the Rapidcsv interface:
  - [class rapidcsv::Document](doc/rapidcsv_Document.md)
- - [class rapidcsv::SeparatorParams](doc/rapidcsv_SeparatorParams.md)
  - [class rapidcsv::LabelParams](doc/rapidcsv_LabelParams.md)
+ - [class rapidcsv::SeparatorParams](doc/rapidcsv_SeparatorParams.md)
  - [class rapidcsv::ConverterParams](doc/rapidcsv_ConverterParams.md)
+ - [class rapidcsv::LineReaderParams](doc/rapidcsv_LineReaderParams.md)
  - [class rapidcsv::no_converter](doc/rapidcsv_no_converter.md)
  - [class rapidcsv::Converter< T >](doc/rapidcsv_Converter.md)
 
