@@ -5,7 +5,7 @@ Class representing a CSV document.
 ---
 
 ```c++
-Document (const std::string & pPath = std::string(), const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
+Document (const std::string & pPath = std::string(), const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams(), const LineReaderParams & pLineReaderParams = LineReaderParams())
 ```
 Constructor. 
 
@@ -14,11 +14,12 @@ Constructor.
 - `pLabelParams` specifies which row and column should be treated as labels. 
 - `pSeparatorParams` specifies which field and row separators should be used. 
 - `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
+- `pLineReaderParams` specifies how special line formats should be treated. 
 
 ---
 
 ```c++
-Document (std::istream & pStream, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
+Document (std::istream & pStream, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams(), const LineReaderParams & pLineReaderParams = LineReaderParams())
 ```
 Constructor. 
 
@@ -27,6 +28,7 @@ Constructor.
 - `pLabelParams` specifies which row and column should be treated as labels. 
 - `pSeparatorParams` specifies which field and row separators should be used. 
 - `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
+- `pLineReaderParams` specifies how special line formats should be treated. 
 
 ---
 
@@ -378,7 +380,7 @@ Insert row at specified index.
 ---
 
 ```c++
-void Load (const std::string & pPath, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
+void Load (const std::string & pPath, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams(), const LineReaderParams & pLineReaderParams = LineReaderParams())
 ```
 Read Document data from file. 
 
@@ -387,11 +389,12 @@ Read Document data from file.
 - `pLabelParams` specifies which row and column should be treated as labels. 
 - `pSeparatorParams` specifies which field and row separators should be used. 
 - `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
+- `pLineReaderParams` specifies how special line formats should be treated. 
 
 ---
 
 ```c++
-void Load (std::istream & pStream, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
+void Load (std::istream & pStream, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams(), const LineReaderParams & pLineReaderParams = LineReaderParams())
 ```
 Read Document data from stream. 
 
@@ -400,6 +403,7 @@ Read Document data from stream.
 - `pLabelParams` specifies which row and column should be treated as labels. 
 - `pSeparatorParams` specifies which field and row separators should be used. 
 - `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
+- `pLineReaderParams` specifies how special line formats should be treated. 
 
 ---
 

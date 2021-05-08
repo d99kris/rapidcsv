@@ -480,6 +480,7 @@ namespace rapidcsv
      * @param   pSeparatorParams      specifies which field and row separators should be used.
      * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
      *                                handled.
+     * @param   pLineReaderParams     specifies how special line formats should be treated.
      */
     void Load(std::istream& pStream,
               const LabelParams& pLabelParams = LabelParams(),
