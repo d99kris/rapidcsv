@@ -47,10 +47,14 @@ if(RAPIDCSV_BUILD_TESTS)
   enable_testing()
 
   # Enable codecvt tests if supported
-  include(CheckIncludeFileCXX)
-  check_include_file_cxx(codecvt HAS_CODECVT)
-  if(HAS_CODECVT)
-    target_compile_definitions(rapidcsv INTERFACE HAS_CODECVT)
+  if (CMAKE_CXX_STANDARD VERSION_LESS "17")
+    include(CheckIncludeFileCXX)
+    check_include_file_cxx(codecvt HAS_CODECVT)
+    if(HAS_CODECVT)
+      target_compile_definitions(rapidcsv INTERFACE HAS_CODECVT)
+    endif()
+  else()
+    message(STATUS "Skip check for C++ include codecvt - C++${CMAKE_CXX_STANDARD}")
   endif()
 
   # Test macro add_perf_test
@@ -160,6 +164,9 @@ if(RAPIDCSV_BUILD_TESTS)
   add_unit_test(test082)
   add_unit_test(test083)
   add_unit_test(test084)
+  if(HAS_CODECVT)
+    add_unit_test(test085)
+  endif()
 
   # perf tests
   add_perf_test(ptest001)
