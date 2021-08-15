@@ -18,6 +18,7 @@
 #include <cmath>
 #ifdef HAS_CODECVT
 #include <codecvt>
+#include <locale>
 #endif
 #include <fstream>
 #include <functional>
@@ -1664,25 +1665,15 @@ namespace rapidcsv
 #if defined(_MSC_VER)
 #pragma warning (disable: 4996)
 #endif
-    static std::string ToString(const std::wstring& pWStr)
-    {
-      size_t len = std::wcstombs(nullptr, pWStr.c_str(), 0) + 1;
-      char* cstr = new char[len];
-      std::wcstombs(cstr, pWStr.c_str(), len);
-      std::string str(cstr);
-      delete[] cstr;
-      return str;
-    }
+   static std::string ToString(const std::wstring& pWStr)
+   {
+     return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>{}.to_bytes(pWStr);
+   }
 
-    static std::wstring ToWString(const std::string& pStr)
-    {
-      size_t len = 1 + mbstowcs(nullptr, pStr.c_str(), 0);
-      wchar_t* wcstr = new wchar_t[len];
-      std::mbstowcs(wcstr, pStr.c_str(), len);
-      std::wstring wstr(wcstr);
-      delete[] wcstr;
-      return wstr;
-    }
+   static std::wstring ToWString(const std::string& pStr)
+   {
+     return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>{}.from_bytes(pStr);
+   }
 #if defined(_MSC_VER)
 #pragma warning (default: 4996)
 #endif
