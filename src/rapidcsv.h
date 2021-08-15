@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.52
+ * Version:  8.53
  *
  * Copyright (C) 2017-2021 Kristofer Berggren
  * All rights reserved.
@@ -568,9 +568,22 @@ namespace rapidcsv
       {
         if (std::distance(mData.begin(), itRow) > mLabelParams.mColumnNameIdx)
         {
-          T val;
-          converter.ToVal(itRow->at(columnIdx), val);
-          column.push_back(val);
+          if (columnIdx < static_cast<ssize_t>(itRow->size()))
+          {
+            T val;
+            converter.ToVal(itRow->at(columnIdx), val);
+            column.push_back(val);
+          }
+          else
+          {
+            const std::string errStr = "requested column index " +
+              std::to_string(columnIdx - (mLabelParams.mRowNameIdx + 1)) + " >= " +
+              std::to_string(itRow->size() - (mLabelParams.mRowNameIdx + 1)) +
+              " (number of columns on row index " +
+              std::to_string(std::distance(mData.begin(), itRow) -
+                             (mLabelParams.mColumnNameIdx + 1)) + ")";
+            throw std::out_of_range(errStr);
+          }
         }
       }
       return column;

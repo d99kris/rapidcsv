@@ -47,6 +47,50 @@
   while (0)
 
 
+#define ExpectExceptionMsg(expr, excp, msg)                                                   \
+  do                                                                                          \
+  {                                                                                           \
+    bool success = false;                                                                     \
+    try                                                                                       \
+    {                                                                                         \
+      expr;                                                                                   \
+    }                                                                                         \
+    catch (const excp& ex)                                                                    \
+    {                                                                                         \
+      if (std::string(ex.what()) == msg)                                                      \
+      {                                                                                       \
+        success = true;                                                                       \
+      }                                                                                       \
+      else                                                                                    \
+      {                                                                                       \
+        std::stringstream ss;                                                                 \
+        ss << unittest::detail::FileName(__FILE__) << ":" << std::to_string(__LINE__);        \
+        ss << " ExpectExceptionMsg failed: unexpected exception message '" << ex.what();      \
+        ss << "'." << std::endl;                                                              \
+        throw std::runtime_error(ss.str());                                                   \
+      }                                                                                       \
+    }                                                                                         \
+    catch (const std::exception& ex)                                                          \
+    {                                                                                         \
+      std::stringstream ss;                                                                   \
+      ss << unittest::detail::FileName(__FILE__) << ":" << std::to_string(__LINE__);          \
+      ss << " ExpectExceptionMsg failed: unexpected exception '" << typeid(ex).name();        \
+      ss << "' thrown." << std::endl;                                                         \
+      throw std::runtime_error(ss.str());                                                     \
+    }                                                                                         \
+                                                                                              \
+    if (!success)                                                                             \
+    {                                                                                         \
+      std::stringstream ss;                                                                   \
+      ss << unittest::detail::FileName(__FILE__) << ":" << std::to_string(__LINE__);          \
+      ss << " ExpectException failed: expected exception '" << #excp << "' not thrown.";      \
+      ss << std::endl;                                                                        \
+      throw std::runtime_error(ss.str());                                                     \
+    }                                                                                         \
+  }                                                                                           \
+  while (0)
+
+
 namespace unittest
 {
   namespace detail
