@@ -77,7 +77,13 @@ if [[ "${DEPS}" == "1" ]]; then
   if [ "${OS}" == "Linux" ]; then
     DISTRO="$(lsb_release -i | awk -F':\t' '{print $2}')"
     if [[ "${DISTRO}" == "Ubuntu" ]]; then
-      true || exiterr "deps failed (linux), exiting."
+      if [[ "${GITHUB_ACTIONS}" == "true" ]]; then
+        # ensure de_DE locale is present when running CI tests
+        locale -a | grep -qi "de_DE.utf8"
+        if [[ "${?}" != "0" ]]; then
+          sudo locale-gen "de_DE.UTF-8" || exiterr "deps failed (${DISTRO}), exiting."
+        fi
+      fi
     else
       exiterr "deps failed (unsupported linux distro ${DISTRO}), exiting."
     fi
@@ -131,8 +137,8 @@ if [[ "${BUILD}" == "1" ]]; then
   elif [ "${OS}" == "Darwin" ]; then
     MAKEARGS="-j$(sysctl -n hw.ncpu)"
   fi
-  mkdir -p build-debug && cd build-debug && cmake -DRAPIDCSV_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Debug .. && make ${MAKEARGS} && cd .. && \
-  mkdir -p build-release && cd build-release && cmake -DRAPIDCSV_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release .. && make ${MAKEARGS} && cd .. || \
+  mkdir -p build-debug && cd build-debug && cmake -DRAPIDCSV_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Debug .. && make -s ${MAKEARGS} && cd .. && \
+  mkdir -p build-release && cd build-release && cmake -DRAPIDCSV_BUILD_TESTS=ON -DCMAKE_BUILD_TYPE=Release .. && make -s ${MAKEARGS} && cd .. || \
   exiterr "build failed, exiting."
 fi
 

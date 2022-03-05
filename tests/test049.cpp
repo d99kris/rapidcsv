@@ -19,7 +19,9 @@ int main()
   try
   {
     rapidcsv::Document doc(path, rapidcsv::LabelParams(0, 0), rapidcsv::SeparatorParams(),
-                           rapidcsv::ConverterParams(true, 0.0, 1));
+                           rapidcsv::ConverterParams(true /* pHasDefaultConverter */,
+                                                     0.0 /* pDefaultFloat */,
+                                                     1 /* pDefaultInteger */));
 
     unittest::ExpectEqual(int, doc.GetCell<int>(0, 0), 1);
     unittest::ExpectEqual(long long, doc.GetCell<long long>(1, 0), 1);

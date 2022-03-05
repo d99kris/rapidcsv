@@ -105,7 +105,7 @@ namespace unittest
 
   inline std::string TempPath()
   {
-    char name[] = "rapidcsvtest.XXXXXX";
+    char name[] = "rapidcsvtest.XX" "XX" "XX";
 #ifndef _MSC_VER
     int fd = mkstemp(name);
     close(fd);

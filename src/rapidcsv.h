@@ -2,9 +2,9 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.53
+ * Version:  8.60
  *
- * Copyright (C) 2017-2021 Kristofer Berggren
+ * Copyright (C) 2017-2022 Kristofer Berggren
  * All rights reserved.
  *
  * rapidcsv is distributed under the BSD 3-Clause license, see LICENSE for details.
@@ -55,13 +55,17 @@ namespace rapidcsv
      *                                an exception to be thrown (default).
      * @param   pDefaultFloat         floating-point default value to represent invalid numbers.
      * @param   pDefaultInteger       integer default value to represent invalid numbers.
+     * @param   pNumericLocale        specifies whether to honor LC_NUMERIC locale (default
+     *                                true).
      */
     explicit ConverterParams(const bool pHasDefaultConverter = false,
                              const long double pDefaultFloat = std::numeric_limits<long double>::signaling_NaN(),
-                             const long long pDefaultInteger = 0)
+                             const long long pDefaultInteger = 0,
+                             const bool pNumericLocale = true)
       : mHasDefaultConverter(pHasDefaultConverter)
       , mDefaultFloat(pDefaultFloat)
       , mDefaultInteger(pDefaultInteger)
+      , mNumericLocale(pNumericLocale)
     {
     }
 
@@ -80,6 +84,11 @@ namespace rapidcsv
      * @brief   integer default value to represent invalid numbers.
      */
     long long mDefaultInteger;
+
+    /**
+     * @brief   specifies whether to honor LC_NUMERIC locale.
+     */
+    bool mNumericLocale;
   };
 
   /**
@@ -200,20 +209,38 @@ namespace rapidcsv
 
       try
       {
-        if (typeid(T) == typeid(float))
+        if (mConverterParams.mNumericLocale)
         {
-          pVal = static_cast<T>(std::stof(pStr));
-          return;
+          if (typeid(T) == typeid(float))
+          {
+            pVal = static_cast<T>(std::stof(pStr));
+            return;
+          }
+          else if (typeid(T) == typeid(double))
+          {
+            pVal = static_cast<T>(std::stod(pStr));
+            return;
+          }
+          else if (typeid(T) == typeid(long double))
+          {
+            pVal = static_cast<T>(std::stold(pStr));
+            return;
+          }
         }
-        else if (typeid(T) == typeid(double))
+        else
         {
-          pVal = static_cast<T>(std::stod(pStr));
-          return;
-        }
-        else if (typeid(T) == typeid(long double))
-        {
-          pVal = static_cast<T>(std::stold(pStr));
-          return;
+          if ((typeid(T) == typeid(float)) ||
+              (typeid(T) == typeid(double)) ||
+              (typeid(T) == typeid(long double)))
+          {
+            std::istringstream iss(pStr);
+            iss >> pVal;
+            if (iss.fail() || iss.bad() || !iss.eof())
+            {
+              throw std::invalid_argument("istringstream: no conversion");
+            }
+            return;
+          }
         }
       }
       catch (...)

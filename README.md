@@ -431,6 +431,13 @@ Rapidcsv may be included in a CMake project using FetchContent. Refer to the
 [CMake FetchContent Example Project](examples/cmake-fetchcontent) and in
 particular its [CMakeLists.txt](examples/cmake-fetchcontent/CMakeLists.txt).
 
+Locale Independent Parsing
+--------------------------
+Rapidcsv uses locale-dependent conversion functions when parsing float values
+by default. It is possible to configure rapidcsv to use locale independent
+parsing by setting `mNumericLocale` in `ConverterParams`, see for example
+[tests/test087.cpp](https://github.com/d99kris/rapidcsv/blob/master/tests/test087.cpp)
+
 API Documentation
 =================
 The following classes makes up the Rapidcsv interface:
