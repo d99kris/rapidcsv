@@ -315,8 +315,9 @@ override usage can be found in the test
 Reading CSV Data from a Stream or String
 ----------------------------------------
 In addition to specifying a filename, rapidcsv supports constructing a Document
-from a stream and, indirectly through stringstream, from a string. Here is a
-simple example reading CSV data from a string:
+from a stream and, indirectly through stringstream, from a string. File streams
+used with rapidcsv should be opened in `std::ios::binary` mode to enable full
+functionality. Here is a simple example reading CSV data from a string:
 
 [ex007.cpp](examples/ex007.cpp) content:
 ```cpp

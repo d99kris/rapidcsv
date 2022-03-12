@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.60
+ * Version:  8.61
  *
  * Copyright (C) 2017-2022 Kristofer Berggren
  * All rights reserved.
@@ -456,7 +456,7 @@ namespace rapidcsv
 
     /**
      * @brief   Constructor
-     * @param   pStream               specifies an input stream to read CSV data from.
+     * @param   pStream               specifies a binary input stream to read CSV data from.
      * @param   pLabelParams          specifies which row and column should be treated as labels.
      * @param   pSeparatorParams      specifies which field and row separators should be used.
      * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
@@ -503,7 +503,7 @@ namespace rapidcsv
 
     /**
      * @brief   Read Document data from stream.
-     * @param   pStream               specifies an input stream to read CSV data from.
+     * @param   pStream               specifies a binary input stream to read CSV data from.
      * @param   pLabelParams          specifies which row and column should be treated as labels.
      * @param   pSeparatorParams      specifies which field and row separators should be used.
      * @param   pConverterParams      specifies how invalid numbers (including empty strings) should be
@@ -541,7 +541,7 @@ namespace rapidcsv
 
     /**
      * @brief   Write Document data to stream.
-     * @param   pStream               specifies an output stream to write the data to.
+     * @param   pStream               specifies a binary output stream to write the data to.
      */
     void Save(std::ostream& pStream)
     {
@@ -1469,8 +1469,17 @@ namespace rapidcsv
 
       while (p_FileLength > 0)
       {
-        std::streamsize readLength = std::min<std::streamsize>(p_FileLength, bufLength);
-        pStream.read(buffer.data(), readLength);
+        const std::streamsize toReadLength = std::min<std::streamsize>(p_FileLength, bufLength);
+        pStream.read(buffer.data(), toReadLength);
+
+        // With user-specified istream opened in non-binary mode on windows, we may have a
+        // data length mismatch, so ensure we don't parse outside actual data length read.
+        const std::streamsize readLength = pStream.gcount();
+        if (readLength == 0)
+        {
+          break;
+        }
+
         for (int i = 0; i < readLength; ++i)
         {
           if (buffer[i] == '"')
