@@ -1712,6 +1712,7 @@ namespace rapidcsv
 
 #ifdef HAS_CODECVT
 #if defined(_MSC_VER)
+#pragma warning (push)
 #pragma warning (disable: 4996)
 #endif
     static std::string ToString(const std::wstring& pWStr)
@@ -1724,7 +1725,7 @@ namespace rapidcsv
       return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>{ }.from_bytes(pStr);
     }
 #if defined(_MSC_VER)
-#pragma warning (default: 4996)
+#pragma warning (pop)
 #endif
 #endif
 
