@@ -23,13 +23,40 @@ int main()
   try
   {
     rapidcsv::Document doc(path, rapidcsv::LabelParams(0, 0));
-    unittest::ExpectEqual(int, doc.GetCell<int>(0, 0), 3);
-    unittest::ExpectEqual(int, doc.GetCell<int>(1, 0), 9);
-    unittest::ExpectEqual(int, doc.GetCell<int>(2, 0), 81);
 
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>("A", "2"), "4");
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>("B", "2"), "16");
-    unittest::ExpectEqual(std::string, doc.GetCell<std::string>("C", "2"), "256");
+    // below functions should use all template functions
+    unittest::ExpectEqual(int, doc.GetColumn<int>(0).at(0), 3);
+    unittest::ExpectEqual(int, doc.GetColumn<int>("A").at(0), 3);
+
+    doc.SetColumn(0, std::vector<int>({ 4, 5 }));
+    unittest::ExpectEqual(int, doc.GetColumn<int>(0).at(0), 4);
+    doc.SetColumn("A", std::vector<int>({ 5, 6 }));
+    unittest::ExpectEqual(int, doc.GetColumn<int>("A").at(0), 5);
+
+    doc.InsertColumn(0, std::vector<int>({ 7, 8 }), "A2");
+    unittest::ExpectEqual(int, doc.GetColumn<int>("A2").at(0), 7);
+
+    unittest::ExpectEqual(int, doc.GetRow<int>(0).at(0), 7);
+    unittest::ExpectEqual(int, doc.GetRow<int>("1").at(0), 7);
+
+    doc.SetRow(0, std::vector<int>({ 9, 3, 9, 81 }));
+    unittest::ExpectEqual(int, doc.GetRow<int>(0).at(0), 9);
+
+    doc.SetRow("1", std::vector<int>({ 9, 3, 9, 81 }));
+    unittest::ExpectEqual(int, doc.GetRow<int>("1").at(0), 9);
+
+    doc.InsertRow(0, std::vector<int>({ 1, 2, 3, 4 }), "1B");
+    unittest::ExpectEqual(int, doc.GetRow<int>("1B").at(0), 1);
+
+    unittest::ExpectEqual(int, doc.GetCell<int>(0, 0), 1);
+    unittest::ExpectEqual(int, doc.GetCell<int>("A2", "1B"), 1);
+    unittest::ExpectEqual(int, doc.GetCell<int>(0, "1B"), 1);
+    unittest::ExpectEqual(int, doc.GetCell<int>("A2", 0), 1);
+
+    doc.SetCell(1, 1, 111);
+    unittest::ExpectEqual(int, doc.GetCell<int>(1, 1), 111);
+    doc.SetCell("A", "2", 222);
+    unittest::ExpectEqual(int, doc.GetCell<int>("A", "2"), 222);
   }
   catch (const std::exception& ex)
   {

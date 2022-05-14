@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.62
+ * Version:  8.63
  *
  * Copyright (C) 2017-2022 Kristofer Berggren
  * All rights reserved.
@@ -783,8 +783,8 @@ namespace rapidcsv
       while (column.size() > GetDataRowCount())
       {
         std::vector<std::string> row;
-        const size_t columnCount = std::max(static_cast<size_t>(mLabelParams.mColumnNameIdx + 1),
-                                            GetDataColumnCount());
+        const size_t columnCount = std::max<size_t>(static_cast<size_t>(mLabelParams.mColumnNameIdx + 1),
+                                                    GetDataColumnCount());
         row.resize(columnCount);
         mData.push_back(row);
       }
