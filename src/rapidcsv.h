@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.63
+ * Version:  8.64
  *
  * Copyright (C) 2017-2022 Kristofer Berggren
  * All rights reserved.
@@ -733,6 +733,8 @@ namespace rapidcsv
       {
         itRow->erase(itRow->begin() + columnIdx);
       }
+
+      UpdateColumnNames();
     }
 
     /**
@@ -799,6 +801,8 @@ namespace rapidcsv
       {
         SetColumnName(pColumnIdx, pColumnName);
       }
+
+      UpdateColumnNames();
     }
 
     /**
@@ -967,6 +971,7 @@ namespace rapidcsv
     {
       const ssize_t rowIdx = pRowIdx + (mLabelParams.mColumnNameIdx + 1);
       mData.erase(mData.begin() + rowIdx);
+      UpdateRowNames();
     }
 
     /**
@@ -1026,6 +1031,8 @@ namespace rapidcsv
       {
         SetRowName(pRowIdx, pRowName);
       }
+
+      UpdateRowNames();
     }
 
     /**
@@ -1567,30 +1574,10 @@ namespace rapidcsv
       mSeparatorParams.mHasCR = (cr > (lf / 2));
 
       // Set up column labels
-      if ((mLabelParams.mColumnNameIdx >= 0) &&
-          (static_cast<ssize_t>(mData.size()) > mLabelParams.mColumnNameIdx))
-      {
-        int i = 0;
-        for (auto& columnName : mData[mLabelParams.mColumnNameIdx])
-        {
-          mColumnNames[columnName] = i++;
-        }
-      }
+      UpdateColumnNames();
 
       // Set up row labels
-      if ((mLabelParams.mRowNameIdx >= 0) &&
-          (static_cast<ssize_t>(mData.size()) >
-           (mLabelParams.mColumnNameIdx + 1)))
-      {
-        int i = 0;
-        for (auto& dataRow : mData)
-        {
-          if (static_cast<ssize_t>(dataRow.size()) > mLabelParams.mRowNameIdx)
-          {
-            mRowNames[dataRow[mLabelParams.mRowNameIdx]] = i++;
-          }
-        }
-      }
+      UpdateRowNames();
     }
 
     void WriteCsv() const
@@ -1707,6 +1694,38 @@ namespace rapidcsv
       else
       {
         return pStr;
+      }
+    }
+
+    void UpdateColumnNames()
+    {
+      mColumnNames.clear();
+      if ((mLabelParams.mColumnNameIdx >= 0) &&
+          (static_cast<ssize_t>(mData.size()) > mLabelParams.mColumnNameIdx))
+      {
+        int i = 0;
+        for (auto& columnName : mData[mLabelParams.mColumnNameIdx])
+        {
+          mColumnNames[columnName] = i++;
+        }
+      }
+    }
+
+    void UpdateRowNames()
+    {
+      mRowNames.clear();
+      if ((mLabelParams.mRowNameIdx >= 0) &&
+          (static_cast<ssize_t>(mData.size()) >
+           (mLabelParams.mColumnNameIdx + 1)))
+      {
+        int i = 0;
+        for (auto& dataRow : mData)
+        {
+          if (static_cast<ssize_t>(dataRow.size()) > mLabelParams.mRowNameIdx)
+          {
+            mRowNames[dataRow[mLabelParams.mRowNameIdx]] = i++;
+          }
+        }
       }
     }
 

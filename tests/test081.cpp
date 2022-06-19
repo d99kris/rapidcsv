@@ -30,6 +30,11 @@ int main()
 
     doc.InsertColumn(3, std::vector<int>({ 256, 6561, 65536, 390625 }), "D");
 
+    std::vector<int> ints = doc.GetColumn<int>("B");
+    unittest::ExpectEqual(size_t, ints.size(), 4);
+    unittest::ExpectEqual(int, ints.at(0), 4);
+    unittest::ExpectEqual(int, ints.at(1), 9);
+
     doc.SetRowName(0, "0");
     doc.SetRowName(1, "1");
     doc.SetRowName(2, "2");
