@@ -233,7 +233,7 @@ Get column index by name.
 ---
 
 ```c++
-std::string GetColumnName (const ssize_t pColumnIdx)
+std::string GetColumnName (const size_t pColumnIdx)
 ```
 Get column name. 
 
@@ -333,7 +333,7 @@ Get row index by name.
 ---
 
 ```c++
-std::string GetRowName (const ssize_t pRowIdx)
+std::string GetRowName (const size_t pRowIdx)
 ```
 Get row name. 
 

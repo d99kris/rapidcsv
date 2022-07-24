@@ -5,7 +5,7 @@ Datastructure holding parameters controlling which row and column should be trea
 ---
 
 ```c++
-LabelParams (const int pColumnNameIdx = 0, const int pRowNameIdx = \-1)
+LabelParams (const ssize_t pColumnNameIdx = 0, const ssize_t pRowNameIdx = -1)
 ```
 Constructor. 
 
