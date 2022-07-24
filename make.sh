@@ -40,7 +40,6 @@ case "${1%/}" in
     ;;
 
   doc)
-    BUILD="1"
     DOC="1"
     ;;
 
