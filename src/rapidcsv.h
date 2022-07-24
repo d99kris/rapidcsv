@@ -695,7 +695,7 @@ namespace rapidcsv
     {
       const size_t dataColumnIdx = GetDataColumnIndex(pColumnIdx);
 
-      while (pColumn.size() + static_cast<size_t>(mLabelParams.mColumnNameIdx + 1) > GetDataRowCount())
+      while (GetDataRowIndex(pColumn.size()) > GetDataRowCount())
       {
         std::vector<std::string> row;
         row.resize(GetDataColumnCount());
@@ -706,7 +706,7 @@ namespace rapidcsv
       {
         for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
         {
-          itRow->resize(dataColumnIdx + 1 + static_cast<size_t>(mLabelParams.mRowNameIdx + 1));
+          itRow->resize(GetDataColumnIndex(dataColumnIdx + 1));
         }
       }
 
@@ -784,7 +784,7 @@ namespace rapidcsv
       }
       else
       {
-        column.resize(pColumn.size() + static_cast<size_t>(mLabelParams.mColumnNameIdx + 1));
+        column.resize(GetDataRowIndex(pColumn.size()));
         Converter<T> converter(mConverterParams);
         for (auto itRow = pColumn.begin(); itRow != pColumn.end(); ++itRow)
         {
@@ -947,7 +947,7 @@ namespace rapidcsv
       {
         for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
         {
-          itRow->resize(pRow.size() + static_cast<size_t>(mLabelParams.mRowNameIdx + 1));
+          itRow->resize(GetDataColumnIndex(pRow.size()));
         }
       }
 
@@ -1021,7 +1021,7 @@ namespace rapidcsv
       }
       else
       {
-        row.resize(pRow.size() + static_cast<size_t>(mLabelParams.mRowNameIdx + 1));
+        row.resize(GetDataColumnIndex(pRow.size()));
         Converter<T> converter(mConverterParams);
         for (auto itCol = pRow.begin(); itCol != pRow.end(); ++itCol)
         {
