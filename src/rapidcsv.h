@@ -23,6 +23,7 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <limits>
 #include <map>
 #include <sstream>
 #include <string>
@@ -715,7 +716,8 @@ namespace rapidcsv
       {
         std::string str;
         converter.ToStr(*itRow, str);
-        mData.at(static_cast<size_t>(std::distance(pColumn.begin(), itRow) + mLabelParams.mColumnNameIdx + 1)).at(dataColumnIdx) = str;
+        mData.at(static_cast<size_t>(std::distance(pColumn.begin(), itRow) + mLabelParams.mColumnNameIdx + 1)).at(
+          dataColumnIdx) = str;
       }
     }
 
@@ -790,7 +792,8 @@ namespace rapidcsv
         {
           std::string str;
           converter.ToStr(*itRow, str);
-          const size_t rowIdx = static_cast<size_t>(std::distance(pColumn.begin(), itRow) + (mLabelParams.mColumnNameIdx + 1));
+          const size_t rowIdx =
+            static_cast<size_t>(std::distance(pColumn.begin(), itRow) + (mLabelParams.mColumnNameIdx + 1));
           column.at(rowIdx) = str;
         }
       }
@@ -956,7 +959,8 @@ namespace rapidcsv
       {
         std::string str;
         converter.ToStr(*itCol, str);
-        mData.at(dataRowIdx).at(static_cast<size_t>(std::distance(pRow.begin(), itCol) + mLabelParams.mRowNameIdx + 1)) = str;
+        mData.at(dataRowIdx).at(static_cast<size_t>(std::distance(pRow.begin(),
+                                                                  itCol) + mLabelParams.mRowNameIdx + 1)) = str;
       }
     }
 
