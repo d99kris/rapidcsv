@@ -5,7 +5,7 @@ Datastructure holding parameters controlling how the CSV data fields are separat
 ---
 
 ```c++
-SeparatorParams (const char pSeparator = ',', const bool pTrim = false, const bool pHasCR = sPlatformHasCR, const bool pQuotedLinebreaks = false, const bool pAutoQuote = true)
+SeparatorParams (const char pSeparator = ',', const bool pTrim = false, const bool pHasCR = sPlatformHasCR, const bool pQuotedLinebreaks = false, const bool pAutoQuote = true, const char pQuoteChar = ''')
 ```
 Constructor. 
 
@@ -15,6 +15,7 @@ Constructor.
 - `pHasCR` specifies whether a new document (i.e. not an existing document read) should use CR/LF instead of only LF (default is to use standard behavior of underlying platforms - CR/LF for Win, and LF for others). 
 - `pQuotedLinebreaks` specifies whether to allow line breaks in quoted text (default false) 
 - `pAutoQuote` specifies whether to automatically dequote data during read, and add quotes during write (default true). 
+- `pQuoteChar` specifies the quote character (default '"'). 
 
 ---
 

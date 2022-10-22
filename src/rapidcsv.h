@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.66
+ * Version:  8.67
  *
  * Copyright (C) 2017-2022 Kristofer Berggren
  * All rights reserved.
@@ -358,15 +358,17 @@ namespace rapidcsv
      * @param   pQuotedLinebreaks     specifies whether to allow line breaks in quoted text (default false)
      * @param   pAutoQuote            specifies whether to automatically dequote data during read, and add
      *                                quotes during write (default true).
+     * @param   pQuoteChar            specifies the quote character (default '\"').
      */
     explicit SeparatorParams(const char pSeparator = ',', const bool pTrim = false,
                              const bool pHasCR = sPlatformHasCR, const bool pQuotedLinebreaks = false,
-                             const bool pAutoQuote = true)
+                             const bool pAutoQuote = true, const char pQuoteChar = '"')
       : mSeparator(pSeparator)
       , mTrim(pTrim)
       , mHasCR(pHasCR)
       , mQuotedLinebreaks(pQuotedLinebreaks)
       , mAutoQuote(pAutoQuote)
+      , mQuoteChar(pQuoteChar)
     {
     }
 
@@ -394,6 +396,11 @@ namespace rapidcsv
      * @brief   specifies whether to automatically dequote cell data.
      */
     bool mAutoQuote;
+
+    /**
+     * @brief   specifies the quote character.
+     */
+    char mQuoteChar;
   };
 
   /**
@@ -1507,9 +1514,9 @@ namespace rapidcsv
 
         for (size_t i = 0; i < static_cast<size_t>(readLength); ++i)
         {
-          if (buffer[i] == '"')
+          if (buffer[i] == mSeparatorParams.mQuoteChar)
           {
-            if (cell.empty() || cell[0] == '"')
+            if (cell.empty() || (cell[0] == mSeparatorParams.mQuoteChar))
             {
               quoted = !quoted;
             }
@@ -1649,9 +1656,10 @@ namespace rapidcsv
           {
             // escape quotes in string
             std::string str = *itc;
-            ReplaceString(str, "\"", "\"\"");
+            const std::string quoteCharStr = std::string(1, mSeparatorParams.mQuoteChar);
+            ReplaceString(str, quoteCharStr, quoteCharStr + quoteCharStr);
 
-            pStream << "\"" << str << "\"";
+            pStream << quoteCharStr << str << quoteCharStr;
           }
           else
           {
@@ -1709,13 +1717,16 @@ namespace rapidcsv
 
     std::string Unquote(const std::string& pStr)
     {
-      if (mSeparatorParams.mAutoQuote && (pStr.size() >= 2) && (pStr.front() == '"') && (pStr.back() == '"'))
+      if (mSeparatorParams.mAutoQuote && (pStr.size() >= 2) &&
+          (pStr.front() == mSeparatorParams.mQuoteChar) &&
+          (pStr.back() == mSeparatorParams.mQuoteChar))
       {
         // remove start/end quotes
         std::string str = pStr.substr(1, pStr.size() - 2);
 
         // unescape quotes in string
-        ReplaceString(str, "\"\"", "\"");
+        const std::string quoteCharStr = std::string(1, mSeparatorParams.mQuoteChar);
+        ReplaceString(str, quoteCharStr + quoteCharStr, quoteCharStr);
 
         return str;
       }
