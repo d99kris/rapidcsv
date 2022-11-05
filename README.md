@@ -5,11 +5,11 @@ Rapidcsv
 |-----------|---------|-------------|
 | [![Linux](https://github.com/d99kris/rapidcsv/workflows/Linux/badge.svg)](https://github.com/d99kris/rapidcsv/actions?query=workflow%3ALinux) | [![macOS](https://github.com/d99kris/rapidcsv/workflows/macOS/badge.svg)](https://github.com/d99kris/rapidcsv/actions?query=workflow%3AmacOS) | [![Windows](https://github.com/d99kris/rapidcsv/workflows/Windows/badge.svg)](https://github.com/d99kris/rapidcsv/actions?query=workflow%3AWindows) |
 
-Rapidcsv is a C++ header-only library for CSV parsing. While the name
-admittedly was inspired by the rapidjson project, the objectives are not the
-same. The goal of rapidcsv is to be an easy-to-use CSV library enabling rapid
-development. For optimal performance (be it CPU or memory usage) a CSV parser
-implemented for the specific use-case is likely to be more performant.
+Rapidcsv is an easy-to-use C++ CSV parser library. It supports C++11 (and
+later), is header-only and comes with a basic test suite.
+
+The library was showcased in the book
+[C++20 for Programmers](https://deitel.com/c-plus-plus-20-for-programmers/).
 
 Example Usage
 =============
