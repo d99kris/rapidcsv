@@ -468,6 +468,9 @@ namespace rapidcsv
       , mSeparatorParams(pSeparatorParams)
       , mConverterParams(pConverterParams)
       , mLineReaderParams(pLineReaderParams)
+      , mData()
+      , mColumnNames()
+      , mRowNames()
     {
       if (!mPath.empty())
       {
@@ -494,6 +497,9 @@ namespace rapidcsv
       , mSeparatorParams(pSeparatorParams)
       , mConverterParams(pConverterParams)
       , mLineReaderParams(pLineReaderParams)
+      , mData()
+      , mColumnNames()
+      , mRowNames()
     {
       ReadCsv(pStream);
     }
