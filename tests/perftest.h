@@ -7,7 +7,15 @@ namespace perftest
   class Timer
   {
   public:
-    Timer(): start(), stop(), poststop(), lastspan(), spans() { }
+    Timer()
+      : start()
+      , stop()
+      , poststop()
+      , lastspan()
+      , spans()
+    {
+    }
+
     void Start()
     {
       // Timestamp
