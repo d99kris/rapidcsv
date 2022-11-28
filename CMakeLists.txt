@@ -8,6 +8,7 @@ if(MSVC)
   else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4")
   endif()
+  add_compile_options("/utf-8")
 else()
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -Wall -Wextra -Wpedantic -Wshadow -Wpointer-arith \
                        -Wcast-qual -Wno-missing-braces -Wswitch-default -Wcast-align \
