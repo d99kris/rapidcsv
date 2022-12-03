@@ -8,7 +8,7 @@ Rapidcsv
 Rapidcsv is an easy-to-use C++ CSV parser library. It supports C++11 (and
 later), is header-only and comes with a basic test suite.
 
-The library was showcased in the book
+The library was featured in the book
 [C++20 for Programmers](https://deitel.com/c-plus-plus-20-for-programmers/).
 
 Example Usage
@@ -56,7 +56,7 @@ Installation
 ============
 Simply copy
 [src/rapidcsv.h](https://raw.githubusercontent.com/d99kris/rapidcsv/master/src/rapidcsv.h)
-to your project/include directory and include it. 
+to your project/include directory and include it.
 
 More Examples
 =============
@@ -240,7 +240,7 @@ Global Custom Data Type Conversion
 ----------------------------------
 One may override conversion routines (or add new ones) by implementing ToVal()
 and/or ToStr(). Below is an example overriding int conversion, to instead provide
-two decimal fixed-point numbers. Also see 
+two decimal fixed-point numbers. Also see
 [tests/test035.cpp](https://github.com/d99kris/rapidcsv/blob/master/tests/test035.cpp)
 for a test overriding ToVal() and ToStr().
 
@@ -273,7 +273,7 @@ Custom Data Type Conversion Per Call
 ------------------------------------
 It is also possible to override conversions on a per-call basis, enabling more
 flexibility. This is illustrated in the following example. Additional conversion
-override usage can be found in the test 
+override usage can be found in the test
 [tests/test063.cpp](https://github.com/d99kris/rapidcsv/blob/master/tests/test063.cpp)
 
 [ex009.cpp](examples/ex009.cpp) content:
@@ -386,11 +386,11 @@ passing `pAutoQuote = false` in `SeparatorParams`, example:
 
 ```cpp
 rapidcsv::Document doc("file.csv", rapidcsv::LabelParams(),
-                        rapidcsv::SeparatorParams(',' /* pSeparator */, 
-                                                  false /* pTrim */, 
-                                                  rapidcsv::sPlatformHasCR /* pHasCR */,
-                                                  false /* pQuotedLinebreaks */, 
-                                                  false /* pAutoQuote */));
+                       rapidcsv::SeparatorParams(',' /* pSeparator */,
+                                                 false /* pTrim */,
+                                                 rapidcsv::sPlatformHasCR /* pHasCR */,
+                                                 false /* pQuotedLinebreaks */,
+                                                 false /* pAutoQuote */));
 ```
 
 Skipping Empty and Comment Lines
@@ -400,8 +400,8 @@ starting with a specific character, example:
 
 ```cpp
 rapidcsv::Document doc("file.csv", rapidcsv::LabelParams(), rapidcsv::SeparatorParams(),
-                        rapidcsv::ConverterParams(),
-                        rapidcsv::LineReaderParams(true /* pSkipCommentLines */,
+                       rapidcsv::ConverterParams(),
+                       rapidcsv::LineReaderParams(true /* pSkipCommentLines */,
                                                   '#' /* pCommentPrefix */));
 ```
 
@@ -409,8 +409,8 @@ Using LineReaderParams it is also possible to skip empty lines, example:
 
 ```cpp
 rapidcsv::Document doc("file.csv", rapidcsv::LabelParams(), rapidcsv::SeparatorParams(),
-                        rapidcsv::ConverterParams(),
-                        rapidcsv::LineReaderParams(false /* pSkipCommentLines */,
+                       rapidcsv::ConverterParams(),
+                       rapidcsv::LineReaderParams(false /* pSkipCommentLines */,
                                                   '#' /* pCommentPrefix */,
                                                   true /* pSkipEmptyLines */));
 ```
