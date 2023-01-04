@@ -570,7 +570,7 @@ namespace rapidcsv
      * @brief   Write Document data to stream.
      * @param   pStream               specifies a binary output stream to write the data to.
      */
-    void Save(std::ostream& pStream)
+    void Save(std::ostream& pStream) const
     {
       WriteCsv(pStream);
     }
@@ -1296,7 +1296,7 @@ namespace rapidcsv
      * @param   pColumnIdx            zero-based column index.
      * @returns column name.
      */
-    std::string GetColumnName(const size_t pColumnIdx)
+    std::string GetColumnName(const size_t pColumnIdx) const
     {
       const size_t dataColumnIdx = GetDataColumnIndex(pColumnIdx);
       if (mLabelParams.mColumnNameIdx < 0)
@@ -1341,7 +1341,7 @@ namespace rapidcsv
      * @brief   Get column names
      * @returns vector of column names.
      */
-    std::vector<std::string> GetColumnNames()
+    std::vector<std::string> GetColumnNames() const
     {
       if (mLabelParams.mColumnNameIdx >= 0)
       {
@@ -1358,7 +1358,7 @@ namespace rapidcsv
      * @param   pRowIdx               zero-based column index.
      * @returns row name.
      */
-    std::string GetRowName(const size_t pRowIdx)
+    std::string GetRowName(const size_t pRowIdx) const
     {
       const size_t dataRowIdx = GetDataRowIndex(pRowIdx);
       if (mLabelParams.mRowNameIdx < 0)
@@ -1401,7 +1401,7 @@ namespace rapidcsv
      * @brief   Get row names
      * @returns vector of row names.
      */
-    std::vector<std::string> GetRowNames()
+    std::vector<std::string> GetRowNames() const
     {
       std::vector<std::string> rownames;
       if (mLabelParams.mRowNameIdx >= 0)
@@ -1701,7 +1701,7 @@ namespace rapidcsv
       return pColumnIdx + static_cast<size_t>(mLabelParams.mRowNameIdx + 1);
     }
 
-    std::string Trim(const std::string& pStr)
+    std::string Trim(const std::string& pStr) const
     {
       if (mSeparatorParams.mTrim)
       {
@@ -1721,7 +1721,7 @@ namespace rapidcsv
       }
     }
 
-    std::string Unquote(const std::string& pStr)
+    std::string Unquote(const std::string& pStr) const
     {
       if (mSeparatorParams.mAutoQuote && (pStr.size() >= 2) &&
           (pStr.front() == mSeparatorParams.mQuoteChar) &&
