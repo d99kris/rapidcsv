@@ -58,5 +58,5 @@ Specialized implementation handling string to string conversion.
 
 ---
 
-###### API documentation generated using [Doxyman2md](https://github.com/d99kris/doxyman2md)
+###### API documentation generated using [Doxygenmd](https://github.com/d99kris/doxygenmd)
 

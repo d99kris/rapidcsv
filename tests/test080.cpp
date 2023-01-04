@@ -1,4 +1,4 @@
-// test069.cpp - get row index, no row labels
+// test080.cpp - test Clear
 
 #include <rapidcsv.h>
 #include "unittest.h"
@@ -8,7 +8,7 @@ int main()
   int rv = 0;
 
   std::string csv =
-    "-,A,B,C\n"
+    "A,B,C,D\n"
     "1,3,9,81\n"
     "2,4,16,256\n"
   ;
@@ -19,11 +19,10 @@ int main()
   try
   {
     rapidcsv::Document doc(path);
+    unittest::ExpectEqual(size_t, doc.GetRowCount(), 2);
 
-    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("-"), -1);
-    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("1"), -1);
-    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("2"), -1);
-    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("3"), -1);
+    doc.Clear();
+    unittest::ExpectEqual(size_t, doc.GetRowCount(), 0);
   }
   catch (const std::exception& ex)
   {

@@ -5,7 +5,7 @@ Datastructure holding parameters controlling which row and column should be trea
 ---
 
 ```c++
-LabelParams (const int pColumnNameIdx = 0, const int pRowNameIdx = \-1)
+LabelParams (const ssize_t pColumnNameIdx = 0, const ssize_t pRowNameIdx = -1)
 ```
 Constructor. 
 
@@ -15,5 +15,5 @@ Constructor.
 
 ---
 
-###### API documentation generated using [Doxyman2md](https://github.com/d99kris/doxyman2md)
+###### API documentation generated using [Doxygenmd](https://github.com/d99kris/doxygenmd)
 

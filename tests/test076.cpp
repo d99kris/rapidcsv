@@ -22,8 +22,8 @@ int main()
     std::ifstream fstream;
     fstream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
     fstream.open(path, std::ios::binary | std::ios::ate);
-    rapidcsv::Document doc1("", rapidcsv::LabelParams(0, 0));
-    doc1.Load(fstream);
+    rapidcsv::Document doc1;
+    doc1.Load(fstream, rapidcsv::LabelParams(0, 0));
     fstream.close();
 
     unittest::ExpectEqual(int, doc1.GetCell<int>(0, 0), 3);
@@ -36,8 +36,8 @@ int main()
 
     // stream from string
     std::istringstream sstream(csv);
-    rapidcsv::Document doc2("", rapidcsv::LabelParams(0, 0));
-    doc2.Load(sstream);
+    rapidcsv::Document doc2("");
+    doc2.Load(sstream, rapidcsv::LabelParams(0, 0));
 
     unittest::ExpectEqual(int, doc2.GetCell<int>(0, 0), 3);
     unittest::ExpectEqual(int, doc2.GetCell<int>(1, 0), 9);

@@ -5,7 +5,7 @@ Class representing a CSV document.
 ---
 
 ```c++
-Document (const std::string & pPath = std::string(), const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
+Document (const std::string & pPath = std::string(), const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams(), const LineReaderParams & pLineReaderParams = LineReaderParams())
 ```
 Constructor. 
 
@@ -14,29 +14,28 @@ Constructor.
 - `pLabelParams` specifies which row and column should be treated as labels. 
 - `pSeparatorParams` specifies which field and row separators should be used. 
 - `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
+- `pLineReaderParams` specifies how special line formats should be treated. 
 
 ---
 
 ```c++
-Document (std::istream & pStream, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams())
+Document (std::istream & pStream, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams(), const LineReaderParams & pLineReaderParams = LineReaderParams())
 ```
 Constructor. 
 
 **Parameters**
-- `pStream` specifies an input stream to read CSV data from. 
+- `pStream` specifies a binary input stream to read CSV data from. 
 - `pLabelParams` specifies which row and column should be treated as labels. 
 - `pSeparatorParams` specifies which field and row separators should be used. 
 - `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
+- `pLineReaderParams` specifies how special line formats should be treated. 
 
 ---
 
 ```c++
-Document (const Document & pDocument)
+void Clear ()
 ```
-Copy constructor. 
-
-**Parameters**
-- `pDocument` specifies the Document instance to copy. 
+Clears loaded Document data. 
 
 ---
 
@@ -234,7 +233,7 @@ Get column index by name.
 ---
 
 ```c++
-std::string GetColumnName (const ssize_t pColumnIdx)
+std::string GetColumnName (const size_t pColumnIdx)
 ```
 Get column name. 
 
@@ -334,7 +333,7 @@ Get row index by name.
 ---
 
 ```c++
-std::string GetRowName (const ssize_t pRowIdx)
+std::string GetRowName (const size_t pRowIdx)
 ```
 Get row name. 
 
@@ -357,22 +356,54 @@ Get row names.
 ---
 
 ```c++
-void Load (const std::string & pPath)
+template<typename T > void InsertColumn (const size_t pColumnIdx, const std::vector< T > & pColumn = std::vector<T>(), const std::string & pColumnName = std::string())
+```
+Insert column at specified index. 
+
+**Parameters**
+- `pColumnIdx` zero-based column index. 
+- `pColumn` vector of column data (optional argument). 
+- `pColumnName` column label name (optional argument). 
+
+---
+
+```c++
+template<typename T > void InsertRow (const size_t pRowIdx, const std::vector< T > & pRow = std::vector<T>(), const std::string & pRowName = std::string())
+```
+Insert row at specified index. 
+
+**Parameters**
+- `pRowIdx` zero-based row index. 
+- `pRow` vector of row data (optional argument). 
+- `pRowName` row label name (optional argument). 
+
+---
+
+```c++
+void Load (const std::string & pPath, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams(), const LineReaderParams & pLineReaderParams = LineReaderParams())
 ```
 Read Document data from file. 
 
 **Parameters**
 - `pPath` specifies the path of an existing CSV-file to populate the Document data with. 
+- `pLabelParams` specifies which row and column should be treated as labels. 
+- `pSeparatorParams` specifies which field and row separators should be used. 
+- `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
+- `pLineReaderParams` specifies how special line formats should be treated. 
 
 ---
 
 ```c++
-void Load (std::istream & pStream)
+void Load (std::istream & pStream, const LabelParams & pLabelParams = LabelParams(), const SeparatorParams & pSeparatorParams = SeparatorParams(), const ConverterParams & pConverterParams = ConverterParams(), const LineReaderParams & pLineReaderParams = LineReaderParams())
 ```
 Read Document data from stream. 
 
 **Parameters**
-- `pStream` specifies an input stream to read CSV data from.
+- `pStream` specifies a binary input stream to read CSV data from. 
+- `pLabelParams` specifies which row and column should be treated as labels. 
+- `pSeparatorParams` specifies which field and row separators should be used. 
+- `pConverterParams` specifies how invalid numbers (including empty strings) should be handled. 
+- `pLineReaderParams` specifies how special line formats should be treated. 
 
 ---
 
@@ -432,7 +463,7 @@ void Save (std::ostream & pStream)
 Write Document data to stream. 
 
 **Parameters**
-- `pStream` specifies an output stream to write the data to. 
+- `pStream` specifies a binary output stream to write the data to. 
 
 ---
 
@@ -526,5 +557,5 @@ Set row name.
 
 ---
 
-###### API documentation generated using [Doxyman2md](https://github.com/d99kris/doxyman2md)
+###### API documentation generated using [Doxygenmd](https://github.com/d99kris/doxygenmd)
 
