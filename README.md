@@ -48,8 +48,8 @@ Supported Platforms
 ===================
 Rapidcsv is implemented using C++11 with the intention of being portable. It's
 been tested on:
-- macOS Big Sur 11.0
-- Ubuntu 20.04 LTS
+- macOS Ventura 13.0
+- Ubuntu 22.04 LTS
 - Windows 10 / Visual Studio 2019
 
 Installation
@@ -57,6 +57,10 @@ Installation
 Simply copy
 [src/rapidcsv.h](https://raw.githubusercontent.com/d99kris/rapidcsv/master/src/rapidcsv.h)
 to your project/include directory and include it.
+
+Rapidcsv is also available via
+[vcpkg](https://vcpkg.io/en/packages.html) and
+[conan](https://conan.io/center/rapidcsv) package managers.
 
 More Examples
 =============
