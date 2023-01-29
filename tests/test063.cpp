@@ -61,6 +61,11 @@ int main()
 
     unittest::ExpectEqual(int, doc.GetColumn<Struct>(0, ToStruct).at(0).val, 100);
     unittest::ExpectEqual(int, doc.GetColumn<Struct>("B", ToStruct).at(0).val, 1000);
+
+    // Missing custom conversion function
+    ExpectException(doc.GetColumn<bool>(0).at(0), rapidcsv::no_converter);
+    ExpectExceptionMsg(doc.GetColumn<bool>(0).at(0), rapidcsv::no_converter,
+                       "unsupported conversion datatype");
   }
   catch (const std::exception& ex)
   {
