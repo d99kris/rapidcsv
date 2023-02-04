@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.71
+ * Version:  8.72
  *
  * Copyright (C) 2017-2023 Kristofer Berggren
  * All rights reserved.
@@ -22,6 +22,7 @@
 #endif
 #include <fstream>
 #include <functional>
+#include <iomanip>
 #include <iostream>
 #include <limits>
 #include <map>
@@ -141,13 +142,23 @@ namespace rapidcsv
           typeid(T) == typeid(unsigned) ||
           typeid(T) == typeid(unsigned long) ||
           typeid(T) == typeid(unsigned long long) ||
-          typeid(T) == typeid(float) ||
-          typeid(T) == typeid(double) ||
           typeid(T) == typeid(long double) ||
           typeid(T) == typeid(char))
       {
         std::ostringstream out;
         out << pVal;
+        pStr = out.str();
+      }
+      else if (typeid(T) == typeid(float))
+      {
+        std::ostringstream out;
+        out << std::defaultfloat << std::setprecision(9) << pVal;
+        pStr = out.str();
+      }
+      else if (typeid(T) == typeid(double))
+      {
+        std::ostringstream out;
+        out << std::defaultfloat << std::setprecision(17) << pVal;
         pStr = out.str();
       }
       else

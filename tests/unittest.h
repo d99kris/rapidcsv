@@ -7,6 +7,7 @@
 #endif
 
 #include <fstream>
+#include <iomanip>
 #include <string>
 #include <sstream>
 
@@ -144,6 +145,7 @@ namespace unittest
     if (pTest != pRef)
     {
       std::stringstream ss;
+      ss << std::setprecision(std::numeric_limits<long double>::digits10 + 1);
       ss << detail::FileName(filePath) << ":" << std::to_string(lineNo);
       ss << " ExpectEqual failed: " << testName << " != " << refName << std::endl;
       ss << testName << " = '" << pTest << "'" << std::endl;
