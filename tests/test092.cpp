@@ -1,4 +1,4 @@
-// test087.cpp - numeric c locale
+// test092.cpp - numeric c++ locale
 
 #include <clocale>
 #include <rapidcsv.h>
@@ -8,8 +8,12 @@ int main()
 {
   int rv = 0;
 
-  std::string loc = "de_DE.UTF-8"; // uses comma (,) as decimal separator
-  if (std::setlocale(LC_ALL, loc.c_str()) == nullptr)
+  std::string loc = "de_DE"; // uses comma (,) as decimal separator
+  try
+  {
+    std::locale::global(std::locale(loc));
+  }
+  catch (const std::exception& ex)
   {
     std::cout << "locale " << loc << " not available, skipping test.\n";
     // pass test for systems without locale present. for ci testing, make.sh

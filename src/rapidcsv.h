@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.72
+ * Version:  8.73
  *
  * Copyright (C) 2017-2023 Kristofer Berggren
  * All rights reserved.
@@ -247,6 +247,7 @@ namespace rapidcsv
               (typeid(T) == typeid(long double)))
           {
             std::istringstream iss(pStr);
+            iss.imbue(std::locale::classic());
             iss >> pVal;
             if (iss.fail() || iss.bad() || !iss.eof())
             {
