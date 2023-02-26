@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.73
+ * Version:  8.74
  *
  * Copyright (C) 2017-2023 Kristofer Berggren
  * All rights reserved.
@@ -733,7 +733,10 @@ namespace rapidcsv
       {
         for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
         {
-          itRow->resize(GetDataColumnIndex(dataColumnIdx + 1));
+          if (std::distance(mData.begin(), itRow) >= mLabelParams.mColumnNameIdx)
+          {
+            itRow->resize(GetDataColumnIndex(dataColumnIdx + 1));
+          }
         }
       }
 
@@ -772,7 +775,10 @@ namespace rapidcsv
       const size_t dataColumnIdx = GetDataColumnIndex(pColumnIdx);
       for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
       {
-        itRow->erase(itRow->begin() + static_cast<ssize_t>(dataColumnIdx));
+        if (std::distance(mData.begin(), itRow) >= mLabelParams.mColumnNameIdx)
+        {
+          itRow->erase(itRow->begin() + static_cast<ssize_t>(dataColumnIdx));
+        }
       }
 
       UpdateColumnNames();
@@ -835,8 +841,11 @@ namespace rapidcsv
 
       for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
       {
-        const size_t rowIdx = static_cast<size_t>(std::distance(mData.begin(), itRow));
-        itRow->insert(itRow->begin() + static_cast<ssize_t>(dataColumnIdx), column.at(rowIdx));
+        if (std::distance(mData.begin(), itRow) >= mLabelParams.mColumnNameIdx)
+        {
+          const size_t rowIdx = static_cast<size_t>(std::distance(mData.begin(), itRow));
+          itRow->insert(itRow->begin() + static_cast<ssize_t>(dataColumnIdx), column.at(rowIdx));
+        }
       }
 
       if (!pColumnName.empty())
@@ -976,7 +985,10 @@ namespace rapidcsv
       {
         for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
         {
-          itRow->resize(GetDataColumnIndex(pRow.size()));
+          if (std::distance(mData.begin(), itRow) >= mLabelParams.mColumnNameIdx)
+          {
+            itRow->resize(GetDataColumnIndex(pRow.size()));
+          }
         }
       }
 
@@ -1270,7 +1282,10 @@ namespace rapidcsv
       {
         for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
         {
-          itRow->resize(dataColumnIdx + 1);
+          if (std::distance(mData.begin(), itRow) >= mLabelParams.mColumnNameIdx)
+          {
+            itRow->resize(dataColumnIdx + 1);
+          }
         }
       }
 
@@ -1701,7 +1716,8 @@ namespace rapidcsv
 
     size_t GetDataColumnCount() const
     {
-      return (mData.size() > 0) ? mData.at(0).size() : 0;
+      const size_t firstDataRow = static_cast<size_t>((mLabelParams.mColumnNameIdx >= 0) ? mLabelParams.mColumnNameIdx : 0);
+      return (mData.size() > firstDataRow) ? mData.at(firstDataRow).size() : 0;
     }
 
     inline size_t GetDataRowIndex(const size_t pRowIdx) const
