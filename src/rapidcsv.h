@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.74
+ * Version:  8.75
  *
  * Copyright (C) 2017-2023 Kristofer Berggren
  * All rights reserved.
@@ -43,6 +43,7 @@ namespace rapidcsv
 #else
   static const bool sPlatformHasCR = false;
 #endif
+  static const std::vector<char> s_Utf8BOM = { '\xef', '\xbb', '\xbf' };
 
   /**
    * @brief     Datastructure holding parameters controlling how invalid numbers (including
@@ -601,6 +602,7 @@ namespace rapidcsv
       mIsUtf16 = false;
       mIsLE = false;
 #endif
+      mHasUtf8BOM = false;
     }
 
     /**
@@ -1506,8 +1508,8 @@ namespace rapidcsv
         {
           std::vector<char> bom3b(3, '\0');
           pStream.read(bom3b.data(), 3);
-          static const std::vector<char> bomU8 = { '\xef', '\xbb', '\xbf' };
-          if (bom3b != bomU8)
+
+          if (bom3b != s_Utf8BOM)
           {
             // file does not start with a UTF-8 Byte order mark
             pStream.seekg(0, std::ios::beg);
@@ -1516,6 +1518,7 @@ namespace rapidcsv
           {
             // file did start with a UTF-8 Byte order mark, simply skip it
             length -= 3;
+            mHasUtf8BOM = true;
           }
         }
 
@@ -1674,6 +1677,11 @@ namespace rapidcsv
         std::ofstream stream;
         stream.exceptions(std::ofstream::failbit | std::ofstream::badbit);
         stream.open(mPath, std::ios::binary | std::ios::trunc);
+        if (mHasUtf8BOM)
+        {
+          stream.write(s_Utf8BOM.data(), 3);
+        }
+
         WriteCsv(stream);
       }
     }
@@ -1846,5 +1854,6 @@ namespace rapidcsv
     bool mIsUtf16 = false;
     bool mIsLE = false;
 #endif
+    bool mHasUtf8BOM = false;
   };
 }

@@ -1,4 +1,4 @@
-// test066.cpp - read UTF-8 BOM
+// test094.cpp - write UTF-8 BOM
 
 #include "rapidcsv.h"
 #include "unittest.h"
@@ -7,19 +7,21 @@ int main()
 {
   int rv = 0;
 
-  std::string csvWithBom =
+  std::string origCsvWithBom =
     "\xef\xbb\xbfID\n"
     "1\n"
   ;
 
   std::string path = unittest::TempPath();
-  unittest::WriteFile(path, csvWithBom);
+  unittest::WriteFile(path, origCsvWithBom);
 
   try
   {
     rapidcsv::Document doc(path, rapidcsv::LabelParams(0, -1));
-    unittest::ExpectEqual(size_t, doc.GetRowCount(), 1);
-    unittest::ExpectEqual(std::string, doc.GetColumn<std::string>("ID")[0], "1");
+    doc.Save();
+
+    std::string readCsvWithBom = unittest::ReadFile(path);
+    unittest::ExpectEqual(std::string, origCsvWithBom, readCsvWithBom);
   }
   catch (const std::exception& ex)
   {
