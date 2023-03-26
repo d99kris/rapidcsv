@@ -15,7 +15,8 @@ int main()
   }
   catch (const std::exception& ex)
   {
-    std::cout << "locale " << loc << " not available, skipping test.\n";
+    std::cout << "locale " << loc << " not available (" << ex.what()
+              << "), skipping test.\n";
     // pass test for systems without locale present. for ci testing, make.sh
     // ensures that the necessary locale is installed.
     return 0;
