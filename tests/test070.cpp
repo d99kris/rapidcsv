@@ -25,10 +25,10 @@ int main()
     // 2,  4,  16, 256
     rapidcsv::Document doc(path, rapidcsv::LabelParams(0, 0));
 
-    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("-"), -1);
-    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("1"), 0);
-    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("2"), 1);
-    unittest::ExpectEqual(ssize_t, doc.GetRowIdx("3"), -1);
+    unittest::ExpectEqual(int, doc.GetRowIdx("-"), -1);
+    unittest::ExpectEqual(int, doc.GetRowIdx("1"), 0);
+    unittest::ExpectEqual(int, doc.GetRowIdx("2"), 1);
+    unittest::ExpectEqual(int, doc.GetRowIdx("3"), -1);
   }
   catch (const std::exception& ex)
   {
