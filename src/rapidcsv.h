@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.76
+ * Version:  8.77
  *
  * Copyright (C) 2017-2023 Kristofer Berggren
  * All rights reserved.
@@ -1317,7 +1317,7 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   Set cell by index and name.
+     * @brief   Set cell by column index and row name.
      * @param   pColumnIdx            zero-based column index.
      * @param   pRowName              row label name.
      * @param   pCell                 cell data.
@@ -1325,7 +1325,6 @@ namespace rapidcsv
     template<typename T>
     void SetCell(const size_t pColumnIdx, const std::string& pRowName, const T& pCell)
     {
-
       const int rowIdx = GetRowIdx(pRowName);
       if (rowIdx < 0)
       {
@@ -1336,7 +1335,7 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   Set cell by name and index.
+     * @brief   Set cell by column name and row index.
      * @param   pColumnName           column label name.
      * @param   pRowIdx               zero-based row index.
      * @param   pCell                 cell data.
@@ -1344,13 +1343,13 @@ namespace rapidcsv
     template<typename T>
     void SetCell(const std::string& pColumnName, const size_t pRowIdx, const T& pCell)
     {
-        const int columnIdx = GetColumnIdx(pColumnName);
-        if (columnIdx < 0)
-        {
-            throw std::out_of_range("column not found: " + pColumnName);
-        }
+      const int columnIdx = GetColumnIdx(pColumnName);
+      if (columnIdx < 0)
+      {
+        throw std::out_of_range("column not found: " + pColumnName);
+      }
 
-        SetCell<T>(static_cast<size_t>(columnIdx), pRowIdx, pCell);
+      SetCell<T>(static_cast<size_t>(columnIdx), pRowIdx, pCell);
     }
     
     /**

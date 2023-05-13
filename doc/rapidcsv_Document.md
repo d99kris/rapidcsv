@@ -492,6 +492,30 @@ Set cell by name.
 ---
 
 ```c++
+template<typename T > void SetCell (const size_t pColumnIdx, const std::string & pRowName, const T & pCell)
+```
+Set cell by column index and row name. 
+
+**Parameters**
+- `pColumnIdx` zero-based column index. 
+- `pRowName` row label name. 
+- `pCell` cell data. 
+
+---
+
+```c++
+template<typename T > void SetCell (const std::string & pColumnName, const size_t pRowIdx, const T & pCell)
+```
+Set cell by column name and row index. 
+
+**Parameters**
+- `pColumnName` column label name. 
+- `pRowIdx` zero-based row index. 
+- `pCell` cell data. 
+
+---
+
+```c++
 template<typename T > void SetColumn (const size_t pColumnIdx, const std::vector< T > & pColumn)
 ```
 Set column by index. 
