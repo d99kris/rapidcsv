@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.77
+ * Version:  8.78
  *
  * Copyright (C) 2017-2023 Kristofer Berggren
  * All rights reserved.
@@ -1761,12 +1761,14 @@ namespace rapidcsv
 
     inline size_t GetDataRowIndex(const size_t pRowIdx) const
     {
-      return pRowIdx + static_cast<size_t>(mLabelParams.mColumnNameIdx + 1);
+      const size_t firstDataRow = static_cast<size_t>((mLabelParams.mColumnNameIdx + 1 >= 0) ? mLabelParams.mColumnNameIdx + 1 : 0);
+      return pRowIdx + firstDataRow;
     }
 
     inline size_t GetDataColumnIndex(const size_t pColumnIdx) const
     {
-      return pColumnIdx + static_cast<size_t>(mLabelParams.mRowNameIdx + 1);
+      const size_t firstDataColumn = static_cast<size_t>((mLabelParams.mRowNameIdx + 1 >= 0) ? mLabelParams.mRowNameIdx + 1 : 0);
+      return pColumnIdx + firstDataColumn;
     }
 
     std::string Trim(const std::string& pStr) const
