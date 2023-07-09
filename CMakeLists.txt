@@ -33,10 +33,13 @@ add_library(rapidcsv INTERFACE)
 target_include_directories(rapidcsv INTERFACE src)
 
 # Ccache
-find_program(CCACHE_PROGRAM ccache)
-if(CCACHE_PROGRAM)
-  message(STATUS "Found ccache")
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+option(RAPIDCSV_WITH_CCACHE "Use CCache if possible" ON)
+if (RAPIDCSV_WITH_CCACHE)
+  find_program(CCACHE_PROGRAM ccache)
+  if(CCACHE_PROGRAM)
+    message(STATUS "Found ccache")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+  endif()
 endif()
 
 # Tests
