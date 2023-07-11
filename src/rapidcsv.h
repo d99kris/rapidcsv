@@ -148,13 +148,13 @@ namespace rapidcsv
       else if (typeid(T) == typeid(float))
       {
         std::ostringstream out;
-        out << std::defaultfloat << std::setprecision(9) << pVal;
+        out << std::setprecision(9) << pVal;
         pStr = out.str();
       }
       else if (typeid(T) == typeid(double))
       {
         std::ostringstream out;
-        out << std::defaultfloat << std::setprecision(17) << pVal;
+        out << std::setprecision(17) << pVal;
         pStr = out.str();
       }
       else
