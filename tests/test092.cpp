@@ -11,7 +11,7 @@ int main()
   std::string loc = "de_DE"; // uses comma (,) as decimal separator
   try
   {
-    std::locale::global(std::locale(loc));
+    std::locale::global(std::locale(loc.c_str()));
   }
   catch (const std::exception& ex)
   {
