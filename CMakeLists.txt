@@ -32,13 +32,6 @@ endif()
 add_library(rapidcsv INTERFACE)
 target_include_directories(rapidcsv INTERFACE src)
 
-# Ccache
-find_program(CCACHE_PROGRAM ccache)
-if(CCACHE_PROGRAM)
-  message(STATUS "Found ccache")
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-endif()
-
 # Tests
 option(RAPIDCSV_BUILD_TESTS "Build tests" OFF)
 message(STATUS "Build tests: ${RAPIDCSV_BUILD_TESTS}")
@@ -47,6 +40,13 @@ if(RAPIDCSV_BUILD_TESTS)
   # Test init
   include(CTest)
   enable_testing()
+
+  # Ccache
+  find_program(CCACHE_PROGRAM ccache)
+  if(CCACHE_PROGRAM)
+    message(STATUS "Found ccache")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+  endif()
 
   # Enable codecvt tests if supported
   if (CMAKE_CXX_STANDARD VERSION_LESS "17")
