@@ -1584,9 +1584,18 @@ namespace rapidcsv
         {
           if (buffer[i] == mSeparatorParams.mQuoteChar)
           {
-            if (cell.empty() || (cell[0] == mSeparatorParams.mQuoteChar))
+           if (cell.empty() || (cell[0] == mSeparatorParams.mQuoteChar))
             {
               quoted = !quoted;
+            }
+            else if(mSeparatorParams.mTrim)
+            {
+              // allow whitespace before first mQuoteChar
+              const auto firstQuote = std::find(cell.begin(), cell.end(), mSeparatorParams.mQuoteChar);
+              if(std::all_of(cell.begin(), firstQuote, [](int ch) { return isspace(ch); }))
+              {
+                quoted = !quoted;
+              }
             }
             cell += buffer[i];
           }
