@@ -2,9 +2,9 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.80
+ * Version:  8.81
  *
- * Copyright (C) 2017-2023 Kristofer Berggren
+ * Copyright (C) 2017-2024 Kristofer Berggren
  * All rights reserved.
  *
  * rapidcsv is distributed under the BSD 3-Clause license, see LICENSE for details.
@@ -1584,15 +1584,15 @@ namespace rapidcsv
         {
           if (buffer[i] == mSeparatorParams.mQuoteChar)
           {
-           if (cell.empty() || (cell[0] == mSeparatorParams.mQuoteChar))
+            if (cell.empty() || (cell[0] == mSeparatorParams.mQuoteChar))
             {
               quoted = !quoted;
             }
-            else if(mSeparatorParams.mTrim)
+            else if (mSeparatorParams.mTrim)
             {
               // allow whitespace before first mQuoteChar
               const auto firstQuote = std::find(cell.begin(), cell.end(), mSeparatorParams.mQuoteChar);
-              if(std::all_of(cell.begin(), firstQuote, [](int ch) { return isspace(ch); }))
+              if (std::all_of(cell.begin(), firstQuote, [](int ch) { return isspace(ch); }))
               {
                 quoted = !quoted;
               }
