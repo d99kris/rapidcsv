@@ -1,5 +1,5 @@
 # Project
-cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.14...3.22 FATAL_ERROR)
 project(rapidcsv VERSION 1.0 LANGUAGES CXX)
 set (CMAKE_CXX_STANDARD 11)
 if(MSVC)
@@ -180,6 +180,7 @@ if(RAPIDCSV_BUILD_TESTS)
   add_unit_test(test094)
   add_unit_test(test095)
   add_unit_test(test096)
+  add_unit_test(test097)
 
   # perf tests
   add_perf_test(ptest001)

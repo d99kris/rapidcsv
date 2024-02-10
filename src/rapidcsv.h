@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.81
+ * Version:  8.82
  *
  * Copyright (C) 2017-2024 Kristofer Berggren
  * All rights reserved.
@@ -1663,12 +1663,26 @@ namespace rapidcsv
         p_FileLength -= readLength;
       }
 
-      // Handle last line without linebreak
-      if (!cell.empty() || !row.empty())
+      // Handle last cell without linebreak
+      if (!cell.empty())
       {
         row.push_back(Unquote(Trim(cell)));
         cell.clear();
-        mData.push_back(row);
+      }
+
+      // Handle last line without linebreak
+      if (!row.empty())
+      {
+        if (mLineReaderParams.mSkipCommentLines && !row.at(0).empty() &&
+            (row.at(0)[0] == mLineReaderParams.mCommentPrefix))
+        {
+          // skip comment line
+        }
+        else
+        {
+          mData.push_back(row);
+        }
+
         row.clear();
       }
 
