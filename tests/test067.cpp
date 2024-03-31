@@ -14,6 +14,7 @@ int main()
     "\"a b\"\n"
     "\"\"\"a b\"\"\"\n"
     "\" \"\"a\"\" \"\n"
+    "\"a\nb\"\n"
   ;
 
   std::string csvreadref =
@@ -22,6 +23,7 @@ int main()
     "\"a b\"\n"
     "\"\"\"a b\"\"\"\n"
     "\" \"\"a\"\" \"\n"
+    "\"a\nb\"\n"
   ;
 
   std::string path = unittest::TempPath();
@@ -33,12 +35,13 @@ int main()
     {
       rapidcsv::Document doc(path, rapidcsv::LabelParams(0 /* pColumnNameIdx */, -1 /* pRowNameIdx */),
                              rapidcsv::SeparatorParams(',', false /* pTrim */, rapidcsv::sPlatformHasCR /* pHasCR */,
-                                                       false /* pQuotedLinebreaks */, true /* pAutoQuote */));
+                                                       true /* pQuotedLinebreaks */, true /* pAutoQuote */));
       unittest::ExpectEqual(std::string, doc.GetCell<std::string>("col 1", 0), "");
       unittest::ExpectEqual(std::string, doc.GetCell<std::string>("col 1", 1), " ");
       unittest::ExpectEqual(std::string, doc.GetCell<std::string>("col 1", 2), "a b");
       unittest::ExpectEqual(std::string, doc.GetCell<std::string>("col 1", 3), "\"a b\"");
       unittest::ExpectEqual(std::string, doc.GetCell<std::string>("col 1", 4), " \"a\" ");
+      unittest::ExpectEqual(std::string, doc.GetCell<std::string>("col 1", 5), "a\nb");
     }
 
     // write
@@ -46,7 +49,7 @@ int main()
       unittest::WriteFile(path, csvreadref);
       rapidcsv::Document doc(path, rapidcsv::LabelParams(0 /* pColumnNameIdx */, -1 /* pRowNameIdx */),
                              rapidcsv::SeparatorParams(',', false /* pTrim */, rapidcsv::sPlatformHasCR /* pHasCR */,
-                                                       false /* pQuotedLinebreaks */, true /* pAutoQuote */));
+                                                       true /* pQuotedLinebreaks */, true /* pAutoQuote */));
 
       doc.Save();
       const std::string& csvread = unittest::ReadFile(path);
