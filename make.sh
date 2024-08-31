@@ -2,7 +2,7 @@
 
 # make.sh
 #
-# Copyright (C) 2020-2021 Kristofer Berggren
+# Copyright (C) 2020-2024 Kristofer Berggren
 # All rights reserved.
 #
 # See LICENSE for redistribution information.
@@ -168,7 +168,11 @@ if [[ "${INSTALL}" == "1" ]]; then
   if [ "${OS}" == "Linux" ]; then
     cd build-release && sudo make install && cd .. || exiterr "install failed (linux), exiting."
   elif [ "${OS}" == "Darwin" ]; then
-    cd build-release && make install && cd .. || exiterr "install failed (mac), exiting."
+    GHSUDO=""
+    if [[ "${GITHUB_ACTIONS}" == "true" ]]; then
+      GHSUDO="sudo"
+    fi
+    cd build-release && ${GHSUDO} make install && cd .. || exiterr "install failed (mac), exiting."
   else
     exiterr "install failed (unsupported os ${OS}), exiting."
   fi

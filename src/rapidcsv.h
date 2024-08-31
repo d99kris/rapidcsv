@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.83
+ * Version:  8.84
  *
  * Copyright (C) 2017-2024 Kristofer Berggren
  * All rights reserved.
@@ -1351,7 +1351,7 @@ namespace rapidcsv
 
       SetCell<T>(static_cast<size_t>(columnIdx), pRowIdx, pCell);
     }
-    
+
     /**
      * @brief   Get column name
      * @param   pColumnIdx            zero-based column index.
@@ -1663,16 +1663,15 @@ namespace rapidcsv
         p_FileLength -= readLength;
       }
 
-      // Handle last cell without linebreak
-      if (!cell.empty())
+      // Handle last row / cell without linebreak
+      if (row.empty() && cell.empty())
+      {
+        // skip empty trailing line
+      }
+      else
       {
         row.push_back(Unquote(Trim(cell)));
-        cell.clear();
-      }
 
-      // Handle last line without linebreak
-      if (!row.empty())
-      {
         if (mLineReaderParams.mSkipCommentLines && !row.at(0).empty() &&
             (row.at(0)[0] == mLineReaderParams.mCommentPrefix))
         {
@@ -1683,7 +1682,9 @@ namespace rapidcsv
           mData.push_back(row);
         }
 
+        cell.clear();
         row.clear();
+        quoted = false;
       }
 
       // Assume CR/LF if at least half the linebreaks have CR
