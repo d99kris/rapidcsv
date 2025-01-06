@@ -428,10 +428,12 @@ namespace rapidcsv
      */
     explicit LineReaderParams(const bool pSkipCommentLines = false,
                               const char pCommentPrefix = '#',
-                              const bool pSkipEmptyLines = false)
+                              const bool pSkipEmptyLines = false,
+                              const int pSkippedLinesCount = 0)
       : mSkipCommentLines(pSkipCommentLines)
       , mCommentPrefix(pCommentPrefix)
       , mSkipEmptyLines(pSkipEmptyLines)
+      , mSkippedLinesCount(pSkippedLinesCount)
     {
     }
 
@@ -449,6 +451,11 @@ namespace rapidcsv
      * @brief   specifies whether to skip empty lines.
      */
     bool mSkipEmptyLines;
+
+    /**
+     * @brief   specifies the number of lines skipped from the start.
+     */
+    int mSkippedLinesCount;
   };
 
   /**
@@ -1566,6 +1573,14 @@ namespace rapidcsv
       bool quoted = false;
       int cr = 0;
       int lf = 0;
+
+      // skip lines from the beginning
+      std::string line;
+      for (int i = 0; i < mLineReaderParams.mSkippedLinesCount; ++ i)
+      {
+        std::getline(pStream, line);
+        p_FileLength -= line.size() +1;
+      }
 
       while (p_FileLength > 0)
       {
