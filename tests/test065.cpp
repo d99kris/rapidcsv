@@ -34,7 +34,7 @@ int main()
     std::istringstream sstream3(csv);
     rapidcsv::Document doc3(sstream3, rapidcsv::LabelParams(10, -1));
     unittest::ExpectEqual(size_t, doc3.GetRowCount(), 0);
-    unittest::ExpectEqual(size_t, doc3.GetColumnCount(), 4);
+    unittest::ExpectEqual(size_t, doc3.GetColumnCount(), 0);
 
     // doc with three rows, row header index 10, no column header
     std::istringstream sstream4(csv);

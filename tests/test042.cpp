@@ -7,14 +7,14 @@ int main()
 {
   int rv = 0;
 
-  std::string csv =
+  std::string csv1 =
     "-,A,B,C\n"
     "1,3,9,81\n"
     "2,4,16,256\n"
   ;
 
   std::string path = unittest::TempPath();
-  unittest::WriteFile(path, csv);
+  unittest::WriteFile(path, csv1);
 
   try
   {
@@ -25,6 +25,18 @@ int main()
     rapidcsv::Document doc2(path, rapidcsv::LabelParams(-1, -1));
     unittest::ExpectEqual(size_t, doc2.GetColumnCount(), 4);
     unittest::ExpectEqual(size_t, doc2.GetRowCount(), 3);
+
+    // test column count when column labels after first row
+    std::string csv2 =
+      "Sep=,\n"
+      "-,A,B,C\n"
+      "1,3,9,81\n"
+      "2,4,16,256\n"
+    ;
+    std::istringstream sstream2(csv2);
+    rapidcsv::Document doc3(sstream2, rapidcsv::LabelParams(1, -1));
+    unittest::ExpectEqual(size_t, doc3.GetColumnCount(), 4);
+    unittest::ExpectEqual(size_t, doc3.GetRowCount(), 2);
   }
   catch (const std::exception& ex)
   {
