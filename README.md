@@ -47,10 +47,10 @@ The [tests](tests/) directory also contains many simple usage examples.
 Supported Platforms
 ===================
 Rapidcsv is implemented using C++11 with the intention of being portable. It's
-been tested on:
-- macOS Ventura 13.0
-- Ubuntu 22.04 LTS
-- Windows 10 / Visual Studio 2019
+tested on:
+- macOS Sonoma 14.7
+- Ubuntu 24.04 LTS
+- Windows Server / Visual Studio 2022
 
 Installation
 ============
