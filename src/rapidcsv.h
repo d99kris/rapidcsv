@@ -1483,7 +1483,11 @@ namespace rapidcsv
     {
       std::ifstream stream;
       stream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+#ifdef RAPIDCSV_HAS_CXX17
+      stream.open(std::filesystem::u8path(mPath), std::ios::binary);
+#else
       stream.open(mPath, std::ios::binary);
+#endif
       ReadCsv(stream);
     }
 
