@@ -428,6 +428,7 @@ the functionality. Rapidcsv unit tests automatically detects the presence of
 codecvt and sets HAS_CODECVT as needed, see [CMakeLists.txt](CMakeLists.txt)
 for reference. When enabled, the UTF-16 encoding of any loaded file is
 automatically detected.
+Define RAPIDCSV_HAS_CXX17 to handle utf8 file names on windows.
 
 CMake FetchContent
 ------------------
