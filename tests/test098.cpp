@@ -15,7 +15,7 @@ int main()
         ",\n"
         ",\n"
         ","
-        ;
+      ;
 
       std::istringstream sstream(csv);
       rapidcsv::Document doc(sstream, rapidcsv::LabelParams(-1, -1));
@@ -34,7 +34,7 @@ int main()
         ",\n"
         ",\n"
         ",\n"
-        ;
+      ;
 
       std::istringstream sstream(csv);
       rapidcsv::Document doc(sstream, rapidcsv::LabelParams(-1, -1));

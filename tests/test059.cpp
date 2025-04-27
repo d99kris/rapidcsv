@@ -18,7 +18,7 @@ int main()
   };
   const unsigned int refu16le_len = 58;
 
-  std::string csvref(reinterpret_cast<const char *>(refu16le), refu16le_len);
+  std::string csvref(reinterpret_cast<const char*>(refu16le), refu16le_len);
   // "-,A,B,C\n"
   // "1,3,9,81\n"
   // "2,4,16,256\n"
@@ -33,7 +33,7 @@ int main()
   };
   const unsigned int u16le_len = 50;
 
-  std::string csv(reinterpret_cast<const char *>(u16le), u16le_len);
+  std::string csv(reinterpret_cast<const char*>(u16le), u16le_len);
   // "-,A,B,C\n"
   // "1,0,0,0\n"
   // "2,0,0,0\n"

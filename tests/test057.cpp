@@ -18,7 +18,7 @@ int main()
   };
   const unsigned int u16le_len = 58;
 
-  std::string csv(reinterpret_cast<const char *>(u16le), u16le_len);
+  std::string csv(reinterpret_cast<const char*>(u16le), u16le_len);
   // "-,A,B,C\n"
   // "1,3,9,81\n"
   // "2,4,16,256\n"

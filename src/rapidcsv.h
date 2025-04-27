@@ -304,7 +304,7 @@ namespace rapidcsv
   }
 
   template<typename T>
-  using ConvFunc = std::function<void (const std::string & pStr, T & pVal)>;
+  using ConvFunc = std::function<void (const std::string& pStr, T& pVal)>;
 
   /**
    * @brief     Datastructure holding parameters controlling which row and column should be
@@ -1803,19 +1803,22 @@ namespace rapidcsv
 
     size_t GetDataColumnCount() const
     {
-      const size_t firstDataRow = static_cast<size_t>((mLabelParams.mColumnNameIdx >= 0) ? mLabelParams.mColumnNameIdx : 0);
+      const size_t firstDataRow =
+        static_cast<size_t>((mLabelParams.mColumnNameIdx >= 0) ? mLabelParams.mColumnNameIdx : 0);
       return (mData.size() > firstDataRow) ? mData.at(firstDataRow).size() : 0;
     }
 
     inline size_t GetDataRowIndex(const size_t pRowIdx) const
     {
-      const size_t firstDataRow = static_cast<size_t>((mLabelParams.mColumnNameIdx + 1 >= 0) ? mLabelParams.mColumnNameIdx + 1 : 0);
+      const size_t firstDataRow =
+        static_cast<size_t>((mLabelParams.mColumnNameIdx + 1 >= 0) ? mLabelParams.mColumnNameIdx + 1 : 0);
       return pRowIdx + firstDataRow;
     }
 
     inline size_t GetDataColumnIndex(const size_t pColumnIdx) const
     {
-      const size_t firstDataColumn = static_cast<size_t>((mLabelParams.mRowNameIdx + 1 >= 0) ? mLabelParams.mRowNameIdx + 1 : 0);
+      const size_t firstDataColumn =
+        static_cast<size_t>((mLabelParams.mRowNameIdx + 1 >= 0) ? mLabelParams.mRowNameIdx + 1 : 0);
       return pColumnIdx + firstDataColumn;
     }
 

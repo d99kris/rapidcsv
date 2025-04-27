@@ -24,9 +24,9 @@ int main()
       timer.Stop();
 
       // dummy usage of variables
-      (void) column;
-      (void) row;
-      (void) cell;
+      (void)column;
+      (void)row;
+      (void)cell;
     }
 
     timer.ReportMedian();
