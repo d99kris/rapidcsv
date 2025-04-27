@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.85
+ * Version:  8.86
  *
  * Copyright (C) 2017-2025 Kristofer Berggren
  * All rights reserved.
@@ -774,7 +774,18 @@ namespace rapidcsv
       {
         if (std::distance(mData.begin(), itRow) >= mLabelParams.mColumnNameIdx)
         {
-          itRow->erase(itRow->begin() + static_cast<int>(dataColumnIdx));
+          if (dataColumnIdx < itRow->size())
+          {
+            itRow->erase(itRow->begin() + static_cast<int>(dataColumnIdx));
+          }
+          else
+          {
+            const std::string errStr = "column out of range: " +
+              std::to_string(pColumnIdx) + " (on row " +
+              std::to_string(std::distance(mData.begin(), itRow)) +
+              ")";
+            throw std::out_of_range(errStr);
+          }
         }
       }
 

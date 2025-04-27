@@ -8,11 +8,11 @@ int main()
   int rv = 0;
 
   std::string csvref =
-    "B,D\n"
-    "4,256\n"
-    "9,6561\n"
-    "16,65536\n"
-    "25,390625\n"
+    "B,C\n"
+    "4,16\n"
+    "9,81\n"
+    "16,256\n"
+    "25,625\n"
   ;
 
   std::string csv =
@@ -30,7 +30,7 @@ int main()
   {
     rapidcsv::Document doc(path);
 
-    doc.RemoveColumn("C");
+    doc.RemoveColumn("D");
     doc.RemoveColumn(0);
 
     doc.Save();
