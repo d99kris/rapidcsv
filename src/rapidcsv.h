@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.87
+ * Version:  8.88
  *
  * Copyright (C) 2017-2025 Kristofer Berggren
  * All rights reserved.
@@ -1532,24 +1532,28 @@ namespace rapidcsv
         mIsUtf16 = true;
         mIsLE = (bom2b == bomU16le);
 
-        std::wifstream wstream;
-        wstream.exceptions(std::wifstream::failbit | std::wifstream::badbit);
-        wstream.open(mPath, std::ios::binary);
-        if (mIsLE)
+        std::vector<char> buffer(static_cast<size_t>(length));
+        pStream.read(buffer.data(), length);
+
+        const std::wstring& utf16 = [&]()
         {
-          wstream.imbue(std::locale(wstream.getloc(),
-                                    new std::codecvt_utf16<wchar_t, 0x10ffff,
-                                                           static_cast<std::codecvt_mode>(std::consume_header |
-                                                                                          std::little_endian)>));
-        }
-        else
-        {
-          wstream.imbue(std::locale(wstream.getloc(),
-                                    new std::codecvt_utf16<wchar_t, 0x10ffff,
-                                                           std::consume_header>));
-        }
-        std::wstringstream wss;
-        wss << wstream.rdbuf();
+          if (mIsLE)
+          {
+            const std::codecvt_mode mode =
+              static_cast<std::codecvt_mode>(std::consume_header | std::little_endian);
+            std::wstring_convert<std::codecvt_utf16<wchar_t, 0x10ffff, mode>> utf16conv;
+            return utf16conv.from_bytes(buffer.data(), buffer.data() + length);
+          }
+          else
+          {
+            const std::codecvt_mode mode =
+              static_cast<std::codecvt_mode>(std::consume_header);
+            std::wstring_convert<std::codecvt_utf16<wchar_t, 0x10ffff, mode>> utf16conv;
+            return utf16conv.from_bytes(buffer.data(), buffer.data() + length);
+          }
+        }();
+
+        std::wstringstream wss(utf16);
         std::string utf8 = ToString(wss.str());
         std::stringstream ss(utf8);
         ParseCsv(ss, static_cast<std::streamsize>(utf8.size()));

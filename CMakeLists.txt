@@ -184,6 +184,9 @@ if(RAPIDCSV_BUILD_TESTS)
   add_unit_test(test098)
   add_unit_test(test099)
   add_unit_test(test100)
+  if(HAS_CODECVT)
+    add_unit_test(test101)
+  endif()
 
   # perf tests
   add_perf_test(ptest001)
