@@ -1619,7 +1619,7 @@ namespace rapidcsv
             {
               // allow whitespace before first mQuoteChar
               const auto firstQuote = std::find(cell.begin(), cell.end(), mSeparatorParams.mQuoteChar);
-              if (std::all_of(cell.begin(), firstQuote, [](int ch) { return isspace(ch); }))
+              if (std::all_of(cell.begin(), firstQuote, [](unsigned char ch) { return isspace(ch); }))
               {
                 quoted = !quoted;
               }
@@ -1833,10 +1833,10 @@ namespace rapidcsv
         std::string str = pStr;
 
         // ltrim
-        str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](int ch) { return !isspace(ch); }));
+        str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](unsigned char ch) { return !isspace(ch); }));
 
         // rtrim
-        str.erase(std::find_if(str.rbegin(), str.rend(), [](int ch) { return !isspace(ch); }).base(), str.end());
+        str.erase(std::find_if(str.rbegin(), str.rend(), [](unsigned char ch) { return !isspace(ch); }).base(), str.end());
 
         return str;
       }
