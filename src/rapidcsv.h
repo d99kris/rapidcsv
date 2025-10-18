@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.89
+ * Version:  8.90
  *
  * Copyright (C) 2017-2025 Kristofer Berggren
  * All rights reserved.
@@ -1045,7 +1045,17 @@ namespace rapidcsv
     void RemoveRow(const size_t pRowIdx)
     {
       const size_t dataRowIdx = GetDataRowIndex(pRowIdx);
-      mData.erase(mData.begin() + static_cast<int>(dataRowIdx));
+      if (dataRowIdx < mData.size())
+      {
+        mData.erase(mData.begin() + static_cast<int>(dataRowIdx));
+      }
+      else
+      {
+        const std::string errStr = "row out of range: " +
+          std::to_string(pRowIdx);
+        throw std::out_of_range(errStr);
+      }
+
       UpdateRowNames();
     }
 
