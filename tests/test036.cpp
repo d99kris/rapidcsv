@@ -9,7 +9,6 @@ int main()
 
   std::string csv =
     "int,32767\n"
-    "unsigned int,65535\n"
     "signed char,-128\n"
     "unsigned char,255\n"
     "short,32767\n"
@@ -32,25 +31,24 @@ int main()
     rapidcsv::Document doc(path, rapidcsv::LabelParams(-1, -1));
 
     unittest::ExpectEqual(int, doc.GetCell<int>(1, 0), 32767);
-    unittest::ExpectEqual(unsigned int, doc.GetCell<unsigned int>(1, 1), 65535);
-    unittest::ExpectEqual(signed char, doc.GetCell<signed char>(1, 2), -128);
-    unittest::ExpectEqual(unsigned char, doc.GetCell<unsigned char>(1, 3), 255);
-    unittest::ExpectEqual(short, doc.GetCell<short>(1, 4), 32767);
-    unittest::ExpectEqual(unsigned short, doc.GetCell<unsigned short>(1, 5), 65535);
-    unittest::ExpectEqual(long, doc.GetCell<long>(1, 6), 2147483647);
-    unittest::ExpectEqual(long long, doc.GetCell<long long>(1, 7), 9223372036854775807);
+    unittest::ExpectEqual(signed char, doc.GetCell<signed char>(1, 1), -128);
+    unittest::ExpectEqual(unsigned char, doc.GetCell<unsigned char>(1, 2), 255);
+    unittest::ExpectEqual(short, doc.GetCell<short>(1, 3), 32767);
+    unittest::ExpectEqual(unsigned short, doc.GetCell<unsigned short>(1, 4), 65535);
+    unittest::ExpectEqual(long, doc.GetCell<long>(1, 5), 2147483647);
+    unittest::ExpectEqual(long long, doc.GetCell<long long>(1, 6), 9223372036854775807);
 
-    unittest::ExpectEqual(unsigned, doc.GetCell<unsigned>(1, 8), 65535);
-    unittest::ExpectEqual(unsigned long, doc.GetCell<unsigned long>(1, 9), 4294967295);
-    unittest::ExpectEqual(unsigned long long, doc.GetCell<unsigned long long>(1, 10), 18446744073709551615llu);
+    unittest::ExpectEqual(unsigned, doc.GetCell<unsigned>(1, 7), 65535);
+    unittest::ExpectEqual(unsigned long, doc.GetCell<unsigned long>(1, 8), 4294967295);
+    unittest::ExpectEqual(unsigned long long, doc.GetCell<unsigned long long>(1, 9), 18446744073709551615llu);
 
-    float floatval = doc.GetCell<float>(1, 11);
+    float floatval = doc.GetCell<float>(1, 10);
     unittest::ExpectTrue((floatval > 3.2E38) && (floatval < 3.4E38));
 
-    double doubleval = doc.GetCell<double>(1, 12);
+    double doubleval = doc.GetCell<double>(1, 11);
     unittest::ExpectTrue((doubleval > 1.5E308) && (doubleval < 1.7E308));
 
-    long double longdoubleval = doc.GetCell<long double>(1, 13);
+    long double longdoubleval = doc.GetCell<long double>(1, 12);
     unittest::ExpectTrue((longdoubleval > 1.5E308) && (longdoubleval < 1.7E308));
   }
   catch (const std::exception& ex)
