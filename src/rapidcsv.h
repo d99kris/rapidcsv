@@ -2,9 +2,9 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.90
+ * Version:  8.91
  *
- * Copyright (C) 2017-2025 Kristofer Berggren
+ * Copyright (C) 2017-2026 Kristofer Berggren
  * All rights reserved.
  *
  * rapidcsv is distributed under the BSD 3-Clause license, see LICENSE for details.
@@ -133,8 +133,6 @@ namespace rapidcsv
     void ToStr(const T& pVal, std::string& pStr) const
     {
       if (typeid(T) == typeid(int) ||
-          typeid(T) == typeid(signed char) ||
-          typeid(T) == typeid(unsigned char) ||
           typeid(T) == typeid(short) ||
           typeid(T) == typeid(unsigned short) ||
           typeid(T) == typeid(long) ||
@@ -159,6 +157,18 @@ namespace rapidcsv
       {
         std::ostringstream out;
         out << std::setprecision(17) << pVal;
+        pStr = out.str();
+      }
+      else if (typeid(T) == typeid(signed char))
+      {
+        std::ostringstream out;
+        out << static_cast<int>(pVal);
+        pStr = out.str();
+      }
+      else if (typeid(T) == typeid(unsigned char))
+      {
+        std::ostringstream out;
+        out << static_cast<unsigned int>(pVal);
         pStr = out.str();
       }
       else
