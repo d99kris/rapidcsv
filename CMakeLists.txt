@@ -1,6 +1,7 @@
 # Project
 cmake_minimum_required(VERSION 3.14...3.22 FATAL_ERROR)
 project(rapidcsv VERSION 1.0 LANGUAGES CXX)
+include(CMakePackageConfigHelpers)
 set (CMAKE_CXX_STANDARD 11)
 if(MSVC)
   if(CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
@@ -30,7 +31,10 @@ endif()
 
 # Library
 add_library(rapidcsv INTERFACE)
-target_include_directories(rapidcsv INTERFACE src)
+target_include_directories(rapidcsv INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+  $<INSTALL_INTERFACE:include>
+)
 
 # Tests
 option(RAPIDCSV_BUILD_TESTS "Build tests" OFF)
@@ -219,12 +223,29 @@ endif()
 if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   message(STATUS "Install/uninstall targets enabled.")
 
-  # Install
+  # Install header
   install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/rapidcsv.h DESTINATION include)
 
+  # Export targets
+  install(TARGETS rapidcsv EXPORT rapidcsvTargets)
+  install(EXPORT rapidcsvTargets
+          NAMESPACE rapidcsv::
+          DESTINATION cmake)
+
+  # Generate and install config files
+  configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/rapidcsvConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/rapidcsvConfig.cmake
+    INSTALL_DESTINATION cmake
+  )
+  install(FILES ${CMAKE_CURRENT_BINARY_DIR}/rapidcsvConfig.cmake DESTINATION cmake)
+
   # Uninstall
-  add_custom_target(uninstall COMMAND "${CMAKE_COMMAND}" -E remove "${CMAKE_INSTALL_PREFIX}/include/rapidcsv.h"
-)
+  add_custom_target(uninstall
+    COMMAND "${CMAKE_COMMAND}" -E remove "${CMAKE_INSTALL_PREFIX}/include/rapidcsv.h"
+    COMMAND "${CMAKE_COMMAND}" -E remove "${CMAKE_INSTALL_PREFIX}/cmake/rapidcsvConfig.cmake"
+    COMMAND "${CMAKE_COMMAND}" -E remove "${CMAKE_INSTALL_PREFIX}/cmake/rapidcsvTargets.cmake"
+  )
 else()
   message(STATUS "Install/uninstall targets disabled.")
 endif()

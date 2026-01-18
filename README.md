@@ -429,11 +429,16 @@ codecvt and sets HAS_CODECVT as needed, see [CMakeLists.txt](CMakeLists.txt)
 for reference. When enabled, the UTF-16 encoding of any loaded file is
 automatically detected.
 
-CMake FetchContent
-------------------
-Rapidcsv may be included in a CMake project using FetchContent. Refer to the
-[CMake FetchContent Example Project](examples/cmake-fetchcontent) and in
-particular its [CMakeLists.txt](examples/cmake-fetchcontent/CMakeLists.txt).
+CMake
+-----
+Rapidcsv may be included in a CMake project using various methods:
+
+- Add Subdirectory: [Example Project](examples/cmake-add-subdirectory) /
+  [CMakeLists.txt](examples/cmake-add-subdirectory/CMakeLists.txt)
+- Fetch Content: [Example Project](examples/cmake-fetchcontent) /
+  [CMakeLists.txt](examples/cmake-fetchcontent/CMakeLists.txt)
+- Find Package: [Example Project](examples/cmake-find-package) /
+  [CMakeLists.txt](examples/cmake-find-package/CMakeLists.txt)
 
 Locale Independent Parsing
 --------------------------
