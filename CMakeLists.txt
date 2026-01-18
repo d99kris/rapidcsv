@@ -241,8 +241,11 @@ if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
   install(FILES ${CMAKE_CURRENT_BINARY_DIR}/rapidcsvConfig.cmake DESTINATION cmake)
 
   # Uninstall
-  add_custom_target(uninstall COMMAND "${CMAKE_COMMAND}" -E remove "${CMAKE_INSTALL_PREFIX}/include/rapidcsv.h"
-)
+  add_custom_target(uninstall
+    COMMAND "${CMAKE_COMMAND}" -E remove "${CMAKE_INSTALL_PREFIX}/include/rapidcsv.h"
+    COMMAND "${CMAKE_COMMAND}" -E remove "${CMAKE_INSTALL_PREFIX}/cmake/rapidcsvConfig.cmake"
+    COMMAND "${CMAKE_COMMAND}" -E remove "${CMAKE_INSTALL_PREFIX}/cmake/rapidcsvTargets.cmake"
+  )
 else()
   message(STATUS "Install/uninstall targets disabled.")
 endif()
