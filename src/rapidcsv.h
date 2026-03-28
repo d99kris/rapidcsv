@@ -1448,6 +1448,14 @@ namespace rapidcsv
       }
 
       const size_t dataColumnIdx = GetDataColumnIndex(pColumnIdx);
+
+      // remove old name from map before adding new one
+      const size_t nameRowIdx = static_cast<size_t>(mLabelParams.mColumnNameIdx);
+      if ((nameRowIdx < mData.size()) && (dataColumnIdx < mData.at(nameRowIdx).size()))
+      {
+        const std::string oldName = mData.at(nameRowIdx).at(dataColumnIdx);
+        mColumnNames.erase(oldName);
+      }
       mColumnNames[pColumnName] = dataColumnIdx;
 
       // increase table size if necessary:
@@ -1505,6 +1513,14 @@ namespace rapidcsv
     void SetRowName(size_t pRowIdx, const std::string& pRowName)
     {
       const size_t dataRowIdx = GetDataRowIndex(pRowIdx);
+
+      // remove old name from map before adding new one
+      if ((mLabelParams.mRowNameIdx >= 0) && (dataRowIdx < mData.size()) &&
+          (static_cast<size_t>(mLabelParams.mRowNameIdx) < mData.at(dataRowIdx).size()))
+      {
+        const std::string oldName = mData.at(dataRowIdx).at(static_cast<size_t>(mLabelParams.mRowNameIdx));
+        mRowNames.erase(oldName);
+      }
       mRowNames[pRowName] = dataRowIdx;
       if (mLabelParams.mRowNameIdx < 0)
       {
