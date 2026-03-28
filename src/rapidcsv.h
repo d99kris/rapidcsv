@@ -1820,6 +1820,7 @@ namespace rapidcsv
         {
           if (mSeparatorParams.mAutoQuote &&
               ((itc->find(mSeparatorParams.mSeparator) != std::string::npos) ||
+               (itc->find(mSeparatorParams.mQuoteChar) != std::string::npos) ||
                (itc->find(' ') != std::string::npos) ||
                (itc->find('\n') != std::string::npos)))
           {
