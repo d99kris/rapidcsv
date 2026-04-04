@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.92
+ * Version:  8.93
  *
  * Copyright (C) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -191,42 +191,14 @@ namespace rapidcsv
           pVal = static_cast<T>(std::stoi(pStr));
           return;
         }
-        else if (typeid(T) == typeid(signed char))
+        else if ((typeid(T) == typeid(signed char)) || (typeid(T) == typeid(unsigned char)) ||
+                 (typeid(T) == typeid(short)) || (typeid(T) == typeid(unsigned short)))
         {
           const int i = std::stoi(pStr);
-          if ((i < std::numeric_limits<signed char>::min()) || (i > std::numeric_limits<signed char>::max()))
+          if ((i < static_cast<int>((std::numeric_limits<T>::min)())) ||
+              (i > static_cast<int>((std::numeric_limits<T>::max)())))
           {
-            throw std::out_of_range("stoi: out of signed char range");
-          }
-          pVal = static_cast<T>(i);
-          return;
-        }
-        else if (typeid(T) == typeid(unsigned char))
-        {
-          const int i = std::stoi(pStr);
-          if ((i < 0) || (i > std::numeric_limits<unsigned char>::max()))
-          {
-            throw std::out_of_range("stoi: out of unsigned char range");
-          }
-          pVal = static_cast<T>(i);
-          return;
-        }
-        else if (typeid(T) == typeid(short))
-        {
-          const int i = std::stoi(pStr);
-          if ((i < std::numeric_limits<short>::min()) || (i > std::numeric_limits<short>::max()))
-          {
-            throw std::out_of_range("stoi: out of short range");
-          }
-          pVal = static_cast<T>(i);
-          return;
-        }
-        else if (typeid(T) == typeid(unsigned short))
-        {
-          const int i = std::stoi(pStr);
-          if ((i < 0) || (i > std::numeric_limits<unsigned short>::max()))
-          {
-            throw std::out_of_range("stoi: out of unsigned short range");
+            throw std::out_of_range("conversion: out of range");
           }
           pVal = static_cast<T>(i);
           return;
