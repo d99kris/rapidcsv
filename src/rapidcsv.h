@@ -193,22 +193,42 @@ namespace rapidcsv
         }
         else if (typeid(T) == typeid(signed char))
         {
-          pVal = static_cast<T>(std::stoi(pStr));
+          const int i = std::stoi(pStr);
+          if ((i < std::numeric_limits<signed char>::min()) || (i > std::numeric_limits<signed char>::max()))
+          {
+            throw std::out_of_range("stoi: out of signed char range");
+          }
+          pVal = static_cast<T>(i);
           return;
         }
         else if (typeid(T) == typeid(unsigned char))
         {
-          pVal = static_cast<T>(std::stoi(pStr));
+          const int i = std::stoi(pStr);
+          if ((i < 0) || (i > std::numeric_limits<unsigned char>::max()))
+          {
+            throw std::out_of_range("stoi: out of unsigned char range");
+          }
+          pVal = static_cast<T>(i);
           return;
         }
         else if (typeid(T) == typeid(short))
         {
-          pVal = static_cast<T>(std::stoi(pStr));
+          const int i = std::stoi(pStr);
+          if ((i < std::numeric_limits<short>::min()) || (i > std::numeric_limits<short>::max()))
+          {
+            throw std::out_of_range("stoi: out of short range");
+          }
+          pVal = static_cast<T>(i);
           return;
         }
         else if (typeid(T) == typeid(unsigned short))
         {
-          pVal = static_cast<T>(std::stoi(pStr));
+          const int i = std::stoi(pStr);
+          if ((i < 0) || (i > std::numeric_limits<unsigned short>::max()))
+          {
+            throw std::out_of_range("stoi: out of unsigned short range");
+          }
+          pVal = static_cast<T>(i);
           return;
         }
         else if (typeid(T) == typeid(long))
