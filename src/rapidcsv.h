@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.92
+ * Version:  8.93
  *
  * Copyright (C) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -191,24 +191,16 @@ namespace rapidcsv
           pVal = static_cast<T>(std::stoi(pStr));
           return;
         }
-        else if (typeid(T) == typeid(signed char))
+        else if ((typeid(T) == typeid(signed char)) || (typeid(T) == typeid(unsigned char)) ||
+                 (typeid(T) == typeid(short)) || (typeid(T) == typeid(unsigned short)))
         {
-          pVal = static_cast<T>(std::stoi(pStr));
-          return;
-        }
-        else if (typeid(T) == typeid(unsigned char))
-        {
-          pVal = static_cast<T>(std::stoi(pStr));
-          return;
-        }
-        else if (typeid(T) == typeid(short))
-        {
-          pVal = static_cast<T>(std::stoi(pStr));
-          return;
-        }
-        else if (typeid(T) == typeid(unsigned short))
-        {
-          pVal = static_cast<T>(std::stoi(pStr));
+          const int i = std::stoi(pStr);
+          if ((i < static_cast<int>((std::numeric_limits<T>::min)())) ||
+              (i > static_cast<int>((std::numeric_limits<T>::max)())))
+          {
+            throw std::out_of_range("conversion: out of range");
+          }
+          pVal = static_cast<T>(i);
           return;
         }
         else if (typeid(T) == typeid(long))
