@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.92
+ * Version:  8.94
  *
  * Copyright (C) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -191,24 +191,16 @@ namespace rapidcsv
           pVal = static_cast<T>(std::stoi(pStr));
           return;
         }
-        else if (typeid(T) == typeid(signed char))
+        else if ((typeid(T) == typeid(signed char)) || (typeid(T) == typeid(unsigned char)) ||
+                 (typeid(T) == typeid(short)) || (typeid(T) == typeid(unsigned short)))
         {
-          pVal = static_cast<T>(std::stoi(pStr));
-          return;
-        }
-        else if (typeid(T) == typeid(unsigned char))
-        {
-          pVal = static_cast<T>(std::stoi(pStr));
-          return;
-        }
-        else if (typeid(T) == typeid(short))
-        {
-          pVal = static_cast<T>(std::stoi(pStr));
-          return;
-        }
-        else if (typeid(T) == typeid(unsigned short))
-        {
-          pVal = static_cast<T>(std::stoi(pStr));
+          const int i = std::stoi(pStr);
+          if ((i < static_cast<int>((std::numeric_limits<T>::min)())) ||
+              (i > static_cast<int>((std::numeric_limits<T>::max)())))
+          {
+            throw std::out_of_range("conversion: out of range");
+          }
+          pVal = static_cast<T>(i);
           return;
         }
         else if (typeid(T) == typeid(long))
@@ -1448,6 +1440,14 @@ namespace rapidcsv
       }
 
       const size_t dataColumnIdx = GetDataColumnIndex(pColumnIdx);
+
+      // remove old name from map before adding new one
+      const size_t nameRowIdx = static_cast<size_t>(mLabelParams.mColumnNameIdx);
+      if ((nameRowIdx < mData.size()) && (dataColumnIdx < mData.at(nameRowIdx).size()))
+      {
+        const std::string oldName = mData.at(nameRowIdx).at(dataColumnIdx);
+        mColumnNames.erase(oldName);
+      }
       mColumnNames[pColumnName] = dataColumnIdx;
 
       // increase table size if necessary:
@@ -1505,6 +1505,14 @@ namespace rapidcsv
     void SetRowName(size_t pRowIdx, const std::string& pRowName)
     {
       const size_t dataRowIdx = GetDataRowIndex(pRowIdx);
+
+      // remove old name from map before adding new one
+      if ((mLabelParams.mRowNameIdx >= 0) && (dataRowIdx < mData.size()) &&
+          (static_cast<size_t>(mLabelParams.mRowNameIdx) < mData.at(dataRowIdx).size()))
+      {
+        const std::string oldName = mData.at(dataRowIdx).at(static_cast<size_t>(mLabelParams.mRowNameIdx));
+        mRowNames.erase(oldName);
+      }
       mRowNames[pRowName] = dataRowIdx;
       if (mLabelParams.mRowNameIdx < 0)
       {
