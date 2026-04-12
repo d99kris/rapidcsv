@@ -1473,9 +1473,13 @@ namespace rapidcsv
     {
       if (mLabelParams.mColumnNameIdx >= 0)
       {
-        return std::vector<std::string>(mData.at(static_cast<size_t>(mLabelParams.mColumnNameIdx)).begin() +
-                                        (mLabelParams.mRowNameIdx + 1),
-                                        mData.at(static_cast<size_t>(mLabelParams.mColumnNameIdx)).end());
+        const auto& labelRow = mData.at(static_cast<size_t>(mLabelParams.mColumnNameIdx));
+        const size_t offset = static_cast<size_t>(mLabelParams.mRowNameIdx + 1);
+        if (offset <= labelRow.size())
+        {
+          return std::vector<std::string>(labelRow.begin() + static_cast<int>(offset),
+                                          labelRow.end());
+        }
       }
 
       return std::vector<std::string>();
