@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.95
+ * Version:  8.96
  *
  * Copyright (C) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -1473,12 +1473,11 @@ namespace rapidcsv
     {
       if (mLabelParams.mColumnNameIdx >= 0)
       {
-        const auto& labelRow = mData.at(static_cast<size_t>(mLabelParams.mColumnNameIdx));
+        const std::vector<std::string>& labelRow = mData.at(static_cast<size_t>(mLabelParams.mColumnNameIdx));
         const size_t offset = static_cast<size_t>(mLabelParams.mRowNameIdx + 1);
         if (offset <= labelRow.size())
         {
-          return std::vector<std::string>(labelRow.begin() + static_cast<int>(offset),
-                                          labelRow.end());
+          return std::vector<std::string>(labelRow.begin() + static_cast<int>(offset), labelRow.end());
         }
       }
 
