@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.96
+ * Version:  8.97
  *
  * Copyright (C) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -1456,7 +1456,8 @@ namespace rapidcsv
       {
         mData.resize(rowIdx + 1);
       }
-      auto& row = mData[rowIdx];
+
+      std::vector<std::string>& row = mData[rowIdx];
       if (dataColumnIdx >= row.size())
       {
         row.resize(dataColumnIdx + 1);
@@ -1527,7 +1528,8 @@ namespace rapidcsv
       {
         mData.resize(dataRowIdx + 1);
       }
-      auto& row = mData[dataRowIdx];
+
+      std::vector<std::string>& row = mData[dataRowIdx];
       if (mLabelParams.mRowNameIdx >= static_cast<int>(row.size()))
       {
         row.resize(static_cast<size_t>(mLabelParams.mRowNameIdx) + 1);
@@ -1892,7 +1894,9 @@ namespace rapidcsv
         str.erase(str.begin(), std::find_if(str.begin(), str.end(), [](unsigned char ch) { return !isspace(ch); }));
 
         // rtrim
-        str.erase(std::find_if(str.rbegin(), str.rend(), [](unsigned char ch) { return !isspace(ch); }).base(), str.end());
+        str.erase(std::find_if(str.rbegin(), str.rend(), [](unsigned char ch) {
+          return !isspace(ch);
+        }).base(), str.end());
 
         return str;
       }
