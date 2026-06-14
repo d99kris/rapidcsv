@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.98
+ * Version:  8.99
  *
  * Copyright (C) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -802,7 +802,7 @@ namespace rapidcsv
         {
           if (dataColumnIdx < itRow->size())
           {
-            itRow->erase(itRow->begin() + static_cast<int>(dataColumnIdx));
+            itRow->erase(itRow->begin() + static_cast<std::ptrdiff_t>(dataColumnIdx));
           }
           else
           {
@@ -880,7 +880,7 @@ namespace rapidcsv
           const size_t rowIdx = static_cast<size_t>(std::distance(mData.begin(), itRow));
           if (dataColumnIdx <= itRow->size())
           {
-            itRow->insert(itRow->begin() + static_cast<int>(dataColumnIdx), column.at(rowIdx));
+            itRow->insert(itRow->begin() + static_cast<std::ptrdiff_t>(dataColumnIdx), column.at(rowIdx));
           }
           else
           {
@@ -1073,7 +1073,7 @@ namespace rapidcsv
       const size_t dataRowIdx = GetDataRowIndex(pRowIdx);
       if (dataRowIdx < mData.size())
       {
-        mData.erase(mData.begin() + static_cast<int>(dataRowIdx));
+        mData.erase(mData.begin() + static_cast<std::ptrdiff_t>(dataRowIdx));
       }
       else
       {
@@ -1136,7 +1136,7 @@ namespace rapidcsv
         mData.push_back(tempRow);
       }
 
-      mData.insert(mData.begin() + static_cast<int>(rowIdx), row);
+      mData.insert(mData.begin() + static_cast<std::ptrdiff_t>(rowIdx), row);
 
       if (!pRowName.empty())
       {
@@ -1478,7 +1478,7 @@ namespace rapidcsv
         const size_t offset = static_cast<size_t>(mLabelParams.mRowNameIdx + 1);
         if (offset <= labelRow.size())
         {
-          return std::vector<std::string>(labelRow.begin() + static_cast<int>(offset), labelRow.end());
+          return std::vector<std::string>(labelRow.begin() + static_cast<std::ptrdiff_t>(offset), labelRow.end());
         }
       }
 
