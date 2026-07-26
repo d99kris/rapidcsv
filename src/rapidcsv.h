@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  9.03
+ * Version:  9.04
  *
  * Copyright (c) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -214,19 +214,22 @@ namespace rapidcsv
           pVal = static_cast<T>(std::stoll(pStr));
           return;
         }
-        else if (typeid(T) == typeid(unsigned))
+        else if ((typeid(T) == typeid(unsigned)) || (typeid(T) == typeid(unsigned long)) ||
+                 (typeid(T) == typeid(unsigned long long)))
         {
-          pVal = static_cast<T>(std::stoul(pStr));
-          return;
-        }
-        else if (typeid(T) == typeid(unsigned long))
-        {
-          pVal = static_cast<T>(std::stoul(pStr));
-          return;
-        }
-        else if (typeid(T) == typeid(unsigned long long))
-        {
-          pVal = static_cast<T>(std::stoull(pStr));
+          const unsigned long long ull = std::stoull(pStr);
+          const T val = static_cast<T>(ull);
+
+          // std::stoull() wraps negative values around, instead of throwing
+          const size_t signPos = pStr.find_first_not_of(" \f\n\r\t\v");
+          const bool isNegative =
+            (ull != 0) && (signPos != std::string::npos) && (pStr.at(signPos) == '-');
+
+          if (isNegative || (static_cast<unsigned long long>(val) != ull))
+          {
+            throw std::out_of_range("conversion: out of range");
+          }
+          pVal = val;
           return;
         }
       }
