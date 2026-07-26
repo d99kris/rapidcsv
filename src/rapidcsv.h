@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  9.02
+ * Version:  9.03
  *
  * Copyright (c) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -628,7 +628,9 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   Get column index by name.
+     * @brief   Get column index by name. The result is undefined if the document contains
+     *          multiple columns sharing the same label name. Column indices exceeding
+     *          INT_MAX are not supported.
      * @param   pColumnName           column label name.
      * @returns zero-based column index.
      */
@@ -916,7 +918,9 @@ namespace rapidcsv
     }
 
     /**
-     * @brief   Get row index by name.
+     * @brief   Get row index by name. The result is undefined if the document contains
+     *          multiple rows sharing the same label name. Row indices exceeding INT_MAX
+     *          are not supported.
      * @param   pRowName              row label name.
      * @returns zero-based row index.
      */

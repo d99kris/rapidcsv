@@ -222,7 +222,7 @@ Get number of data columns (excluding label columns).
 ```c++
 int GetColumnIdx (const std::string & pColumnName)
 ```
-Get column index by name. 
+Get column index by name. The result is undefined if the document contains multiple columns sharing the same label name. Column indices exceeding INT_MAX are not supported. 
 
 **Parameters**
 - `pColumnName` column label name. 
@@ -322,7 +322,7 @@ Get number of data rows (excluding label rows).
 ```c++
 int GetRowIdx (const std::string & pRowName)
 ```
-Get row index by name. 
+Get row index by name. The result is undefined if the document contains multiple rows sharing the same label name. Row indices exceeding INT_MAX are not supported. 
 
 **Parameters**
 - `pRowName` row label name. 
