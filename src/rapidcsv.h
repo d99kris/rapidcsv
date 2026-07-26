@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  9.05
+ * Version:  9.06
  *
  * Copyright (c) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -17,15 +17,13 @@
 #include <cassert>
 #include <cmath>
 #include <cstddef>
-#ifdef HAS_CODECVT
-#include <codecvt>
-#include <locale>
-#endif
+#include <cstdint>
 #include <fstream>
 #include <functional>
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <locale>
 #include <map>
 #include <sstream>
 #include <string>
@@ -623,10 +621,8 @@ namespace rapidcsv
       mData.clear();
       mColumnNames.clear();
       mRowNames.clear();
-#ifdef HAS_CODECVT
       mIsUtf16 = false;
       mIsLE = false;
-#endif
       mHasUtf8BOM = false;
     }
 
@@ -1584,7 +1580,6 @@ namespace rapidcsv
       std::streamsize length = pStream.tellg();
       pStream.seekg(0, std::ios::beg);
 
-#ifdef HAS_CODECVT
       std::vector<char> bom2b(2, '\0');
       if (length >= 2)
       {
@@ -1602,31 +1597,13 @@ namespace rapidcsv
         std::vector<char> buffer(static_cast<size_t>(length));
         pStream.read(buffer.data(), length);
 
-        const std::wstring& utf16 = [&]()
-        {
-          if (mIsLE)
-          {
-            const std::codecvt_mode mode =
-              static_cast<std::codecvt_mode>(std::consume_header | std::little_endian);
-            std::wstring_convert<std::codecvt_utf16<wchar_t, 0x10ffff, mode>> utf16conv;
-            return utf16conv.from_bytes(buffer.data(), buffer.data() + length);
-          }
-          else
-          {
-            const std::codecvt_mode mode =
-              static_cast<std::codecvt_mode>(std::consume_header);
-            std::wstring_convert<std::codecvt_utf16<wchar_t, 0x10ffff, mode>> utf16conv;
-            return utf16conv.from_bytes(buffer.data(), buffer.data() + length);
-          }
-        }();
-
-        std::wstringstream wss(utf16);
-        std::string utf8 = ToString(wss.str());
+        // skip byte order mark
+        const std::string utf8 = Utf16ToUtf8(buffer.data() + 2, static_cast<size_t>(length) - 2,
+                                             mIsLE);
         std::stringstream ss(utf8);
         ParseCsv(ss, static_cast<std::streamsize>(utf8.size()));
       }
       else
-#endif
       {
         // check for UTF-8 Byte order mark and skip it when found
         if (length >= 3)
@@ -1813,35 +1790,18 @@ namespace rapidcsv
 
     void WriteCsv() const
     {
-#ifdef HAS_CODECVT
       if (mIsUtf16)
       {
         std::stringstream ss;
         WriteCsv(ss);
-        std::string utf8 = ss.str();
-        std::wstring wstr = ToWString(utf8);
+        const std::string utf16 = Utf8ToUtf16(ss.str(), mIsLE);
 
-        std::wofstream wstream;
-        wstream.exceptions(std::wofstream::failbit | std::wofstream::badbit);
-        wstream.open(mPath, std::ios::binary | std::ios::trunc);
-
-        if (mIsLE)
-        {
-          wstream.imbue(std::locale(wstream.getloc(),
-                                    new std::codecvt_utf16<wchar_t, 0x10ffff,
-                                                           static_cast<std::codecvt_mode>(std::little_endian)>));
-        }
-        else
-        {
-          wstream.imbue(std::locale(wstream.getloc(),
-                                    new std::codecvt_utf16<wchar_t, 0x10ffff>));
-        }
-
-        wstream << static_cast<wchar_t>(0xfeff);
-        wstream << wstr;
+        std::ofstream stream;
+        stream.exceptions(std::ofstream::failbit | std::ofstream::badbit);
+        stream.open(mPath, std::ios::binary | std::ios::trunc);
+        stream.write(utf16.data(), static_cast<std::streamsize>(utf16.size()));
       }
       else
-#endif
       {
         std::ofstream stream;
         stream.exceptions(std::ofstream::failbit | std::ofstream::badbit);
@@ -1992,24 +1952,192 @@ namespace rapidcsv
       }
     }
 
-#ifdef HAS_CODECVT
-#if defined(_MSC_VER)
-#pragma warning (push)
-#pragma warning (disable: 4996)
-#endif
-    static std::string ToString(const std::wstring& pWStr)
+    // Unicode code point used in place of malformed input.
+    static const uint32_t s_ReplacementChar = 0x0000fffd;
+
+    // Reads the UTF-16 code unit at byte offset pIdx, which must be a valid offset
+    // of a complete code unit.
+    static uint32_t GetUtf16Unit(const char* pData, size_t pIdx, bool pIsLE)
     {
-      return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>{ }.to_bytes(pWStr);
+      const uint32_t byte0 = static_cast<unsigned char>(pData[pIdx]);
+      const uint32_t byte1 = static_cast<unsigned char>(pData[pIdx + 1]);
+      return pIsLE ? ((byte1 << 8) | byte0) : ((byte0 << 8) | byte1);
     }
 
-    static std::wstring ToWString(const std::string& pStr)
+    static void AppendUtf16Unit(uint32_t pUnit, bool pIsLE, std::string& pUtf16)
     {
-      return std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>{ }.from_bytes(pStr);
+      const char lowByte = static_cast<char>(pUnit & 0xff);
+      const char highByte = static_cast<char>((pUnit >> 8) & 0xff);
+      pUtf16 += pIsLE ? lowByte : highByte;
+      pUtf16 += pIsLE ? highByte : lowByte;
     }
-#if defined(_MSC_VER)
-#pragma warning (pop)
-#endif
-#endif
+
+    static void AppendUtf16(uint32_t pCodePoint, bool pIsLE, std::string& pUtf16)
+    {
+      if (pCodePoint >= 0x10000)
+      {
+        // encode as surrogate pair
+        const uint32_t offset = pCodePoint - 0x10000;
+        AppendUtf16Unit(0xd800 + (offset >> 10), pIsLE, pUtf16);
+        AppendUtf16Unit(0xdc00 + (offset & 0x3ff), pIsLE, pUtf16);
+      }
+      else
+      {
+        AppendUtf16Unit(pCodePoint, pIsLE, pUtf16);
+      }
+    }
+
+    static void AppendUtf8(uint32_t pCodePoint, std::string& pUtf8)
+    {
+      if (pCodePoint < 0x80)
+      {
+        pUtf8 += static_cast<char>(pCodePoint);
+      }
+      else if (pCodePoint < 0x800)
+      {
+        pUtf8 += static_cast<char>(0xc0 | (pCodePoint >> 6));
+        pUtf8 += static_cast<char>(0x80 | (pCodePoint & 0x3f));
+      }
+      else if (pCodePoint < 0x10000)
+      {
+        pUtf8 += static_cast<char>(0xe0 | (pCodePoint >> 12));
+        pUtf8 += static_cast<char>(0x80 | ((pCodePoint >> 6) & 0x3f));
+        pUtf8 += static_cast<char>(0x80 | (pCodePoint & 0x3f));
+      }
+      else
+      {
+        pUtf8 += static_cast<char>(0xf0 | (pCodePoint >> 18));
+        pUtf8 += static_cast<char>(0x80 | ((pCodePoint >> 12) & 0x3f));
+        pUtf8 += static_cast<char>(0x80 | ((pCodePoint >> 6) & 0x3f));
+        pUtf8 += static_cast<char>(0x80 | (pCodePoint & 0x3f));
+      }
+    }
+
+    // Converts UTF-16 encoded data (without byte order mark) to UTF-8. Surrogate pairs
+    // are combined into a single code point. Unpaired surrogates and a trailing odd byte
+    // are replaced with U+FFFD.
+    static std::string Utf16ToUtf8(const char* pData, size_t pSize, bool pIsLE)
+    {
+      std::string utf8;
+      utf8.reserve(pSize);
+
+      size_t idx = 0;
+      while ((idx + 1) < pSize)
+      {
+        uint32_t codePoint = GetUtf16Unit(pData, idx, pIsLE);
+        idx += 2;
+
+        if ((codePoint >= 0xd800) && (codePoint <= 0xdbff) && ((idx + 1) < pSize))
+        {
+          // high surrogate - combine with low surrogate, when present
+          const uint32_t lowSurrogate = GetUtf16Unit(pData, idx, pIsLE);
+          if ((lowSurrogate >= 0xdc00) && (lowSurrogate <= 0xdfff))
+          {
+            codePoint = 0x10000 + ((codePoint - 0xd800) << 10) + (lowSurrogate - 0xdc00);
+            idx += 2;
+          }
+        }
+
+        if ((codePoint >= 0xd800) && (codePoint <= 0xdfff))
+        {
+          // unpaired surrogate
+          codePoint = s_ReplacementChar;
+        }
+
+        AppendUtf8(codePoint, utf8);
+      }
+
+      if (idx < pSize)
+      {
+        // trailing odd byte
+        AppendUtf8(s_ReplacementChar, utf8);
+      }
+
+      return utf8;
+    }
+
+    // Converts UTF-8 encoded data to UTF-16, prefixed with a byte order mark. Code points
+    // outside the basic multilingual plane are encoded as surrogate pairs. Malformed input
+    // is replaced with U+FFFD.
+    static std::string Utf8ToUtf16(const std::string& pUtf8, bool pIsLE)
+    {
+      std::string utf16;
+      utf16.reserve((pUtf8.size() + 1) * 2);
+
+      AppendUtf16(0x0000feff, pIsLE, utf16);
+
+      size_t idx = 0;
+      while (idx < pUtf8.size())
+      {
+        const uint32_t leadByte = static_cast<unsigned char>(pUtf8[idx]);
+        uint32_t codePoint = 0;
+        size_t seqLen = 0;
+
+        if (leadByte < 0x80)
+        {
+          codePoint = leadByte;
+          seqLen = 1;
+        }
+        else if ((leadByte & 0xe0) == 0xc0)
+        {
+          codePoint = leadByte & 0x1f;
+          seqLen = 2;
+        }
+        else if ((leadByte & 0xf0) == 0xe0)
+        {
+          codePoint = leadByte & 0x0f;
+          seqLen = 3;
+        }
+        else if ((leadByte & 0xf8) == 0xf0)
+        {
+          codePoint = leadByte & 0x07;
+          seqLen = 4;
+        }
+        else
+        {
+          // invalid lead byte
+          codePoint = s_ReplacementChar;
+          seqLen = 1;
+        }
+
+        if ((seqLen > 1) && ((idx + seqLen) <= pUtf8.size()))
+        {
+          for (size_t byteIdx = 1; byteIdx < seqLen; ++byteIdx)
+          {
+            const uint32_t contByte = static_cast<unsigned char>(pUtf8[idx + byteIdx]);
+            if ((contByte & 0xc0) != 0x80)
+            {
+              // invalid continuation byte
+              codePoint = s_ReplacementChar;
+              seqLen = 1;
+              break;
+            }
+
+            codePoint = (codePoint << 6) | (contByte & 0x3f);
+          }
+        }
+        else if (seqLen > 1)
+        {
+          // truncated sequence
+          codePoint = s_ReplacementChar;
+          seqLen = 1;
+        }
+
+        // reject out of range code points, surrogates and overlong sequences
+        static const uint32_t minCodePoint[5] = { 0, 0, 0x80, 0x800, 0x10000 };
+        if ((codePoint > 0x0010ffff) ||
+            ((codePoint >= 0xd800) && (codePoint <= 0xdfff)) ||
+            (codePoint < minCodePoint[seqLen]))
+        {
+          codePoint = s_ReplacementChar;
+        }
+
+        AppendUtf16(codePoint, pIsLE, utf16);
+        idx += seqLen;
+      }
+
+      return utf16;
+    }
 
     static void ReplaceString(std::string& pStr, const std::string& pSearch, const std::string& pReplace)
     {
@@ -2031,10 +2159,8 @@ namespace rapidcsv
     std::vector<std::vector<std::string>> mData;
     std::map<std::string, size_t> mColumnNames;
     std::map<std::string, size_t> mRowNames;
-#ifdef HAS_CODECVT
     bool mIsUtf16 = false;
     bool mIsLE = false;
-#endif
     bool mHasUtf8BOM = false;
   };
 }

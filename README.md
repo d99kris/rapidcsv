@@ -422,12 +422,10 @@ rapidcsv::Document doc("file.csv", rapidcsv::LabelParams(), rapidcsv::SeparatorP
 UTF-16 and UTF-8
 ----------------
 Rapidcsv's preferred encoding for non-ASCII text is UTF-8. UTF-16 LE and
-UTF-16 BE can be read and written by rapidcsv on systems where codecvt header
-is present. Define HAS_CODECVT before including rapidcsv.h in order to enable
-the functionality. Rapidcsv unit tests automatically detects the presence of
-codecvt and sets HAS_CODECVT as needed, see [CMakeLists.txt](CMakeLists.txt)
-for reference. When enabled, the UTF-16 encoding of any loaded file is
-automatically detected.
+UTF-16 BE can also be read and written, using the byte order mark of a loaded
+file to automatically detect its encoding. Documents loaded as UTF-16 are
+converted to UTF-8 internally, and converted back to their original UTF-16
+encoding when saved.
 
 Limiting Maximum Document Size
 ------------------------------
