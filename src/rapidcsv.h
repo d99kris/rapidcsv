@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  9.04
+ * Version:  9.05
  *
  * Copyright (c) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -1651,6 +1651,21 @@ namespace rapidcsv
       }
     }
 
+    static inline void CheckMaxCount(const size_t pCount)
+    {
+#ifdef RAPIDCSV_MAX_COUNT
+      static_assert(RAPIDCSV_MAX_COUNT > 0, "RAPIDCSV_MAX_COUNT must be a positive value");
+      static const size_t s_MaxCount = static_cast<size_t>(RAPIDCSV_MAX_COUNT);
+      if (pCount > s_MaxCount)
+      {
+        const std::string errStr = "max count exceeded: " + std::to_string(s_MaxCount);
+        throw std::out_of_range(errStr);
+      }
+#else
+      (void)pCount;
+#endif
+    }
+
     void ParseCsv(std::istream& pStream, std::streamsize p_FileLength)
     {
       const std::streamsize bufLength = 64 * 1024;
@@ -1697,6 +1712,7 @@ namespace rapidcsv
           {
             if (!quoted)
             {
+              CheckMaxCount(row.size() + 1);
               row.push_back(Unquote(Trim(cell)));
               cell.clear();
             }
@@ -1731,6 +1747,7 @@ namespace rapidcsv
               }
               else
               {
+                CheckMaxCount(row.size() + 1);
                 row.push_back(Unquote(Trim(cell)));
 
                 if (mLineReaderParams.mSkipCommentLines && !row.at(0).empty() &&
@@ -1740,6 +1757,7 @@ namespace rapidcsv
                 }
                 else
                 {
+                  CheckMaxCount(mData.size() + 1);
                   mData.push_back(row);
                 }
 
@@ -1764,6 +1782,7 @@ namespace rapidcsv
       }
       else
       {
+        CheckMaxCount(row.size() + 1);
         row.push_back(Unquote(Trim(cell)));
 
         if (mLineReaderParams.mSkipCommentLines && !row.at(0).empty() &&
@@ -1773,6 +1792,7 @@ namespace rapidcsv
         }
         else
         {
+          CheckMaxCount(mData.size() + 1);
           mData.push_back(row);
         }
 

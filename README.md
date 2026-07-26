@@ -429,6 +429,15 @@ codecvt and sets HAS_CODECVT as needed, see [CMakeLists.txt](CMakeLists.txt)
 for reference. When enabled, the UTF-16 encoding of any loaded file is
 automatically detected.
 
+Limiting Maximum Document Size
+------------------------------
+Rapidcsv does not limit the amount of data read by default. As each parsed cell
+has some memory overhead, malformed input may expand to much more memory than
+the size of the input data. Applications reading untrusted input may define
+RAPIDCSV_MAX_COUNT before including rapidcsv.h, in order to set an upper limit
+for the number of rows or columns read and throw exception `std::out_of_range`
+when exceeded.
+
 CMake
 -----
 Rapidcsv may be included in a CMake project using various methods:
