@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  9.00
+ * Version:  9.01
  *
  * Copyright (c) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -1835,7 +1835,8 @@ namespace rapidcsv
               ((itc->find(mSeparatorParams.mSeparator) != std::string::npos) ||
                (itc->find(mSeparatorParams.mQuoteChar) != std::string::npos) ||
                (itc->find(' ') != std::string::npos) ||
-               (itc->find('\n') != std::string::npos)))
+               (itc->find('\n') != std::string::npos) ||
+               (itc->find('\r') != std::string::npos)))
           {
             // escape quotes in string
             std::string str = *itc;
