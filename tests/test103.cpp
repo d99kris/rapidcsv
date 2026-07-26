@@ -57,7 +57,7 @@ int main()
     doc.SetCell<unsigned long>(1, 4, 4294967295);
     doc.SetCell<unsigned long long>(1, 5, 18446744073709551615llu);
 
-    doc.SetCell<float>(1, 6, 3.40282347e+38);
+    doc.SetCell<float>(1, 6, 3.40282347e+38f);
     doc.SetCell<double>(1, 7, 1.6E308);
     doc.SetCell<long double>(1, 8, 1.6E308);
 
