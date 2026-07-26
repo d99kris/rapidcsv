@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  9.01
+ * Version:  9.02
  *
  * Copyright (c) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <cstddef>
 #ifdef HAS_CODECVT
 #include <codecvt>
 #include <locale>
@@ -908,7 +909,8 @@ namespace rapidcsv
     size_t GetColumnCount() const
     {
       const size_t firstRow = static_cast<size_t>((mLabelParams.mColumnNameIdx >= 0) ? mLabelParams.mColumnNameIdx : 0);
-      const int count = static_cast<int>((mData.size() > firstRow) ? mData.at(firstRow).size() : 0) -
+      const std::ptrdiff_t count =
+        static_cast<std::ptrdiff_t>((mData.size() > firstRow) ? mData.at(firstRow).size() : 0) -
         (mLabelParams.mRowNameIdx + 1);
       return (count >= 0) ? static_cast<size_t>(count) : 0;
     }
@@ -1152,7 +1154,8 @@ namespace rapidcsv
      */
     size_t GetRowCount() const
     {
-      const int count = static_cast<int>(mData.size()) - (mLabelParams.mColumnNameIdx + 1);
+      const std::ptrdiff_t count = static_cast<std::ptrdiff_t>(mData.size()) -
+        (mLabelParams.mColumnNameIdx + 1);
       return (count >= 0) ? static_cast<size_t>(count) : 0;
     }
 
@@ -1530,7 +1533,7 @@ namespace rapidcsv
       }
 
       std::vector<std::string>& row = mData[dataRowIdx];
-      if (mLabelParams.mRowNameIdx >= static_cast<int>(row.size()))
+      if (mLabelParams.mRowNameIdx >= static_cast<std::ptrdiff_t>(row.size()))
       {
         row.resize(static_cast<size_t>(mLabelParams.mRowNameIdx) + 1);
       }
@@ -1932,7 +1935,7 @@ namespace rapidcsv
     {
       mColumnNames.clear();
       if ((mLabelParams.mColumnNameIdx >= 0) &&
-          (static_cast<int>(mData.size()) > mLabelParams.mColumnNameIdx))
+          (static_cast<std::ptrdiff_t>(mData.size()) > mLabelParams.mColumnNameIdx))
       {
         size_t i = 0;
         for (auto& columnName : mData[static_cast<size_t>(mLabelParams.mColumnNameIdx)])
@@ -1946,14 +1949,14 @@ namespace rapidcsv
     {
       mRowNames.clear();
       if ((mLabelParams.mRowNameIdx >= 0) &&
-          (static_cast<int>(mData.size()) >
+          (static_cast<std::ptrdiff_t>(mData.size()) >
            (mLabelParams.mColumnNameIdx + 1)))
       {
         size_t i = 0;
         for (auto& dataRow : mData)
         {
           // rows too short to hold a row label are left unnamed, but must still be counted
-          if (static_cast<int>(dataRow.size()) > mLabelParams.mRowNameIdx)
+          if (static_cast<std::ptrdiff_t>(dataRow.size()) > mLabelParams.mRowNameIdx)
           {
             mRowNames[dataRow[static_cast<size_t>(mLabelParams.mRowNameIdx)]] = i;
           }
