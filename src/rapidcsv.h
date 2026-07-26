@@ -2,9 +2,9 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  8.99
+ * Version:  9.00
  *
- * Copyright (C) 2017-2026 Kristofer Berggren
+ * Copyright (c) 2017-2026 Kristofer Berggren
  * All rights reserved.
  *
  * rapidcsv is distributed under the BSD 3-Clause license, see LICENSE for details.
@@ -1951,10 +1951,12 @@ namespace rapidcsv
         size_t i = 0;
         for (auto& dataRow : mData)
         {
+          // rows too short to hold a row label are left unnamed, but must still be counted
           if (static_cast<int>(dataRow.size()) > mLabelParams.mRowNameIdx)
           {
-            mRowNames[dataRow[static_cast<size_t>(mLabelParams.mRowNameIdx)]] = i++;
+            mRowNames[dataRow[static_cast<size_t>(mLabelParams.mRowNameIdx)]] = i;
           }
+          ++i;
         }
       }
     }
