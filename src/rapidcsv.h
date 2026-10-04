@@ -1826,7 +1826,10 @@ namespace rapidcsv
                (itc->find(mSeparatorParams.mQuoteChar) != std::string::npos) ||
                (itc->find(' ') != std::string::npos) ||
                (itc->find('\n') != std::string::npos) ||
-               (itc->find('\r') != std::string::npos)))
+               (itc->find('\r') != std::string::npos) ||
+               (mSeparatorParams.mTrim && !itc->empty() &&
+                (isspace(static_cast<unsigned char>(itc->front())) ||
+                 isspace(static_cast<unsigned char>(itc->back()))))))
           {
             // escape quotes in string
             std::string str = *itc;
