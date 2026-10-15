@@ -8,5 +8,5 @@ target_link_libraries(exprog3 PRIVATE rapidcsv::rapidcsv)
 
 install(TARGETS exprog3 DESTINATION bin)
 add_custom_target(uninstall
-  COMMAND "${CMAKE_COMMAND}" -E remove "${CMAKE_INSTALL_PREFIX}/bin/exprog2"
+  COMMAND "${CMAKE_COMMAND}" -E remove "${CMAKE_INSTALL_PREFIX}/bin/exprog3"
 )
