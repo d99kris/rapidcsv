@@ -352,13 +352,17 @@ int main()
 
 Reading a File with Invalid Numbers (e.g. Empty Cells) as Numeric Data
 -----------------------------------------------------------------------
-By default rapidcsv throws an exception if one tries to access non-numeric
-data as a numeric data type, as it basically propagates the underlying
-conversion routines' exceptions to the calling application.
+By default rapidcsv propagates the underlying numeric conversion routines'
+exceptions to the calling application. For example, accessing an empty cell or
+`"abc"` as an integer throws an exception.
 
-The reason for this is to ensure data correctness. If one wants to be able
-to read data with invalid numbers as numeric data types, one can use
-ConverterParams to configure the converter to default to a numeric value.
+These routines can accept a numeric prefix without consuming the entire cell:
+`"12abc"` converts to the integer `12`, and `"2.5xyz"` converts to the floating-point
+value `2.5`. Thus, the default conversions do not validate that every character in
+the cell is part of a number.
+
+To replace conversions that would throw with a default numeric value, use
+ConverterParams to configure the converter.
 The value is configurable and by default it's
 std::numeric_limits<long double>::signaling_NaN() for float types, and 0 for
 integer types. Example:
@@ -368,6 +372,30 @@ rapidcsv::Document doc("file.csv", rapidcsv::LabelParams(),
                         rapidcsv::SeparatorParams(),
                         rapidcsv::ConverterParams(true));
 ```
+
+This fallback applies only when conversion throws; `"12abc"` still converts to
+`12`, rather than the configured default value.
+
+To reject unconsumed characters, use a
+[global custom converter](#global-custom-data-type-conversion) or a
+[per-call custom converter](#custom-data-type-conversion-per-call). For example:
+
+```cpp
+auto strictInt = [](const std::string& pStr, int& pVal)
+{
+  size_t pos = 0;
+  const int value = std::stoi(pStr, &pos);
+  if (pos != pStr.size())
+  {
+    throw std::invalid_argument("trailing characters in integer");
+  }
+  pVal = value;
+};
+int value = doc.GetCell<int>(0, 0, strictInt);
+```
+
+Setting `mNumericLocale = false` also checks that the entire cell was consumed
+when converting floating-point values. It does not change integer conversion.
 
 Check if a Column Exists
 ------------------------
