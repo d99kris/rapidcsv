@@ -354,12 +354,15 @@ Reading a File with Invalid Numbers (e.g. Empty Cells) as Numeric Data
 -----------------------------------------------------------------------
 By default rapidcsv throws an exception if one tries to access non-numeric
 data as a numeric data type, as it basically propagates the underlying
-conversion routines' exceptions to the calling application.
+conversion routines' exceptions to the calling application. Note that these
+routines (e.g. `std::stoi`) accept a numeric prefix, so `"12abc"` reads as
+`12`. For strict parsing, use a
+[custom converter](#custom-data-type-conversion-per-call) that checks that the
+whole cell was consumed.
 
-The reason for this is to ensure data correctness. If one wants to be able
-to read data with invalid numbers as numeric data types, one can use
-ConverterParams to configure the converter to default to a numeric value.
-The value is configurable and by default it's
+If one wants to be able to read data with invalid numbers as numeric data
+types, one can use ConverterParams to configure the converter to default to a
+numeric value. The value is configurable and by default it's
 std::numeric_limits<long double>::signaling_NaN() for float types, and 0 for
 integer types. Example:
 
