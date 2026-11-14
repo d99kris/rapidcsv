@@ -494,6 +494,13 @@ License
 Rapidcsv is distributed under the BSD 3-Clause license. See
 [LICENSE](https://github.com/d99kris/rapidcsv/blob/master/LICENSE) file.
 
+Project Scope
+=============
+Rapidcsv is feature-complete and in maintenance mode. It aims to be an
+easy-to-use header-only CSV parser covering common use cases, rather than a
+full-featured CSV toolkit. Maintenance mainly means fixing bugs, portability
+issues and documentation.
+
 Contributions
 =============
 Bugs, PRs, etc are welcome on the GitHub project page
