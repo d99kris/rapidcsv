@@ -760,7 +760,10 @@ namespace rapidcsv
         {
           if (std::distance(mData.begin(), itRow) >= mLabelParams.mColumnNameIdx)
           {
-            itRow->resize(GetDataColumnIndex(dataColumnIdx + 1));
+            if (itRow->size() < (dataColumnIdx + 1))
+            {
+              itRow->resize(dataColumnIdx + 1);
+            }
           }
         }
       }
