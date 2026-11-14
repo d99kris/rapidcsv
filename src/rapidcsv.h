@@ -2,7 +2,7 @@
  * rapidcsv.h
  *
  * URL:      https://github.com/d99kris/rapidcsv
- * Version:  9.07
+ * Version:  9.08
  *
  * Copyright (c) 2017-2026 Kristofer Berggren
  * All rights reserved.
@@ -760,7 +760,10 @@ namespace rapidcsv
         {
           if (std::distance(mData.begin(), itRow) >= mLabelParams.mColumnNameIdx)
           {
-            itRow->resize(GetDataColumnIndex(dataColumnIdx + 1));
+            if (itRow->size() < (dataColumnIdx + 1))
+            {
+              itRow->resize(dataColumnIdx + 1);
+            }
           }
         }
       }
@@ -1032,13 +1035,16 @@ namespace rapidcsv
         mData.push_back(row);
       }
 
-      if (pRow.size() > GetDataColumnCount())
+      if (GetDataColumnIndex(pRow.size()) > GetDataColumnCount())
       {
         for (auto itRow = mData.begin(); itRow != mData.end(); ++itRow)
         {
           if (std::distance(mData.begin(), itRow) >= mLabelParams.mColumnNameIdx)
           {
-            itRow->resize(GetDataColumnIndex(pRow.size()));
+            if (itRow->size() < GetDataColumnIndex(pRow.size()))
+            {
+              itRow->resize(GetDataColumnIndex(pRow.size()));
+            }
           }
         }
       }
@@ -1346,7 +1352,10 @@ namespace rapidcsv
         {
           if (std::distance(mData.begin(), itRow) >= mLabelParams.mColumnNameIdx)
           {
-            itRow->resize(dataColumnIdx + 1);
+            if (itRow->size() < (dataColumnIdx + 1))
+            {
+              itRow->resize(dataColumnIdx + 1);
+            }
           }
         }
       }
