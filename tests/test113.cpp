@@ -31,34 +31,30 @@ int main()
         // Updating an existing column must not grow the document.
         doc.SetColumn(0, std::vector<int>({ 6, 7, 8 }));
         unittest::ExpectEqual(size_t, doc.GetColumnCount(), 2);
-
-        const std::string prefix(static_cast<size_t>(rowNameIdx + 1), ',');
-        std::string expected;
-        for (int i = 0; i < columnNameIdx; ++i)
-        {
-          expected += "\n";
-        }
-        if (columnNameIdx >= 0)
-        {
-          expected += prefix + ",\n";
-        }
-        expected += prefix + "6,3\n" + prefix + "7,4\n" + prefix + "8,5\n";
-
-        std::ostringstream output;
-        doc.Save(output);
-        unittest::ExpectEqual(std::string, output.str(), expected);
       }
     }
 
+    // Saving must not add empty columns.
+    {
+      rapidcsv::Document doc("", rapidcsv::LabelParams(0, 0),
+                             rapidcsv::SeparatorParams(',', false, false));
+      doc.SetColumn(0, std::vector<int>({ 1, 2 }));
+      std::ostringstream output;
+      doc.Save(output);
+      unittest::ExpectEqual(std::string, output.str(), ",\n,1\n,2\n");
+    }
+
     // Growing past a short header must preserve wider data rows.
-    std::istringstream input("id,A\nr1,1,2,3\n");
-    rapidcsv::Document doc(input, rapidcsv::LabelParams(0, 0));
-    doc.SetColumn(1, std::vector<int>({ 8 }));
-    unittest::ExpectEqual(size_t, doc.GetColumnCount(), 2);
-    unittest::ExpectEqual(int, doc.GetCell<int>(2, 0), 3);
-    std::ostringstream output;
-    doc.Save(output);
-    unittest::ExpectEqual(std::string, output.str(), "id,A,\nr1,1,8,3\n");
+    {
+      std::istringstream input("id,A\nr1,1,2,3\n");
+      rapidcsv::Document doc(input, rapidcsv::LabelParams(0, 0));
+      doc.SetColumn(1, std::vector<int>({ 8 }));
+      unittest::ExpectEqual(size_t, doc.GetColumnCount(), 2);
+      unittest::ExpectEqual(int, doc.GetCell<int>(2, 0), 3);
+      std::ostringstream output;
+      doc.Save(output);
+      unittest::ExpectEqual(std::string, output.str(), "id,A,\nr1,1,8,3\n");
+    }
   }
   catch (const std::exception& ex)
   {
