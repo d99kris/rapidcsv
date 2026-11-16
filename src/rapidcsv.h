@@ -1700,11 +1700,11 @@ namespace rapidcsv
             if (!quoted)
             {
               CheckMaxCount(row.size() + 1);
-        if (row.empty())
-        {
-          commentLine = IsCommentCell(cell);
-        }
-        row.push_back(Unquote(Trim(cell)));
+              if (row.empty())
+              {
+                commentLine = IsCommentCell(cell);
+              }
+              row.push_back(Unquote(Trim(cell)));
               cell.clear();
             }
             else
