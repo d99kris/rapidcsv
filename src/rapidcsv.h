@@ -1659,6 +1659,7 @@ namespace rapidcsv
       std::vector<std::string> row;
       std::string cell;
       bool quoted = false;
+      bool commentLine = false;
       int cr = 0;
       int lf = 0;
 
@@ -1699,6 +1700,10 @@ namespace rapidcsv
             if (!quoted)
             {
               CheckMaxCount(row.size() + 1);
+              if (row.empty())
+              {
+                commentLine = IsCommentCell(cell);
+              }
               row.push_back(Unquote(Trim(cell)));
               cell.clear();
             }
@@ -1734,10 +1739,13 @@ namespace rapidcsv
               else
               {
                 CheckMaxCount(row.size() + 1);
+                if (row.empty())
+                {
+                  commentLine = IsCommentCell(cell);
+                }
                 row.push_back(Unquote(Trim(cell)));
 
-                if (mLineReaderParams.mSkipCommentLines && !row.at(0).empty() &&
-                    (row.at(0)[0] == mLineReaderParams.mCommentPrefix))
+                if (commentLine)
                 {
                   // skip comment line
                 }
@@ -1769,10 +1777,13 @@ namespace rapidcsv
       else
       {
         CheckMaxCount(row.size() + 1);
+        if (row.empty())
+        {
+          commentLine = IsCommentCell(cell);
+        }
         row.push_back(Unquote(Trim(cell)));
 
-        if (mLineReaderParams.mSkipCommentLines && !row.at(0).empty() &&
-            (row.at(0)[0] == mLineReaderParams.mCommentPrefix))
+        if (commentLine)
         {
           // skip comment line
         }
@@ -1902,6 +1913,18 @@ namespace rapidcsv
       {
         return pStr;
       }
+    }
+
+    bool IsCommentCell(const std::string& pCell) const
+    {
+      // a comment line starts with the comment prefix itself, not with a quoted cell
+      if (!mLineReaderParams.mSkipCommentLines)
+      {
+        return false;
+      }
+
+      const std::string str = Trim(pCell);
+      return !str.empty() && (str[0] == mLineReaderParams.mCommentPrefix);
     }
 
     std::string Unquote(const std::string& pStr) const
